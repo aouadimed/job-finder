@@ -2,6 +2,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:cv_frontend/features/authentication/data/data_sources/remote_data_source/authentification_remote_data_source.dart';
 import 'package:cv_frontend/features/authentication/data/repository/user_repository_impl.dart';
 import 'package:cv_frontend/features/authentication/domain/repository/user_repository.dart';
+import 'package:cv_frontend/features/authentication/domain/usecases/sign_up_user_use_case.dart';
 import 'package:cv_frontend/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,11 +23,19 @@ Future<void> initializeDependencies() async {
 
   // Auth Feature
   // BLOC
-  sl.registerFactory(() => AuthBloc(loginUserUseCase: sl()));
+  sl.registerFactory(
+    () => AuthBloc(
+      loginUserUseCase: sl(),
+      signUpUserUseCase: sl(),
+    ),
+  );
 
   // Use cases
   sl.registerLazySingleton(
     () => LoginUserUseCase(userRepository: sl()),
+  );
+  sl.registerLazySingleton(
+    () => SignUpUserUseCase(userRepository: sl()),
   );
 
   // repository

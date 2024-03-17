@@ -43,8 +43,8 @@ class _LoginScreenState extends State<LoginScreen> {
       create: (context) => sl<AuthBloc>(),
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state is LoginFailure) {
-            const PopUp().showSnackBar(context, state.message);
+          if (state is AuthFailure) {
+            showSnackBar(context: context, message: state.message);
           } else if (state is LoginSuccess) {
             goToHome(context);
           }

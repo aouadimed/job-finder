@@ -16,34 +16,40 @@ class _RolePickState extends State<RolePick> {
     return const Scaffold(
       appBar: GenearalAppBar(),
       body: SafeArea(
-          child: Column(
-        children: [
-          Center(
-              child: LoginHeader(text: 'Choose Your Job Type', fontsize: 25)),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            child: Text(
-              "Choose whether you are looking for a job or you are an organization/company that needs employees",
+        child: Column(
+          children: [
+            Center(
+              child: LoginHeader(text: 'Choose Your Job Type', fontSize: 25),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: Text(
+                "Choose whether you are looking for a job or you are an organization/company that needs employees",
 
-              textAlign: TextAlign.center, // Center the text horizontally
+                textAlign: TextAlign.center, // Center the text horizontally
+              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-            child: Divider(
-              color: Colors.grey, // Adjust line color
-              thickness: 0.3, // Adjust line thickness
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              child: Divider(
+                color: Colors.grey, // Adjust line color
+                thickness: 0.3, // Adjust line thickness
+              ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(child: SelectRole()),
-             Expanded(child: SelectRole()),
-            ]
-          )
-        ],
-      )),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: SelectRole(),
+                ),
+                Expanded(
+                  child: SelectRole(),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

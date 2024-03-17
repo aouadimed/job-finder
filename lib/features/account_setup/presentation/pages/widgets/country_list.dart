@@ -17,7 +17,7 @@ class CountryList extends StatefulWidget {
 
 class _CountryListState extends State<CountryList> {
   final List<String> _allCountries = allCountries;
-  static late String selectedCountry; 
+  static late String selectedCountry;
 
   List<String> _filteredCountries = [];
 
@@ -25,18 +25,19 @@ class _CountryListState extends State<CountryList> {
   void initState() {
     super.initState();
     _filteredCountries = _allCountries;
-    selectedCountry = ''; 
+    selectedCountry = '';
     widget.searchController?.addListener(_searchCountries);
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      shrinkWrap: true,
       itemCount: _filteredCountries.length,
       itemBuilder: (context, index) {
         final country = _filteredCountries[index];
         return SingleSelect(
-          isSelected: country == selectedCountry, 
+          isSelected: country == selectedCountry,
           text: country,
           onPressed: () {
             setState(() {

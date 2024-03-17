@@ -14,11 +14,11 @@ class AuthLoading extends AuthState {}
 
 class LoginSuccess extends AuthState {}
 
-class LoginFailure extends AuthState {
+class AuthFailure extends AuthState {
   final bool isIntentFailure;
   final String message;
 
-  const LoginFailure({
+  const AuthFailure({
     required this.isIntentFailure,
     required this.message,
   });
@@ -26,3 +26,5 @@ class LoginFailure extends AuthState {
   @override
   List<Object?> get props => [isIntentFailure, message];
 }
+
+class RegisterSuccess extends AuthState {}

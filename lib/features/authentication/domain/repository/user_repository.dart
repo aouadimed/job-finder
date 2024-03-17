@@ -8,5 +8,11 @@ abstract class UserRepository {
     required String password,
   });
 
+  Future<Either<Failure, Unit>> signUpUser({
+    required String username,
+    required String email,
+    required String password,
+  });
+
   // Future<DataState<UserEntity>> getUser(Map<String, dynamic> loginCredentials);
 }

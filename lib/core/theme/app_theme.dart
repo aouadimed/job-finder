@@ -3,11 +3,12 @@ import 'package:flutter/services.dart';
 
 ThemeData theme() {
   return ThemeData(
-      useMaterial3: true,
-      scaffoldBackgroundColor: Colors.white,
-      primaryColor: const Color.fromRGBO(65, 102, 245, 1),
-      fontFamily: 'Poppins',
-      appBarTheme: const AppBarTheme());
+    useMaterial3: true,
+    scaffoldBackgroundColor: Colors.white,
+    primaryColor: const Color.fromRGBO(65, 102, 245, 1),
+    fontFamily: 'Poppins',
+    appBarTheme: const AppBarTheme(),
+  );
 }
 
 AppBarTheme appBarTheme() {
@@ -21,10 +22,12 @@ AppBarTheme appBarTheme() {
 }
 
 void setStatusBarColor() {
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
-    statusBarColor: Colors.white, // Color for status bar
-    statusBarBrightness: Brightness.light, // Brightness of status bar
-    statusBarIconBrightness:
-        Brightness.dark, // Brightness of icons in status bar
-  ));
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle.light.copyWith(
+      statusBarColor: Colors.white, // Color for status bar
+      statusBarBrightness: Brightness.light, // Brightness of status bar
+      statusBarIconBrightness:
+          Brightness.dark, // Brightness of icons in status bar
+    ),
+  );
 }

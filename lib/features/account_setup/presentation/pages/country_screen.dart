@@ -6,9 +6,9 @@ import 'widgets/country_list.dart';
 import 'package:cv_frontend/global/common_widget/big_button.dart';
 
 class CountryScreen extends StatefulWidget {
-  final TextEditingController? searchController;
-
-  const CountryScreen({Key? key, this.searchController}) : super(key: key);
+  const CountryScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<CountryScreen> createState() => _CountryScreenState();
@@ -21,15 +21,14 @@ class _CountryScreenState extends State<CountryScreen> {
   @override
   void initState() {
     super.initState();
-    _searchController = widget.searchController ?? TextEditingController();
+    _searchController = TextEditingController();
     _countryList = CountryList(searchController: _searchController);
   }
 
   @override
   void dispose() {
-    if (widget.searchController == null) {
-      _searchController.dispose();
-    }
+    _searchController.dispose();
+
     super.dispose();
   }
 
@@ -50,19 +49,26 @@ class _CountryScreenState extends State<CountryScreen> {
               ),
             ),
             Expanded(
-              child: _countryList,
+              child: CountryList(
+                searchController: _searchController,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: BigButton(
-                  text: 'Continue',
-                  onPressed: () {
-                    if (_countryList.getSelectedCountry().isNotEmpty) {
-                      print(_countryList.getSelectedCountry());
-                    } else {
-                 const PopUp().showSnackBar(context, 'Select a country first !');
-                    }
-                  }),
+                text: 'Continue',
+                onPressed: () {
+                  if (_countryList.getSelectedCountry().isNotEmpty) {
+                    print(_countryList.getSelectedCountry());
+                  } else {
+                    showSnackBar(
+                      context: context,
+                      message: 'Select a country '
+                          'first !',
+                    );
+                  }
+                },
+              ),
             )
           ],
         ),

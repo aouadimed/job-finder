@@ -23,8 +23,6 @@ class UserRepositoryImpl implements UserRepository {
     if (await networkInfo.isConnected == false) {
       throw ConnexionFailure();
     }
-    // user already have cnx
-
     try {
       final userModel = await authRemoteDataSource.loginUser(
         email: email,
@@ -38,6 +36,28 @@ class UserRepositoryImpl implements UserRepository {
       } else {
         return Left(ServerFailure());
       }
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> signUpUser({
+    required String username,
+    required String email,
+    required String password,
+  }) async {
+    if (await networkInfo.isConnected == false) {
+      throw ConnexionFailure();
+    }
+    try {
+      await authRemoteDataSource.signUpUser(
+        username: username,
+        email: email,
+        password: password,
+      );
+
+      return const Right(unit);
+    } catch (e) {
+      return Left(ServerFailure());
     }
   }
 }

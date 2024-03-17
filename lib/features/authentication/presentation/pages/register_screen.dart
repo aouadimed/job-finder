@@ -1,10 +1,11 @@
-import 'package:cv_frontend/core/services/app_routes.dart';
+import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/widgets/create_or_have_account_section.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/widgets/header_login.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/widgets/register_form.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/widgets/third_party_login.dart';
+import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
 import 'package:cv_frontend/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,16 +45,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
       create: (context) => sl<AuthBloc>(),
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state is LoginFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  state.message,
-                ),
-              ),
+          if (state is AuthFailure) {
+            showSnackBar(context: context, message: state.message);
+          } else if (state is RegisterSuccess) {
+            showSnackBar(
+              context: context,
+              message: "Your account was "
+                  "created successfully ",
+              backgroundColor: greenColor,
             );
-          } else if (state is LoginSuccess) {
-            // goToHome(context);
+            goBackToLogin(context);
           }
         },
         child: BlocBuilder<AuthBloc, AuthState>(
@@ -74,16 +75,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           formKey: _formKey,
                           emailController: _emailTextFieldController,
                           passwordController: _passwordTextFieldController,
-                          //loginAction: () => handleLogin(context),
                           isLoading: state is AuthLoading,
                           usernameController: _usernameTextFieldController,
-                          registerAction: () {},
+                          registerAction: () => registerNewUser(context),
                         ),
                       ),
-                      const  ThirdPartyLogin(),
+                      const ThirdPartyLogin(),
                       CreateOrHaveAccountSection(
                         onTap: () {
-                          goToLogin(context);
+                          goBackToLogin(context);
                         },
                         question: "Already have an account?",
                         action: "Sign in",
@@ -98,7 +98,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
-}
-  void goToLogin(BuildContext context) {
-    Navigator.pushNamed(context, loginScreen);
+
+  void goBackToLogin(BuildContext context) {
+    Navigator.pop(context);
   }
+
+  void registerNewUser(BuildContext context) {
+    BlocProvider.of<AuthBloc>(context).add(
+      RegisterEvent(
+        username: _usernameTextFieldController.text.trim(),
+        email: _emailTextFieldController.text,
+        password: _passwordTextFieldController.text,
+      ),
+    );
+  }
+}
