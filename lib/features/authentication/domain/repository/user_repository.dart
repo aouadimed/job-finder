@@ -8,11 +8,18 @@ abstract class UserRepository {
     required String password,
   });
 
-  Future<Either<Failure, Unit>> signUpUser({
+  Future<Either<Failure,UserModel>> signUpUser({
     required String username,
+    required String firstName,
+    required String lastName,
+    required DateTime dateOfBirth,
     required String email,
+    required String phone,
+    required String gender,
+    required String country,
+    required String role,
+    required List<int> expertise,
     required String password,
+    required String profileImg,
   });
-
-  // Future<DataState<UserEntity>> getUser(Map<String, dynamic> loginCredentials);
 }

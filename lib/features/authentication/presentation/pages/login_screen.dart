@@ -52,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
             return Scaffold(
-              appBar: const GenearalAppBar(),
+              appBar: const GeneralAppBar(),
               body: SafeArea(
                 child: SingleChildScrollView(
                   child: Column(

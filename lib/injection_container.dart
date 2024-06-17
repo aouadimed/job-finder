@@ -4,6 +4,11 @@ import 'package:cv_frontend/features/authentication/data/repository/user_reposit
 import 'package:cv_frontend/features/authentication/domain/repository/user_repository.dart';
 import 'package:cv_frontend/features/authentication/domain/usecases/sign_up_user_use_case.dart';
 import 'package:cv_frontend/features/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/summary_remote_data_source.dart';
+import 'package:cv_frontend/features/profil/data/repository/summary_repository_impl.dart';
+import 'package:cv_frontend/features/profil/domain/repository/summarry_repository.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/summary_use_cases.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -21,7 +26,11 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton(() => Connectivity());
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
 
-  // Auth Feature
+/* ----------------------------------------------------- */
+/*
+ * Authentication
+ */
+/* ----------------------------------------------------- */
   // BLOC
   sl.registerFactory(
     () => AuthBloc(
@@ -52,4 +61,35 @@ Future<void> initializeDependencies() async {
       client: sl(),
     ),
   );
+
+
+  /* ----------------------------------------------------- */
+/*
+ * profile
+ */
+/* ----------------------------------------------------- */
+//bloc
+sl.registerFactory(() => SummaryBloc(summaryUseCase: sl(), getSummaryUseCase: sl()));
+//use cases
+sl.registerLazySingleton(()=> SummaryUseCase(summaryRepository: sl()));
+
+sl.registerLazySingleton(()=> GetSummaryUseCse(summaryRepository: sl()));
+//repositories
+  sl.registerLazySingleton<SummaryRepository>(
+    () => SummaryRepositoryImpl(
+      networkInfo: sl(),
+      summaryRemoteDataSource: sl(),
+    ),
+  );
+// Data Sources
+  sl.registerLazySingleton<SummaryRemoteDataSource>(
+    () => SummaryRemoteDataSourceImpl(
+      client: sl(),
+    ),
+  );
+
+
+
+
+
 }

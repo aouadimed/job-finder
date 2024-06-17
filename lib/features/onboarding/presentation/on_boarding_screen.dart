@@ -38,33 +38,33 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-          child: Stack(
-            children: [
-              PageView.builder(
-                controller: pageController,
-                itemCount: onBoardingLength,
-                itemBuilder: (context, index) {
-                  return OnBoardingItem(
-                    onBoardingModel: OnBoardingUtils.onBoardingList[index],
-                  );
-                },
-              ),
-              Positioned(
-                bottom: 20,
-                left: 0,
-                right: 0,
-                child: Column(
-                  children: [
-                    AnimatedContainer(
+        body: Stack(
+          children: [
+            PageView.builder(
+              controller: pageController,
+              itemCount: onBoardingLength,
+              itemBuilder: (context, index) {
+                return OnBoardingItem(
+                  onBoardingModel: OnBoardingUtils.onBoardingList[index],
+                );
+              },
+            ),
+            Positioned(
+              bottom: 20,
+              left: 0,
+              right: 0,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: AnimatedContainer(
                       duration: const Duration(milliseconds: 500),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(
                           onBoardingLength,
                           (index) => Container(
-                            width: index == currentPage ? 24 : 12,
+                            width: index == currentPage ? 29 : 12,
                             height: 10,
                             margin: const EdgeInsets.symmetric(horizontal: 4),
                             decoration: BoxDecoration(
@@ -77,8 +77,11 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    BigButton(
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: BigButton(
                       text: currentPage != onBoardingLength - 1
                           ? "Next"
                           : "Get Started",
@@ -93,11 +96,11 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                         }
                       },
                     ),
-                  ],
-                ),
-              )
-            ],
-          ),
+                  ),
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );

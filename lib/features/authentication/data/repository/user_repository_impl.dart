@@ -40,24 +40,44 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> signUpUser({
+  Future<Either<Failure, UserModel>> signUpUser({
     required String username,
+    required String firstName,
+    required String lastName,
+    required DateTime dateOfBirth,
     required String email,
+    required String phone,
+    required String gender,
+    required String country,
+    required String role,
+    required List<int> expertise,
     required String password,
+    required String profileImg,
   }) async {
     if (await networkInfo.isConnected == false) {
       throw ConnexionFailure();
     }
     try {
-      await authRemoteDataSource.signUpUser(
+      final userModel = await authRemoteDataSource.signUpUser(
         username: username,
         email: email,
         password: password,
+        firstName: firstName,
+        lastName: lastName,
+        dateOfBirth: dateOfBirth,
+        phone: phone,
+        gender: gender,
+        country: country, role: role, expertise: expertise, profileImg: profileImg,
       );
 
-      return const Right(unit);
+      return Right(userModel);
     } catch (e) {
-      return Left(ServerFailure());
+     print(e.runtimeType);
+       if (e.runtimeType == EmailExistsFailure) {
+        return Left(EmailExistsFailure());
+      } else {
+        return Left(ServerFailure());
+      }
     }
   }
 }

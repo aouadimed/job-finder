@@ -1,4 +1,4 @@
-import 'package:cv_frontend/features/account_setup/presentation/pages/widgets/single_select.dart';
+import 'package:cv_frontend/features/authentication/presentation/pages/account_setup/pages/widgets/single_select.dart';
 import 'package:cv_frontend/global/utils/country_data.dart';
 import 'package:flutter/material.dart';
 

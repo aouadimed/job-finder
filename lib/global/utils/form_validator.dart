@@ -18,7 +18,17 @@ abstract class FormValidator {
       return 'Please enter your password.';
     }
     if (password.length < 5) {
-      return 'Password must be at least 5 characters long.'; // Add password strength requirements
+      return 'Password must be at least 5 characters long.'; 
+    }
+    return null;
+  }
+
+    static String? validateUsername(String? username) {
+    if (username == null || username.isEmpty) {
+      return 'Please enter your username.';
+    }
+    if (username.length < 5) {
+      return 'username must be at least 5 characters long.'; 
     }
     return null;
   }

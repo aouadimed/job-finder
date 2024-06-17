@@ -10,14 +10,13 @@ class RegisterForm extends StatefulWidget {
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final void Function() registerAction;
-  final bool isLoading;
+  
 
   const RegisterForm({
     Key? key,
     required this.formKey,
     required this.emailController,
     required this.passwordController,
-    required this.isLoading,
     required this.usernameController,
     required this.registerAction,
   }) : super(key: key);
@@ -38,6 +37,9 @@ class _RegisterFormState extends State<RegisterForm> {
             hint: "Full Name",
             prefixIcon: const Icon(Icons.face, color: Colors.grey),
             textInputType: TextInputType.name,
+            validator: (value) {
+              return FormValidator.validateUsername(value);
+            },
           ),
           const SizedBox(height: 16),
           InputField(
@@ -70,29 +72,25 @@ class _RegisterFormState extends State<RegisterForm> {
             },
           ),
           const SizedBox(height: 30),
-          widget.isLoading
-              ? const CircularProgressIndicator()
-              : SizedBox(
-                  width: MediaQuery.of(context)
-                      .size
-                      .width, // Adjust width as desired
-                  height: 50.0, // Adjust height as desired
-                  child: ElevatedButton(
-                    onPressed: widget.registerAction,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                    ),
-                    child: const Text(
-                      'SIGN UP',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width, // Adjust width as desired
+            height: 50.0, // Adjust height as desired
+            child: ElevatedButton(
+              onPressed: widget.registerAction,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
                 ),
+              ),
+              child: const Text(
+                'SIGN UP',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

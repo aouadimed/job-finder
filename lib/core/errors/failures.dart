@@ -14,3 +14,6 @@ class UserCredentialFailure extends Failure {}
 class UserDisabledFailure extends Failure {}
 
 class ConnexionFailure extends Failure {}
+
+class EmailExistsFailure extends Failure {}
+

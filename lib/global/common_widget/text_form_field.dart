@@ -8,6 +8,7 @@ class InputField extends StatelessWidget {
   final String? Function(String?)? validator;
   final TextInputType? textInputType;
   final bool? obscureText;
+  final bool? readOnly;
   const InputField({
     Key? key,
     required this.controller,
@@ -16,12 +17,13 @@ class InputField extends StatelessWidget {
     this.validator,
     this.textInputType,
     this.suffixIcon,
-    this.obscureText,  void Function(String value)? onChanged,
+    this.obscureText,  void Function(String value)? onChanged, this.readOnly,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      readOnly: readOnly ?? false,
       controller: controller,
       keyboardType: textInputType ?? TextInputType.text,
       textInputAction: TextInputAction.done,

@@ -1,9 +1,10 @@
-import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
-import 'package:flutter/material.dart';
+import 'package:cv_frontend/core/services/app_routes.dart';
+import 'package:cv_frontend/features/authentication/presentation/pages/account_setup/pages/widgets/country_list.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
-import 'package:cv_frontend/global/common_widget/text_form_field.dart';
-import 'widgets/country_list.dart';
 import 'package:cv_frontend/global/common_widget/big_button.dart';
+import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
+import 'package:cv_frontend/global/common_widget/text_form_field.dart';
+import 'package:flutter/material.dart';
 
 class CountryScreen extends StatefulWidget {
   const CountryScreen({
@@ -17,6 +18,9 @@ class CountryScreen extends StatefulWidget {
 class _CountryScreenState extends State<CountryScreen> {
   late TextEditingController _searchController;
   late CountryList _countryList;
+  String? username;
+  String? email;
+  String? password;
 
   @override
   void initState() {
@@ -28,14 +32,33 @@ class _CountryScreenState extends State<CountryScreen> {
   @override
   void dispose() {
     _searchController.dispose();
-
     super.dispose();
+  }
+
+  void finshProfil(BuildContext context) {
+    Navigator.pushNamed(
+      context,
+      pickrole,
+      arguments: {
+        'username': username,
+        'email': email,
+        'password': password,
+        'selected_country': _countryList.getSelectedCountry()
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic>? args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    username = args?['username'];
+    email = args?['email'];
+    password = args?['password'];
+
     return Scaffold(
-      appBar: const GenearalAppBar(titleText: "Your country"),
+      appBar: const GeneralAppBar(titleText: "Your country"),
       body: SafeArea(
         child: Column(
           children: [
@@ -59,12 +82,12 @@ class _CountryScreenState extends State<CountryScreen> {
                 text: 'Continue',
                 onPressed: () {
                   if (_countryList.getSelectedCountry().isNotEmpty) {
-                    print(_countryList.getSelectedCountry());
+                    finshProfil(context);
                   } else {
+                    print(username);
                     showSnackBar(
                       context: context,
-                      message: 'Select a country '
-                          'first !',
+                      message: 'Select a country first!',
                     );
                   }
                 },
