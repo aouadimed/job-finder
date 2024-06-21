@@ -6,9 +6,11 @@ import 'package:cv_frontend/features/authentication/presentation/pages/login_scr
 import 'package:cv_frontend/features/authentication/presentation/pages/register_screen.dart';
 import 'package:cv_frontend/features/home/presentation/pages/home_screen.dart';
 import 'package:cv_frontend/features/onboarding/presentation/on_boarding_screen.dart';
-import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/profil_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/summary_screen.dart';
+import 'package:cv_frontend/features/profil/presentation/pages/work_experience_screen.dart';
 import 'package:cv_frontend/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,8 +23,9 @@ const String countryScreen = '/countryscreen';
 const String pickrole = '/pickrole';
 const String pickexpertive = '/pickexpertive';
 const String finishprofil = '/finishprofil';
-const String profil = '/profil';
+const String profilScreen = '/profilScreen';
 const String summaryScreen = '/summaryScreen';
+const String workExperienceScreen = '/workExperienceScreen';
 
 Route<dynamic> controller(RouteSettings settings) {
   switch (settings.name) {
@@ -42,9 +45,20 @@ Route<dynamic> controller(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (context) => const RegisterScreen(),
       );
-    case profil:
+    case profilScreen:
       return MaterialPageRoute(
-        builder: (context) => const ProfilScreen(),
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => sl<SummaryBloc>()..add(GetSummaryEvent()),
+            ),
+            BlocProvider(
+              create: (context) =>
+                  sl<WorkExperienceBloc>()..add(GetAllWorkExperienceEvent()),
+            )
+          ],
+          child: const ProfilScreen(),
+        ),
       );
     case summaryScreen:
       return MaterialPageRoute(
@@ -53,6 +67,24 @@ Route<dynamic> controller(RouteSettings settings) {
           child: const SummaryScreen(),
         ),
       );
+    case workExperienceScreen:
+      final args = settings.arguments as WorkExperienceScreenArguments?;
+      return MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (context) {
+            final bloc = sl<WorkExperienceBloc>();
+            if (args?.id != null) {
+              bloc.add(GetSingleWorkExperienceEvent(id: args!.id));
+            }
+            return bloc;
+          },
+          child: WorkExperienceScreen(
+            isUpdate: args?.isUpdate ?? false,
+            id: args?.id,
+          ),
+        ),
+      );
+
     case countryScreen:
       return MaterialPageRoute(
           builder: (context) => const CountryScreen(), settings: settings);
@@ -67,6 +99,12 @@ Route<dynamic> controller(RouteSettings settings) {
           builder: (context) => const FinishProfil(), settings: settings);
 
     default:
-      throw ('this route name does not exist');
+      return MaterialPageRoute(
+        builder: (context) => Scaffold(
+          body: Center(
+            child: Text('Route not found: ${settings.name}'),
+          ),
+        ),
+      );
   }
 }

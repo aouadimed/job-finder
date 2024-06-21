@@ -92,7 +92,7 @@ class _FinishProfilState extends State<FinishProfil> {
                     ProfilForm(
                       formKey: _formKey,
                       firstnameTextFieldController:
-                      _firstnameTextFieldController,
+                          _firstnameTextFieldController,
                       usernameTextFieldController: _usernameTextFieldController,
                       emailTextFieldController: _emailTextFieldController,
                       lastnameTextFieldController: _lastnameTextFieldController,
@@ -148,11 +148,11 @@ class _FinishProfilState extends State<FinishProfil> {
             ? "admin"
             : "unknown";
     if (_selectedImage == null) {
-                showSnackBar(
-            context: context,
-            message: "Please select a profil picture",
-            backgroundColor: redColor,
-          );
+      showSnackBar(
+        context: context,
+        message: "Please select a profil picture",
+        backgroundColor: redColor,
+      );
     } else if (_formKey.currentState!.validate()) {
       BlocProvider.of<AuthBloc>(context).add(RegisterEvent(
           firstName: _firstnameTextFieldController.text,

@@ -13,7 +13,6 @@ abstract class SummaryRemoteDataSource {
 
 class SummaryRemoteDataSourceImpl implements SummaryRemoteDataSource {
   final https.Client client;
-
   SummaryRemoteDataSourceImpl({required this.client});
 
   @override
@@ -26,7 +25,7 @@ class SummaryRemoteDataSourceImpl implements SummaryRemoteDataSource {
           body: jsonEncode(requestBody),
           headers: {
             "Content-type": "application/json",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjVkZTExNTEwYzU4YjUzZGQ4ZTQ0YjciLCJpYXQiOjE3MTg2MzE4OTcsImV4cCI6MTcxODcxODI5N30.1i0NZ3KEPPwnqFiPBUz5E2Qsefky7x5ybXI3eOeuZbc"
+            "Authorization": "Bearer $token"
           }).catchError(
         (e) => throw ServerException(),
       ); 
@@ -47,7 +46,7 @@ class SummaryRemoteDataSourceImpl implements SummaryRemoteDataSource {
         Uri.http(url, getSummaryBaseUrl),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjVkZTExNTEwYzU4YjUzZGQ4ZTQ0YjciLCJpYXQiOjE3MTg2MzE4OTcsImV4cCI6MTcxODcxODI5N30.1i0NZ3KEPPwnqFiPBUz5E2Qsefky7x5ybXI3eOeuZbc"
+          "Authorization": "Bearer $token"
         },
       ).catchError((e) {
         throw ServerException();

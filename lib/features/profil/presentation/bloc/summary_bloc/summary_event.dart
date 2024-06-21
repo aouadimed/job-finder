@@ -20,3 +20,5 @@ class CreateOrUpdateSummaryEvent extends SummaryEvent {
 }
 
 class GetSummaryEvent extends SummaryEvent {}
+
+

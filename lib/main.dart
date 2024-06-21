@@ -1,13 +1,10 @@
 import 'dart:io';
 
 import 'package:cv_frontend/core/theme/app_theme.dart';
-import 'package:cv_frontend/features/authentication/presentation/pages/register_screen.dart';
-import 'package:cv_frontend/features/home/presentation/pages/home_screen.dart';
-import 'package:cv_frontend/features/onboarding/presentation/on_boarding_screen.dart';
-import 'package:cv_frontend/features/profil/presentation/pages/profil_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cv_frontend/injection_container.dart';
 import 'package:cv_frontend/core/services/app_routes.dart' as route;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,12 +18,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      onGenerateRoute: route.controller,
-      // initialRoute: route.loginScreen,
-      home: const ProfilScreen(),
-      theme: theme(),
+    return ScreenUtilInit(
+      useInheritedMediaQuery: true,
+      designSize: const Size(375, 812),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Job Finder',
+        theme: theme(),
+        onGenerateRoute: route.controller,
+        initialRoute: route.profilScreen,
+      ),
     );
   }
 }

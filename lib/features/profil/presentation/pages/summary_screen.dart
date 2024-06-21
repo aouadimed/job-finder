@@ -1,5 +1,5 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
-import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
 import 'package:cv_frontend/global/common_widget/big_button.dart';
 import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';

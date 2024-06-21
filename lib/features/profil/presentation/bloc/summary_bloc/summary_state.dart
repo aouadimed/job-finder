@@ -25,7 +25,13 @@ class SummaryFailure extends SummaryState {
   List<Object?> get props => [isIntentFailure, message];
 }
 
-class CreateOrUpdateSummarySuccess extends SummaryState {}
+class CreateOrUpdateSummarySuccess extends SummaryState {
+  final String summaryDescription;
+
+  const CreateOrUpdateSummarySuccess({
+    required this.summaryDescription,
+  });
+}
 
 class GetSummarySuccess extends SummaryState {
   final SummaryModel summaryModel;
@@ -35,3 +41,5 @@ class GetSummarySuccess extends SummaryState {
   @override
   List<Object?> get props => [summaryModel];
 }
+
+

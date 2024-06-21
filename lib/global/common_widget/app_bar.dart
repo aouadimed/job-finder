@@ -5,13 +5,14 @@ class GeneralAppBar extends StatelessWidget implements PreferredSizeWidget {
   final ImageProvider? logo;
   final IconData? rightIcon;
   final VoidCallback? rightIconOnPressed;
-
+  final Color? rightIconColor;
   const GeneralAppBar({
     Key? key,
     this.titleText,
     this.logo,
     this.rightIcon,
     this.rightIconOnPressed,
+    this.rightIconColor,
   }) : super(key: key);
 
   @override
@@ -22,9 +23,9 @@ class GeneralAppBar extends StatelessWidget implements PreferredSizeWidget {
       surfaceTintColor: Colors.transparent,
       leading: logo != null
           ? Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Image(image: logo!),
-          )
+              padding: const EdgeInsets.all(10.0),
+              child: Image(image: logo!),
+            )
           : IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black),
               onPressed: () {
@@ -41,7 +42,10 @@ class GeneralAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: rightIcon != null
           ? [
               IconButton(
-                icon: Icon(rightIcon, color: Colors.black),
+                icon: Icon(rightIcon,
+                    color: rightIconColor != null
+                        ? rightIconColor!
+                        : Colors.black),
                 onPressed: rightIconOnPressed,
               )
             ]
