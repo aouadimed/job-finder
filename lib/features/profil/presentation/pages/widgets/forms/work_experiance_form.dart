@@ -1,4 +1,5 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
+import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/common_widget/common_text_filed.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/selection_widgets.dart/date_selection_sheet.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/selection_widgets.dart/emp_type_sheet.dart';
@@ -58,6 +59,19 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
   int selectedLocationTypeIndex = -1;
   bool ifStillWorking = false;
   DateTime? _startDate;
+  DateTime? _endDate;
+
+  void validateDates() {
+    if (_startDate != null && _endDate != null) {
+      if (_endDate!.isBefore(_startDate!)) {
+        showSnackBar(
+          context: context,
+          message: "End date can't be earlier than start date",
+          backgroundColor: Colors.red,
+        );
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -233,7 +247,7 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
                                 showSnackBar(
                                   context: context,
                                   message: "Start date can't be in the future",
-                                  backgroundColor: redColor,
+                                  backgroundColor: Colors.red,
                                 );
                               }
                             } else {
@@ -242,7 +256,8 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
                                 widget.startDateTextFieldController.text =
                                     DateFormat.yMMM().format(startDate);
                                 widget.selectedStartDateChanged(
-                                    startDate.toIso8601String());
+                                    startDate.toUtc().toIso8601String());
+                                validateDates();
                               });
                             }
                           }
@@ -254,7 +269,7 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
                       child: CommanInputField(
                         enabled: !ifStillWorking,
                         controller: widget.endDateTextFieldController,
-                        hint: !ifStillWorking ? 'End date*' : 'Presnet',
+                        hint: !ifStillWorking ? 'End date*' : 'Present',
                         textColor: !ifStillWorking ? darkColor : greyColor,
                         hintColor: !ifStillWorking ? darkColor : greyColor,
                         suffixIcon: Icons.keyboard_arrow_down_sharp,
@@ -277,25 +292,17 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
                                 showSnackBar(
                                   context: context,
                                   message: "End date can't be in the future",
-                                  backgroundColor: redColor,
-                                );
-                              }
-                            } else if (_startDate != null &&
-                                endDate.isBefore(_startDate!)) {
-                              if (context.mounted) {
-                                showSnackBar(
-                                  context: context,
-                                  message:
-                                      "End date can't be earlier than start date",
-                                  backgroundColor: redColor,
+                                  backgroundColor: Colors.red,
                                 );
                               }
                             } else {
                               setState(() {
+                                _endDate = endDate;
                                 widget.endDateTextFieldController.text =
                                     DateFormat.yMMM().format(endDate);
                                 widget.selectedEndDateChanged(
-                                    endDate.toIso8601String());
+                                    endDate.toUtc().toIso8601String());
+                                validateDates();
                               });
                             }
                           }

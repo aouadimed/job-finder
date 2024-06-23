@@ -4,12 +4,20 @@ import 'package:cv_frontend/features/authentication/data/repository/user_reposit
 import 'package:cv_frontend/features/authentication/domain/repository/user_repository.dart';
 import 'package:cv_frontend/features/authentication/domain/usecases/sign_up_user_use_case.dart';
 import 'package:cv_frontend/features/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/edcation_remote_data.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/summary_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/work_experience_data_source.dart';
+import 'package:cv_frontend/features/profil/data/repository/education_repository_impl.dart';
 import 'package:cv_frontend/features/profil/data/repository/summary_repository_impl.dart';
-import 'package:cv_frontend/features/profil/data/repository/work_experience_impl.dart';
+import 'package:cv_frontend/features/profil/data/repository/work_experience_repository_impl.dart';
+import 'package:cv_frontend/features/profil/domain/repository/education_repository.dart';
 import 'package:cv_frontend/features/profil/domain/repository/summarry_repository.dart';
 import 'package:cv_frontend/features/profil/domain/repository/work_experience_repository.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/education_use_cases/create_education_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/education_use_cases/delete_education_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/education_use_cases/get_all_education_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/education_use_cases/get_single_education_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/education_use_cases/update_education_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/summary_use_cases/create_or_update_sammary_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/summary_use_cases/get_summary_use_cases.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/work_experience_use_cases/create_work_experience_use_case.dart';
@@ -17,6 +25,7 @@ import 'package:cv_frontend/features/profil/domain/usecases/work_experience_use_
 import 'package:cv_frontend/features/profil/domain/usecases/work_experience_use_cases/get_all_work_experience_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/work_experience_use_cases/get_single_work_experiance.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/work_experience_use_cases/update_work_experince_use_case.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/education_bloc/education_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -129,6 +138,41 @@ Future<void> initializeDependencies() async {
 // Data Sources
   sl.registerLazySingleton<WorkExperienceDataSource>(
     () => WorkExperienceDataSourceImpl(
+      client: sl(),
+    ),
+  );
+
+  /* ----------------------------------------------------- */
+/*
+ * profile/education
+ */
+/* ----------------------------------------------------- */
+//bloc
+  sl.registerFactory(() => EducationBloc(
+        createEducationUseCase: sl(),
+        getAllEducationsUseCase: sl(),
+        getSingleEducationUseCase: sl(),
+        updateEducationUseCase: sl(),
+        deleteEducationUseCase: sl(),
+      ));
+//use cases
+  sl.registerLazySingleton(
+      () => CreateEducationUseCase(educationRepository: sl()));
+  sl.registerLazySingleton(
+      () => GetAllEducationsUseCase(educationRepository: sl()));
+  sl.registerLazySingleton(
+      () => GetSingleEducationUseCase(educationRepository: sl()));
+  sl.registerLazySingleton(
+      () => UpdateEducationUseCase(educationRepository: sl()));
+  sl.registerLazySingleton(
+      () => DeleteEducationUseCase(educationRepository: sl()));
+//repositories
+  sl.registerLazySingleton<EducationRepository>(
+    () => EducationRepositoryImpl(networkInfo: sl(), educationDataSource: sl()),
+  );
+// Data Sources
+  sl.registerLazySingleton<EducationDataSource>(
+    () => EducationDataSourceImpl(
       client: sl(),
     ),
   );

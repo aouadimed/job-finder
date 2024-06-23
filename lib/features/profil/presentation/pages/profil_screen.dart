@@ -1,9 +1,12 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/core/services/app_routes.dart';
+import 'package:cv_frontend/features/profil/data/models/education_model.dart';
 import 'package:cv_frontend/features/profil/data/models/work_experience_model.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/education_bloc/education_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
-import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_expanded_cards/contact_inforamtion_card.dart';
+import 'package:cv_frontend/features/profil/presentation/pages/education_screen.dart';
+import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_expanded_cards/education_card.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_expanded_cards/summary_card.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_expanded_cards/work_experience_card.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/work_experience_screen.dart';
@@ -21,6 +24,8 @@ class ProfilScreen extends StatefulWidget {
 class _ProfilScreenState extends State<ProfilScreen> {
   String summaryDescription = '';
   List<WorkExperiencesModel> experiences = [];
+  List<EducationsModel> educations = [];
+
   // Navigation
   void goToSummaryScreen(BuildContext context) async {
     await Navigator.pushNamed(context, summaryScreen).then(
@@ -46,6 +51,19 @@ class _ProfilScreenState extends State<ProfilScreen> {
     );
   }
 
+  void goToEducationScreen(
+      BuildContext context, bool isUpdate, String id) async {
+    await Navigator.pushNamed(context, educationScreen,
+            arguments: EducationScreenArguments(isUpdate: isUpdate, id))
+        .then(
+      (_) {
+        if (context.mounted) {
+          BlocProvider.of<EducationBloc>(context).add(GetAllEducationEvent());
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
@@ -62,6 +80,13 @@ class _ProfilScreenState extends State<ProfilScreen> {
           if (state is GetAllWorkExperienceSuccess) {
             setState(() {
               experiences = state.workExperiencesModel;
+            });
+          }
+        }),
+        BlocListener<EducationBloc, EducationState>(listener: (context, state) {
+          if (state is GetAllEducationSuccess) {
+            setState(() {
+              educations = state.educationsModel;
             });
           }
         })
@@ -88,27 +113,28 @@ class _ProfilScreenState extends State<ProfilScreen> {
                             'http://192.168.1.13:5000/userimg/1717428491056-446084121.jpg'),
                       ),
                       const SizedBox(width: 16),
-                      const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Mohamed Aouadi',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                      const Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Mohamed Aouadi',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
                             ),
-                          ),
-                          Text(
-                            'UI/UX Designer at Paypal Inc.',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
+                            Text(
+                              'UI/UX Designer at Paypal Inc.',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                      const Spacer(),
                       Icon(Icons.edit, color: primaryColor),
                     ],
                   ),
@@ -157,16 +183,26 @@ class _ProfilScreenState extends State<ProfilScreen> {
                                   color: primaryColor),
                             );
                           } else {
-                            return WorkExperience(
-                              iconOnPressed: () {
+                            return WorkExperienceWidget(
+                              onAddPressed: () {
                                 goToWorkExperienceScreen(context, false, "");
                               },
                               experiences: experiences,
-                              editIconOnPressed: (String value) {
+                              onEditPressed: (String value) {
                                 goToWorkExperienceScreen(context, true, value);
                               },
                             );
                           }
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      EducationWidget(
+                        education: educations,
+                        onAddPressed: () {
+                          goToEducationScreen(context, false, "");
+                        },
+                        onEditPressed: (String value) {
+                          goToEducationScreen(context, true, value);
                         },
                       ),
                     ],

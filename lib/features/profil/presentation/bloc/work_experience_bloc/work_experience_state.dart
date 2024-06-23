@@ -93,10 +93,8 @@ class GetSingleWorkExperiencFailure extends WorkExperienceState {
   List<Object?> get props => [isNetworkFailure, message];
 }
 
-
 class GetSingleWorkExperiencLoading extends WorkExperienceState {}
 
 class UpdateWorkExperianceSuccess extends WorkExperienceState {}
-
 
 class DeleteWorkExperianceSuccess extends WorkExperienceState {}

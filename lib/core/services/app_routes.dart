@@ -6,8 +6,10 @@ import 'package:cv_frontend/features/authentication/presentation/pages/login_scr
 import 'package:cv_frontend/features/authentication/presentation/pages/register_screen.dart';
 import 'package:cv_frontend/features/home/presentation/pages/home_screen.dart';
 import 'package:cv_frontend/features/onboarding/presentation/on_boarding_screen.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/education_bloc/education_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
+import 'package:cv_frontend/features/profil/presentation/pages/education_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/profil_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/summary_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/work_experience_screen.dart';
@@ -26,7 +28,7 @@ const String finishprofil = '/finishprofil';
 const String profilScreen = '/profilScreen';
 const String summaryScreen = '/summaryScreen';
 const String workExperienceScreen = '/workExperienceScreen';
-
+const String educationScreen = '/educationScreen';
 Route<dynamic> controller(RouteSettings settings) {
   switch (settings.name) {
     case boardingScreen:
@@ -55,6 +57,10 @@ Route<dynamic> controller(RouteSettings settings) {
             BlocProvider(
               create: (context) =>
                   sl<WorkExperienceBloc>()..add(GetAllWorkExperienceEvent()),
+            ),
+            BlocProvider(
+              create: (context) =>
+                  sl<EducationBloc>()..add(GetAllEducationEvent()),
             )
           ],
           child: const ProfilScreen(),
@@ -65,6 +71,23 @@ Route<dynamic> controller(RouteSettings settings) {
         builder: (context) => BlocProvider(
           create: (context) => sl<SummaryBloc>(),
           child: const SummaryScreen(),
+        ),
+      );
+    case educationScreen:
+      final args = settings.arguments as EducationScreenArguments?;
+      return MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (context) {
+            final bloc = sl<EducationBloc>();
+            if (args?.id != null) {
+              bloc.add(GetSingleEducationEvent(id: args!.id));
+            }
+            return bloc;
+          },
+          child: EducationScreen(
+            isUpdate: args?.isUpdate ?? false,
+            id: args?.id,
+          ),
         ),
       );
     case workExperienceScreen:
