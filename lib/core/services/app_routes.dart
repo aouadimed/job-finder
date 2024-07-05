@@ -7,10 +7,14 @@ import 'package:cv_frontend/features/authentication/presentation/pages/register_
 import 'package:cv_frontend/features/home/presentation/pages/home_screen.dart';
 import 'package:cv_frontend/features/onboarding/presentation/on_boarding_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/education_bloc/education_bloc.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/languages_bloc/language_bloc.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/project_bloc/project_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/education_screen.dart';
-import 'package:cv_frontend/features/profil/presentation/pages/profil_screen.dart';
+import 'package:cv_frontend/features/profil/presentation/pages/languages_screen.dart';
+import 'package:cv_frontend/features/profil/presentation/pages/main_profil_screen.dart';
+import 'package:cv_frontend/features/profil/presentation/pages/project_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/summary_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/work_experience_screen.dart';
 import 'package:cv_frontend/injection_container.dart';
@@ -29,6 +33,9 @@ const String profilScreen = '/profilScreen';
 const String summaryScreen = '/summaryScreen';
 const String workExperienceScreen = '/workExperienceScreen';
 const String educationScreen = '/educationScreen';
+const String projectScreen = '/projectScreen';
+const String languagesScreen = '/languagesScreen';
+
 Route<dynamic> controller(RouteSettings settings) {
   switch (settings.name) {
     case boardingScreen:
@@ -61,6 +68,14 @@ Route<dynamic> controller(RouteSettings settings) {
             BlocProvider(
               create: (context) =>
                   sl<EducationBloc>()..add(GetAllEducationEvent()),
+            ),
+            BlocProvider(
+              create: (context) =>
+                  sl<ProjectBloc>()..add(GetAllProjectsEvent()),
+            ),
+            BlocProvider(
+              create: (context) =>
+                  sl<LanguageBloc>()..add(GetAllLanguagesEvent()),
             )
           ],
           child: const ProfilScreen(),
@@ -73,6 +88,49 @@ Route<dynamic> controller(RouteSettings settings) {
           child: const SummaryScreen(),
         ),
       );
+    case projectScreen:
+      final args = settings.arguments as ProjectScreenArguments?;
+      return MaterialPageRoute(
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) {
+                final bloc = sl<ProjectBloc>();
+                if (args != null && args.id.isNotEmpty) {
+                  bloc.add(GetSingleProjectEvent(id: args.id));
+                }
+                return bloc;
+              },
+            ),
+            BlocProvider(
+              create: (context) =>
+                  sl<WorkExperienceBloc>()..add(GetAllWorkExperienceEvent()),
+            ),
+          ],
+          child: ProjectScreen(
+            isUpdate: args?.isUpdate ?? false,
+            id: args?.id,
+          ),
+        ),
+      );
+    case languagesScreen:
+      final args = settings.arguments as LanguagesScreenArguments?;
+      return MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (context) {
+            final bloc = sl<LanguageBloc>();
+            if (args?.id != null) {
+              bloc.add(GetSingleLanguageEvent(id: args!.id));
+            }
+            return bloc;
+          },
+          child: LanguagesScreen(
+            isUpdate: args?.isUpdate ?? false,
+            id: args?.id,
+          ),
+        ),
+      );
+
     case educationScreen:
       final args = settings.arguments as EducationScreenArguments?;
       return MaterialPageRoute(

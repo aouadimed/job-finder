@@ -81,20 +81,4 @@ class EducationsModel {
         "endDate": endDate?.toIso8601String(),
     };
 
-        String getDuration() {
-        if (startDate != null && endDate != null) {
-            final duration = endDate!.difference(startDate!);
-            final years = duration.inDays ~/ 365;
-            final months = (duration.inDays % 365) ~/ 30;
-            return '$years year${years != 1 ? 's' : ''} ${months} month${months != 1 ? 's' : ''}';
-        } else if (startDate != null && endDate == null) {
-            final now = DateTime.now();
-            final duration = now.difference(startDate!);
-            final years = duration.inDays ~/ 365;
-            final months = (duration.inDays % 365) ~/ 30;
-            return '$years year${years != 1 ? 's' : ''} ${months} month${months != 1 ? 's' : ''}';
-        } else {
-            return 'Unknown duration';
-        }
-    }
 }

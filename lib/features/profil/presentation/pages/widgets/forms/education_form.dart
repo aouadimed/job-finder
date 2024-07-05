@@ -40,7 +40,6 @@ class EducationForm extends StatefulWidget {
 
 class _EducationFormState extends State<EducationForm> {
   DateTime? _startDate;
-  bool isGraduated = false;
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/features/profil/data/models/education_model.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/common_widget/comman_expandable.dart';
+import 'package:cv_frontend/global/utils/date_utils.dart';
 import 'package:flutter/material.dart';
 
 class EducationWidget extends StatelessWidget {
@@ -45,7 +46,8 @@ class EducationWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    edu.getDuration(),
+                    getDuration(
+                        startDate: edu.startDate!, endDate: edu.endDate),
                     style: const TextStyle(
                       fontSize: 14,
                       color: Colors.grey,

@@ -1,5 +1,4 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
-import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/common_widget/common_text_filed.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/selection_widgets.dart/date_selection_sheet.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/selection_widgets.dart/emp_type_sheet.dart';
@@ -112,7 +111,7 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
                       context: context,
                       elevation: 0,
                       builder: (BuildContext context) {
-                        return EmpTypeSheet(
+                        return SelectionSheet(
                           onSelect: (String value, int indexValue) {
                             setState(() {
                               selectedEmplomentTypeIndex = indexValue;
@@ -123,6 +122,7 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
                             Navigator.pop(context, value);
                           },
                           selectedIndex: selectedEmplomentTypeIndex,
+                          list: employmentTypes,
                         );
                       },
                     );
@@ -315,7 +315,7 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
                 CommanInputField(
                   controller: widget.descriptionTextFieldController,
                   title: 'Description',
-                  hint: 'Description',
+                  hint: '',
                   textInputType: TextInputType.multiline,
                   obscureText: false,
                   maxLines: 5,

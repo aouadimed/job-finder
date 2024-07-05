@@ -97,6 +97,7 @@ class _WorkExperienceScreenState extends State<WorkExperienceScreen> {
             message: "Work Experience saved successfully",
             backgroundColor: greenColor,
           );
+          Navigator.of(context).pop();
         } else if (state is UpdateWorkExperianceSuccess) {
           showSnackBar(
             context: context,

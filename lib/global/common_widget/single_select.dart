@@ -32,12 +32,14 @@ class SingleSelect extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 10.0),
-            Text(
-              text,
-              style: TextStyle(
-                fontSize: 16.0,
-                color: isSelected ? primaryColor : Colors.black, 
-                // Change text color based on isSelected
+            Flexible(
+              child: Text(
+                text,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: isSelected ? primaryColor : Colors.black, 
+                  // Change text color based on isSelected
+                ),
               ),
             ),
           ],

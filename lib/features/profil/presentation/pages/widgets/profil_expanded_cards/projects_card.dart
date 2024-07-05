@@ -1,30 +1,28 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
-import 'package:cv_frontend/features/profil/data/models/work_experience_model.dart';
+import 'package:cv_frontend/features/profil/data/models/project_model.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/common_widget/comman_expandable.dart';
 import 'package:cv_frontend/global/utils/date_utils.dart';
 import 'package:flutter/material.dart';
 
-class WorkExperienceWidget extends StatelessWidget {
-  final List<WorkExperiencesModel> experiences;
+class ProjectCard extends StatelessWidget {
+  final List<ProjectsModel> project;
   final VoidCallback onAddPressed;
   final Function(String) onEditPressed;
-
-  const WorkExperienceWidget({
-    Key? key,
-    required this.experiences,
-    required this.onAddPressed,
-    required this.onEditPressed,
-  }) : super(key: key);
+  const ProjectCard(
+      {super.key,
+      required this.onAddPressed,
+      required this.onEditPressed,
+      required this.project});
 
   @override
   Widget build(BuildContext context) {
-    return CommonExpandableList<WorkExperiencesModel>(
+    return CommonExpandableList<ProjectsModel>(
       iconOnPressed: onAddPressed,
-      items: experiences,
-      headerTitle: "Work Experience",
-      headerIcon: Icons.work,
+      items: project,
+      headerTitle: "Projects",
+      headerIcon: Icons.poll_rounded,
       editIconOnPressed: onEditPressed,
-      itemBuilder: (experience) {
+      itemBuilder: (project) {
         return Row(
           children: [
             Expanded(
@@ -32,23 +30,25 @@ class WorkExperienceWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    experience.jobTitle!,
+                    project.projectName!,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
-                    experience.companyName!,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                    ),
-                  ),
+                  (project.workExperience != null)
+                      ? Text(
+                          project.workExperience!.jobTitle!,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
+                        )
+                      : const SizedBox(),
                   Text(
                     getDuration(
-                        startDate: experience.startDate!,
-                        endDate: experience.endDate),
+                        startDate: project.startDate!,
+                        endDate: project.endDate),
                     style: const TextStyle(
                       fontSize: 14,
                       color: Colors.grey,
@@ -60,7 +60,7 @@ class WorkExperienceWidget extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.edit, color: primaryColor),
               onPressed: () {
-                onEditPressed(experience.id!);
+                onEditPressed(project.id!); // Pass the ID here
               },
             ),
           ],

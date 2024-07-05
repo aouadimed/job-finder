@@ -2,16 +2,19 @@ import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:flutter/material.dart';
 import 'package:cv_frontend/global/common_widget/single_select.dart';
 
-class SelectionSheet extends StatelessWidget {
-  final void Function(String, int) onSelect;
-  final int selectedIndex;
+class SelectionAssoSheet extends StatelessWidget {
+  final void Function(String id, String item) onSelect;
+  final String? selectedId;
   final List<String> list;
-  const SelectionSheet(
-      {Key? key,
-      required this.onSelect,
-      required this.selectedIndex,
-      required this.list})
-      : super(key: key);
+  final List<String?> ids;
+
+  const SelectionAssoSheet({
+    Key? key,
+    required this.onSelect,
+    required this.selectedId,
+    required this.list,
+    required this.ids,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +34,10 @@ class SelectionSheet extends StatelessWidget {
           ),
           ...List.generate(list.length, (index) {
             return SingleSelect(
-              isSelected: selectedIndex == index,
+              isSelected: selectedId == ids[index],
               text: list[index],
               onPressed: () {
-                onSelect(list[index], index);
+                onSelect(ids[index]!, list[index]);
               },
             );
           }),

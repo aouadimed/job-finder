@@ -95,32 +95,4 @@ class WorkExperiencesModel {
         "endDate": endDate?.toIso8601String(),
         "ifStillWorking": ifStillWorking,
       };
-
- String getDuration() {
-    final DateTime end = ifStillWorking == true ? DateTime.now() : endDate!;
-    int durationYears = end.year - startDate!.year;
-    int durationMonths = end.month - startDate!.month;
-
-    // Adjust months and years if the end month is before the start month within the same year
-    if (durationMonths < 0) {
-      durationYears -= 1;
-      durationMonths += 12;
-    }
-
-    final String yearsText = durationYears > 0
-        ? '$durationYears year${durationYears > 1 ? 's' : ''} '
-        : '';
-    final String monthsText = durationMonths > 0
-        ? '$durationMonths month${durationMonths > 1 ? 's' : ''}'
-        : '';
-
-    final String duration = '$yearsText$monthsText'.trim();
-
-    final DateFormat formatter = DateFormat('MMMM yyyy');
-    final String startDateFormatted = formatter.format(startDate!);
-    final String endDateFormatted =
-        ifStillWorking == true ? 'Present' : formatter.format(end);
-
-    return '$startDateFormatted - $endDateFormatted ($duration)';
-  }
 }

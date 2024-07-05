@@ -82,6 +82,7 @@ class _EducationScreenState extends State<EducationScreen> {
             message: "Education saved successfully",
             backgroundColor: greenColor,
           );
+          Navigator.of(context).pop();
         } else if (state is UpdateEducationSuccess) {
           showSnackBar(
             context: context,
@@ -92,12 +93,9 @@ class _EducationScreenState extends State<EducationScreen> {
       },
       child: BlocBuilder<EducationBloc, EducationState>(
         builder: (context, state) {
-          return (state is GetSingleEducationLoading)
-              ? Center(
-                  child: CircularProgressIndicator(color: primaryColor),
-                )
-              : CommonFormsScreen(
+          return  CommonFormsScreen(
                   isUpdate: widget.isUpdate,
+                  isLoading: state is GetSingleEducationLoading,
                   title: 'Education',
                   form: EducationForm(
                     formKey: _formKey,
@@ -121,35 +119,48 @@ class _EducationScreenState extends State<EducationScreen> {
                   ),
                   onSave: () {
                     if (_formKey.currentState!.validate()) {
-                      if (widget.isUpdate) {
-                        BlocProvider.of<EducationBloc>(context).add(
-                          UpdateEducationEvent(
-                            id: widget.id!,
-                            school: _schoolTextFieldController.text,
-                            degree: _degreeTextFieldController.text,
-                            fieldOfStudy: _fieldOfStudyTextFieldController.text,
-                            startDate: _startDateTextFieldController.text,
-                            endDate: _endDateTextFieldController.text,
-                            grade: _gradeTextFieldController.text,
-                            activitiesAndSocieties:
-                                _activitiesTextFieldController.text,
-                            description: _descriptionTextFieldController.text,
-                          ),
+                      if (_schoolTextFieldController.text.isEmpty ||
+                          _fieldOfStudyTextFieldController.text.isEmpty ||
+                          _startDateTextFieldController.text.isEmpty ||
+                          _endDateTextFieldController.text.isEmpty) {
+                        showSnackBar(
+                          context: context,
+                          message: "Please fill out all required fields",
+                          backgroundColor: redColor,
                         );
                       } else {
-                        BlocProvider.of<EducationBloc>(context).add(
-                          CreateEducationEvent(
-                            school: _schoolTextFieldController.text,
-                            degree: _degreeTextFieldController.text,
-                            fieldOfStudy: _fieldOfStudyTextFieldController.text,
-                            startDate: _startDateTextFieldController.text,
-                            endDate: _endDateTextFieldController.text,
-                            grade: _gradeTextFieldController.text,
-                            activitiesAndSocieties:
-                                _activitiesTextFieldController.text,
-                            description: _descriptionTextFieldController.text,
-                          ),
-                        );
+                        if (widget.isUpdate) {
+                          BlocProvider.of<EducationBloc>(context).add(
+                            UpdateEducationEvent(
+                              id: widget.id!,
+                              school: _schoolTextFieldController.text,
+                              degree: _degreeTextFieldController.text,
+                              fieldOfStudy:
+                                  _fieldOfStudyTextFieldController.text,
+                              startDate: _startDateTextFieldController.text,
+                              endDate: _endDateTextFieldController.text,
+                              grade: _gradeTextFieldController.text,
+                              activitiesAndSocieties:
+                                  _activitiesTextFieldController.text,
+                              description: _descriptionTextFieldController.text,
+                            ),
+                          );
+                        } else {
+                          BlocProvider.of<EducationBloc>(context).add(
+                            CreateEducationEvent(
+                              school: _schoolTextFieldController.text,
+                              degree: _degreeTextFieldController.text,
+                              fieldOfStudy:
+                                  _fieldOfStudyTextFieldController.text,
+                              startDate: _startDateTextFieldController.text,
+                              endDate: _endDateTextFieldController.text,
+                              grade: _gradeTextFieldController.text,
+                              activitiesAndSocieties:
+                                  _activitiesTextFieldController.text,
+                              description: _descriptionTextFieldController.text,
+                            ),
+                          );
+                        }
                       }
                     }
                   },

@@ -1,4 +1,4 @@
-import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/edcation_remote_data.dart';
+import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/edcation_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/models/education_model.dart';
 import 'package:cv_frontend/features/profil/domain/repository/education_repository.dart';
 import 'package:dartz/dartz.dart';

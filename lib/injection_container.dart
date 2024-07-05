@@ -4,13 +4,19 @@ import 'package:cv_frontend/features/authentication/data/repository/user_reposit
 import 'package:cv_frontend/features/authentication/domain/repository/user_repository.dart';
 import 'package:cv_frontend/features/authentication/domain/usecases/sign_up_user_use_case.dart';
 import 'package:cv_frontend/features/authentication/presentation/bloc/auth_bloc.dart';
-import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/edcation_remote_data.dart';
+import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/edcation_remote_data_source.dart';
+import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/language_remote_data_source.dart';
+import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/project_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/summary_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/work_experience_data_source.dart';
 import 'package:cv_frontend/features/profil/data/repository/education_repository_impl.dart';
+import 'package:cv_frontend/features/profil/data/repository/language_repository_impl.dart';
+import 'package:cv_frontend/features/profil/data/repository/project_repository_impl.dart';
 import 'package:cv_frontend/features/profil/data/repository/summary_repository_impl.dart';
 import 'package:cv_frontend/features/profil/data/repository/work_experience_repository_impl.dart';
 import 'package:cv_frontend/features/profil/domain/repository/education_repository.dart';
+import 'package:cv_frontend/features/profil/domain/repository/languages_repository.dart';
+import 'package:cv_frontend/features/profil/domain/repository/project_repository.dart';
 import 'package:cv_frontend/features/profil/domain/repository/summarry_repository.dart';
 import 'package:cv_frontend/features/profil/domain/repository/work_experience_repository.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/education_use_cases/create_education_use_case.dart';
@@ -18,6 +24,16 @@ import 'package:cv_frontend/features/profil/domain/usecases/education_use_cases/
 import 'package:cv_frontend/features/profil/domain/usecases/education_use_cases/get_all_education_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/education_use_cases/get_single_education_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/education_use_cases/update_education_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/DeleteLanguageUseCase.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/GetAllLanguagesUseCase.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/GetSingleLanguageUseCase.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/UpdateLanguageUseCase.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/create_language_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/project_use_cases/create_project_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/project_use_cases/delete_project_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/project_use_cases/get_all_project_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/project_use_cases/get_single_project_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/project_use_cases/update_project_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/summary_use_cases/create_or_update_sammary_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/summary_use_cases/get_summary_use_cases.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/work_experience_use_cases/create_work_experience_use_case.dart';
@@ -26,6 +42,8 @@ import 'package:cv_frontend/features/profil/domain/usecases/work_experience_use_
 import 'package:cv_frontend/features/profil/domain/usecases/work_experience_use_cases/get_single_work_experiance.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/work_experience_use_cases/update_work_experince_use_case.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/education_bloc/education_bloc.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/languages_bloc/language_bloc.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/project_bloc/project_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -173,6 +191,70 @@ Future<void> initializeDependencies() async {
 // Data Sources
   sl.registerLazySingleton<EducationDataSource>(
     () => EducationDataSourceImpl(
+      client: sl(),
+    ),
+  );
+/* ----------------------------------------------------- */
+/*
+ * profile/project
+ */
+/* ----------------------------------------------------- */
+  // Bloc
+  sl.registerFactory(() => ProjectBloc(
+        createProjectUseCase: sl(),
+        getAllProjectsUseCase: sl(),
+        getSingleProjectUseCase: sl(),
+        updateProjectUseCase: sl(),
+        deleteProjectUseCase: sl(),
+      ));
+
+// Use Cases
+  sl.registerLazySingleton(() => CreateProjectUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetAllProjectsUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetSingleProjectUseCase(repository: sl()));
+  sl.registerLazySingleton(() => UpdateProjectUseCase(repository: sl()));
+  sl.registerLazySingleton(() => DeleteProjectUseCase(repository: sl()));
+
+// Repositories
+  sl.registerLazySingleton<ProjectRepository>(
+    () => ProjectRepositoryImpl(dataSource: sl(), networkInfo: sl()),
+  );
+
+// Data Sources
+  sl.registerLazySingleton<ProjectDataSource>(
+    () => ProjectDataSourceImpl(
+      client: sl(),
+    ),
+  );
+/* ----------------------------------------------------- */
+/*
+ * profile/language
+ */
+/* ----------------------------------------------------- */
+  // Bloc
+  sl.registerFactory(() => LanguageBloc(
+        createLanguageUseCase: sl(),
+        getAllLanguagesUseCase: sl(),
+        getSingleLanguageUseCase: sl(),
+        updateLanguageUseCase: sl(),
+        deleteLanguageUseCase: sl(),
+      ));
+
+// Use Cases
+  sl.registerLazySingleton(() => CreateLanguageUseCase(languageRepository: sl()));
+  sl.registerLazySingleton(() => GetAllLanguagesUseCase(languageRepository: sl()));
+  sl.registerLazySingleton(() => GetSingleLanguageUseCase(languageRepository: sl()));
+  sl.registerLazySingleton(() => UpdateLanguageUseCase(languageRepository: sl()));
+  sl.registerLazySingleton(() => DeleteLanguageUseCase(languageRepository: sl()));
+
+// Repositories
+  sl.registerLazySingleton<LanguageRepository>(
+    () => LanguageRepositoryImpl(languageDataSource: sl(), networkInfo: sl()),
+  );
+
+// Data Sources
+  sl.registerLazySingleton<LanguageDataSource>(
+    () => LanguageDataSourceImpl(
       client: sl(),
     ),
   );
