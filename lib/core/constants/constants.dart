@@ -1,7 +1,7 @@
 const String url = "10.0.2.2:5000";
 
 const String token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjVkZTExNTEwYzU4YjUzZGQ4ZTQ0YjciLCJpYXQiOjE3MjAwOTU2MjQsImV4cCI6MTcyMDE4MjAyNH0.c5eDShi5CvnqbnvH-NxZ0zX4hoj1f1YjozB6HDfkiwI';
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjVkZTExNTEwYzU4YjUzZGQ4ZTQ0YjciLCJpYXQiOjE3MjAzNjc3OTIsImV4cCI6MTcyMDQ1NDE5Mn0.LI3572ZKzPn3gIkDyfiRhqhyw9r2KZzMQdNBRX3E-As';
 
 //auth :
 const String loginBaseUrl = '/api/auth/login';
@@ -33,3 +33,5 @@ const String getAllLanguageUrl = '/api/language/languages';
 const String getSingleLanguageUrl = '/api/language/language';
 const String updateLanguageUrl = '/api/language/update';
 const String deleteLanguageUrl = '/api/language/delete';
+//Skills :
+const String skillsUrl = '/api/skill/skills';

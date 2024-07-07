@@ -9,12 +9,14 @@ import 'package:cv_frontend/features/onboarding/presentation/on_boarding_screen.
 import 'package:cv_frontend/features/profil/presentation/bloc/education_bloc/education_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/languages_bloc/language_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/project_bloc/project_bloc.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/skill_bloc/skill_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/education_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/languages_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/main_profil_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/project_screen.dart';
+import 'package:cv_frontend/features/profil/presentation/pages/skills_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/summary_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/work_experience_screen.dart';
 import 'package:cv_frontend/injection_container.dart';
@@ -35,6 +37,7 @@ const String workExperienceScreen = '/workExperienceScreen';
 const String educationScreen = '/educationScreen';
 const String projectScreen = '/projectScreen';
 const String languagesScreen = '/languagesScreen';
+const String skillsScreen = '/skillsScreen';
 
 Route<dynamic> controller(RouteSettings settings) {
   switch (settings.name) {
@@ -86,6 +89,13 @@ Route<dynamic> controller(RouteSettings settings) {
         builder: (context) => BlocProvider(
           create: (context) => sl<SummaryBloc>(),
           child: const SummaryScreen(),
+        ),
+      );
+    case skillsScreen:
+      return MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (context) => sl<SkillBloc>()..add(GetSkillsEvent()),
+          child: const SkillsScreen(),
         ),
       );
     case projectScreen:

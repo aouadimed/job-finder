@@ -9,6 +9,7 @@ import 'package:cv_frontend/features/profil/presentation/bloc/project_bloc/proje
 import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/utils/navigation.dart';
+import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_expanded_cards/common_card.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_expanded_cards/education_card.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_expanded_cards/language_card.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_expanded_cards/projects_card.dart';
@@ -31,8 +32,6 @@ class _ProfilScreenState extends State<ProfilScreen> {
   List<EducationsModel> educations = [];
   List<ProjectsModel> projects = [];
   List<LanguageModel> languages = [];
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -230,18 +229,29 @@ class _ProfilScreenState extends State<ProfilScreen> {
                                   color: primaryColor),
                             );
                           } else {
-                            return LanguageCard(
-                              onAddPressed: () {
-                                goToLanguageScreen(context, false, "");
-                              },
-                              language: languages,
-                              onEditPressed: (String value) {
-                                goToLanguageScreen(context, true, value);
-                              },
+                            return Column(
+                              children: [
+                                LanguageCard(
+                                  onAddPressed: () {
+                                    goToLanguageScreen(context, false, "");
+                                  },
+                                  language: languages,
+                                  onEditPressed: (String value) {
+                                    goToLanguageScreen(context, true, value);
+                                  },
+                                ),
+                                const SizedBox(height: 20),
+                                CommonCard(
+                                    onCardPressed: () {
+                                      goToSkillScreen(context);
+                                    },
+                                    headerTitle: "Skills",
+                                    headerIcon: Icons.pie_chart_sharp)
+                              ],
                             );
                           }
                         },
-                      )
+                      ),
                     ],
                   ),
                 ),
