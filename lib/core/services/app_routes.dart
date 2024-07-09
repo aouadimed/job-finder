@@ -4,6 +4,7 @@ import 'package:cv_frontend/features/authentication/presentation/pages/account_s
 import 'package:cv_frontend/features/authentication/presentation/pages/account_setup/pages/expertise_picking.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/login_screen.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/register_screen.dart';
+import 'package:cv_frontend/features/bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:cv_frontend/features/home/presentation/pages/home_screen.dart';
 import 'package:cv_frontend/features/onboarding/presentation/on_boarding_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/education_bloc/education_bloc.dart';
@@ -38,9 +39,13 @@ const String educationScreen = '/educationScreen';
 const String projectScreen = '/projectScreen';
 const String languagesScreen = '/languagesScreen';
 const String skillsScreen = '/skillsScreen';
-
+const String navBar = '/navBar';
 Route<dynamic> controller(RouteSettings settings) {
   switch (settings.name) {
+    case navBar:
+      return MaterialPageRoute(
+        builder: (context) => const BottomNavBar(),
+      );
     case boardingScreen:
       return MaterialPageRoute(
         builder: (context) => const OnBoardingScreen(),

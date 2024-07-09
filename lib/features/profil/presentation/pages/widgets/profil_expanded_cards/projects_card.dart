@@ -8,11 +8,15 @@ class ProjectCard extends StatelessWidget {
   final List<ProjectsModel> project;
   final VoidCallback onAddPressed;
   final Function(String) onEditPressed;
+    final bool isExpanded;
+  final ValueChanged<bool> onExpansionChanged;
+    final GlobalKey sectionKey; 
+
   const ProjectCard(
       {super.key,
       required this.onAddPressed,
       required this.onEditPressed,
-      required this.project});
+      required this.project, required this.isExpanded, required this.onExpansionChanged, required this.sectionKey});
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +69,7 @@ class ProjectCard extends StatelessWidget {
             ),
           ],
         );
-      },
+      }, isExpanded: isExpanded, onExpansionChanged: onExpansionChanged, sectionKey: sectionKey,
     );
   }
 }

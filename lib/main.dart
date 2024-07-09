@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       useInheritedMediaQuery: true,
-      designSize: const Size(375, 812),
+      designSize: const Size(428, 926),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) => MaterialApp(
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         title: 'Job Finder',
         theme: theme(),
         onGenerateRoute: route.controller,
-        initialRoute: route.profilScreen
+        initialRoute: route.navBar
       ),
     );
   }

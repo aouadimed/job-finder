@@ -9,11 +9,17 @@ class LanguageCard extends StatelessWidget {
   final List<LanguageModel> language;
   final VoidCallback onAddPressed;
   final Function(String) onEditPressed;
+  final bool isExpanded;
+  final ValueChanged<bool> onExpansionChanged;
+    final GlobalKey sectionKey; 
+
   const LanguageCard(
       {super.key,
       required this.onAddPressed,
       required this.onEditPressed,
-      required this.language});
+      required this.language,
+      required this.isExpanded,
+      required this.onExpansionChanged, required this.sectionKey});
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +64,8 @@ class LanguageCard extends StatelessWidget {
           ],
         );
       },
+      isExpanded: isExpanded,
+      onExpansionChanged: onExpansionChanged, sectionKey: sectionKey,
     );
   }
 }

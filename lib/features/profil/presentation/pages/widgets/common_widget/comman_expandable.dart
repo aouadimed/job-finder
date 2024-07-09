@@ -8,6 +8,9 @@ class CommonExpandableList<T> extends StatefulWidget {
   final Function(String) editIconOnPressed;
   final Widget Function(T) itemBuilder;
   final IconData headerIcon;
+  final bool isExpanded;
+  final Function(bool) onExpansionChanged;
+  final GlobalKey sectionKey;
 
   const CommonExpandableList({
     Key? key,
@@ -17,6 +20,9 @@ class CommonExpandableList<T> extends StatefulWidget {
     required this.editIconOnPressed,
     required this.itemBuilder,
     required this.headerIcon,
+    required this.isExpanded,
+    required this.onExpansionChanged,
+    required this.sectionKey,
   }) : super(key: key);
 
   @override
@@ -24,12 +30,11 @@ class CommonExpandableList<T> extends StatefulWidget {
 }
 
 class _CommonExpandableListState<T> extends State<CommonExpandableList<T>> {
-  bool _isExpanded = false;
-
   @override
   Widget build(BuildContext context) {
     bool hasItems = widget.items.isNotEmpty;
     return Card(
+      key: widget.sectionKey,
       elevation: 0,
       color: Colors.white,
       shape: RoundedRectangleBorder(
@@ -42,7 +47,7 @@ class _CommonExpandableListState<T> extends State<CommonExpandableList<T>> {
         expansionCallback: (int index, bool isExpanded) {
           if (hasItems) {
             setState(() {
-              _isExpanded = !isExpanded;
+              widget.onExpansionChanged(!isExpanded);
             });
           }
         },
@@ -55,12 +60,12 @@ class _CommonExpandableListState<T> extends State<CommonExpandableList<T>> {
                 onTap: () {
                   if (hasItems) {
                     setState(() {
-                      _isExpanded = !_isExpanded;
+                      widget.onExpansionChanged(!widget.isExpanded);
                     });
                   }
                 },
                 child: Container(
-                  height: 56, // Set a fixed height for the header
+                  height: 56,
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Row(
                     children: [
@@ -79,7 +84,7 @@ class _CommonExpandableListState<T> extends State<CommonExpandableList<T>> {
                       Visibility(
                         visible: hasItems,
                         child: Icon(
-                          _isExpanded
+                          widget.isExpanded
                               ? Icons.keyboard_arrow_up
                               : Icons.keyboard_arrow_down,
                           color: greyColor,
@@ -109,7 +114,7 @@ class _CommonExpandableListState<T> extends State<CommonExpandableList<T>> {
                 }).toList(),
               ),
             ),
-            isExpanded: _isExpanded,
+            isExpanded: widget.isExpanded,
             canTapOnHeader: true,
           ),
         ],

@@ -17,6 +17,7 @@ import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_ex
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_expanded_cards/work_experience_card.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfilScreen extends StatefulWidget {
@@ -32,6 +33,12 @@ class _ProfilScreenState extends State<ProfilScreen> {
   List<EducationsModel> educations = [];
   List<ProjectsModel> projects = [];
   List<LanguageModel> languages = [];
+  String? expandedSection;
+  GlobalKey educationKey = GlobalKey();
+  GlobalKey workExperienceKey = GlobalKey();
+  GlobalKey languageKey = GlobalKey();
+  GlobalKey projectKey = GlobalKey();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -77,13 +84,12 @@ class _ProfilScreenState extends State<ProfilScreen> {
       child: Scaffold(
         appBar: const GeneralAppBar(
           titleText: "Profile",
-          logo: AssetImage(
-            'assets/images/logo.webp',
-          ),
+          logo: AssetImage('assets/images/logo.webp'),
           rightIcon: Icons.settings_outlined,
         ),
-        body: SingleChildScrollView(
-          child: SafeArea(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            controller: _scrollController,
             child: Column(
               children: [
                 Padding(
@@ -174,6 +180,15 @@ class _ProfilScreenState extends State<ProfilScreen> {
                               onEditPressed: (String value) {
                                 goToWorkExperienceScreen(context, true, value);
                               },
+                              isExpanded: expandedSection == 'work_experience',
+                              onExpansionChanged: (bool value) {
+                                setState(() {
+                                  expandedSection =
+                                      value ? 'work_experience' : null;
+                                });
+                                if (value) _scrollToSection(workExperienceKey);
+                              },
+                              sectionKey: workExperienceKey,
                             );
                           }
                         },
@@ -195,6 +210,14 @@ class _ProfilScreenState extends State<ProfilScreen> {
                               onEditPressed: (String value) {
                                 goToEducationScreen(context, true, value);
                               },
+                              isExpanded: expandedSection == 'education',
+                              onExpansionChanged: (bool value) {
+                                setState(() {
+                                  expandedSection = value ? 'education' : null;
+                                });
+                                if (value) _scrollToSection(educationKey);
+                              },
+                              sectionKey: educationKey,
                             );
                           }
                         },
@@ -216,6 +239,14 @@ class _ProfilScreenState extends State<ProfilScreen> {
                               onEditPressed: (String value) {
                                 goToProjectScreen(context, true, value);
                               },
+                              isExpanded: expandedSection == 'projects',
+                              onExpansionChanged: (bool value) {
+                                setState(() {
+                                  expandedSection = value ? 'projects' : null;
+                                });
+                                if (value) _scrollToSection(projectKey);
+                              },
+                              sectionKey: projectKey,
                             );
                           }
                         },
@@ -239,14 +270,24 @@ class _ProfilScreenState extends State<ProfilScreen> {
                                   onEditPressed: (String value) {
                                     goToLanguageScreen(context, true, value);
                                   },
+                                  isExpanded: expandedSection == 'languages',
+                                  onExpansionChanged: (bool value) {
+                                    setState(() {
+                                      expandedSection =
+                                          value ? 'languages' : null;
+                                    });
+                                    if (value) _scrollToSection(languageKey);
+                                  },
+                                  sectionKey: languageKey,
                                 ),
                                 const SizedBox(height: 20),
                                 CommonCard(
-                                    onCardPressed: () {
-                                      goToSkillScreen(context);
-                                    },
-                                    headerTitle: "Skills",
-                                    headerIcon: Icons.pie_chart_sharp)
+                                  onCardPressed: () {
+                                    goToSkillScreen(context);
+                                  },
+                                  headerTitle: "Skills",
+                                  headerIcon: Icons.pie_chart_sharp,
+                                ),
                               ],
                             );
                           }
@@ -261,5 +302,33 @@ class _ProfilScreenState extends State<ProfilScreen> {
         ),
       ),
     );
+  }
+
+  void _scrollToSection(GlobalKey key) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final renderObject = key.currentContext?.findRenderObject();
+      if (renderObject is RenderBox) {
+        final RenderBox box = renderObject;
+        final Offset position = box.localToGlobal(Offset.zero);
+        final double offset = position.dy;
+        final double screenHeight = MediaQuery.of(context).size.height;
+        final double itemHeight = box.size.height;
+
+        if (offset + itemHeight > screenHeight) {
+          _scrollController.animateTo(
+            _scrollController.offset +
+                (offset + itemHeight - screenHeight + 16),
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        } else {
+          _scrollController.animateTo(
+            _scrollController.offset + offset - 100,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        }
+      }
+    });
   }
 }

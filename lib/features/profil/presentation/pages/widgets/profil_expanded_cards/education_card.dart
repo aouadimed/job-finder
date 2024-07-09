@@ -8,16 +8,23 @@ class EducationWidget extends StatelessWidget {
   final List<EducationsModel> education;
   final VoidCallback onAddPressed;
   final Function(String) onEditPressed;
+  final bool isExpanded;
+  final ValueChanged<bool> onExpansionChanged;
+  final GlobalKey sectionKey;
 
   const EducationWidget({
     Key? key,
     required this.education,
     required this.onAddPressed,
     required this.onEditPressed,
+    required this.isExpanded,
+    required this.onExpansionChanged,
+    required this.sectionKey,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     return CommonExpandableList<EducationsModel>(
       iconOnPressed: onAddPressed,
       items: education,
@@ -65,6 +72,9 @@ class EducationWidget extends StatelessWidget {
           ],
         );
       },
+      isExpanded: isExpanded,
+      onExpansionChanged: onExpansionChanged,
+      sectionKey: sectionKey,
     );
   }
 }

@@ -29,9 +29,10 @@ class JobCard extends StatelessWidget {
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
+          side: BorderSide(width: 1, color: Colors.grey.shade400),
         ),
         color: whiteColor,
-        elevation: 5,
+        elevation: 0,
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(

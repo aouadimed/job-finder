@@ -77,3 +77,7 @@ void goToSkillScreen(BuildContext context) async {
     skillsScreen,
   );
 }
+
+
+
+

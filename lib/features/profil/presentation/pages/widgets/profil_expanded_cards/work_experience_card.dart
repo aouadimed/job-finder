@@ -8,12 +8,17 @@ class WorkExperienceWidget extends StatelessWidget {
   final List<WorkExperiencesModel> experiences;
   final VoidCallback onAddPressed;
   final Function(String) onEditPressed;
+  final bool isExpanded;
+  final ValueChanged<bool> onExpansionChanged;
+  final GlobalKey sectionKey; 
 
   const WorkExperienceWidget({
     Key? key,
     required this.experiences,
     required this.onAddPressed,
     required this.onEditPressed,
+    required this.isExpanded,
+    required this.onExpansionChanged, required this.sectionKey,
   }) : super(key: key);
 
   @override
@@ -66,6 +71,8 @@ class WorkExperienceWidget extends StatelessWidget {
           ],
         );
       },
+      isExpanded: isExpanded,
+      onExpansionChanged: onExpansionChanged, sectionKey: sectionKey,
     );
   }
 }
