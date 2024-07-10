@@ -60,6 +60,15 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
   DateTime? _startDate;
   DateTime? _endDate;
 
+  late FocusNode jobTitleFocusNode;
+  late FocusNode empTypeFocusNode;
+  late FocusNode companyNameFocusNode;
+  late FocusNode locationFocusNode;
+  late FocusNode locationTypeFocusNode;
+  late FocusNode startDateFocusNode;
+  late FocusNode endDateFocusNode;
+  late FocusNode descriptionFocusNode;
+
   void validateDates() {
     if (_startDate != null && _endDate != null) {
       if (_endDate!.isBefore(_startDate!)) {
@@ -85,6 +94,28 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
         selectedLocationTypeIndex == -1
             ? "Please select"
             : locationTypes[selectedLocationTypeIndex];
+
+    jobTitleFocusNode = FocusNode();
+    empTypeFocusNode = FocusNode();
+    companyNameFocusNode = FocusNode();
+    locationFocusNode = FocusNode();
+    locationTypeFocusNode = FocusNode();
+    startDateFocusNode = FocusNode();
+    endDateFocusNode = FocusNode();
+    descriptionFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    jobTitleFocusNode.dispose();
+    empTypeFocusNode.dispose();
+    companyNameFocusNode.dispose();
+    locationFocusNode.dispose();
+    locationTypeFocusNode.dispose();
+    startDateFocusNode.dispose();
+    endDateFocusNode.dispose();
+    descriptionFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -98,14 +129,22 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
             child: Column(
               children: [
                 CommanInputField(
-                    controller: widget.jobTitleTextFieldController,
-                    hint: 'Ex: Web Designer',
-                    title: 'Job title*'),
+                  controller: widget.jobTitleTextFieldController,
+                  hint: 'Ex: Web Designer',
+                  title: 'Job title*',
+                  focusNode: jobTitleFocusNode,
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(empTypeFocusNode);
+                  },
+                ),
                 const SizedBox(height: 20),
                 CommanInputField(
                   controller: widget.empTypeTextFieldController,
                   hint: 'Please select',
                   hintColor: darkColor,
+                  focusNode: empTypeFocusNode,
+                  textInputAction: TextInputAction.next,
                   onTap: () async {
                     String? selectedType = await showModalBottomSheet<String>(
                       context: context,
@@ -135,17 +174,32 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
                   suffixIcon: Icons.keyboard_arrow_down_sharp,
                   title: 'Emploment Type',
                   readOnly: true,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(companyNameFocusNode);
+                  },
                 ),
                 const SizedBox(height: 20),
                 CommanInputField(
-                    controller: widget.companyNameTextFieldController,
-                    hint: 'Ex: Pinterest',
-                    title: 'Company name*'),
+                  controller: widget.companyNameTextFieldController,
+                  hint: 'Ex: Pinterest',
+                  title: 'Company name*',
+                  focusNode: companyNameFocusNode,
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(locationFocusNode);
+                  },
+                ),
                 const SizedBox(height: 20),
                 CommanInputField(
-                    controller: widget.locationTextFieldController,
-                    hint: 'Ex: Beja, Tunisia',
-                    title: 'Location'),
+                  controller: widget.locationTextFieldController,
+                  hint: 'Ex: Beja, Tunisia',
+                  title: 'Location',
+                  focusNode: locationFocusNode,
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(locationTypeFocusNode);
+                  },
+                ),
                 const SizedBox(height: 20),
                 CommanInputField(
                   controller: widget.locationTypeTextFieldController,
@@ -153,6 +207,9 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
                   hintColor: darkColor,
                   suffixIcon: Icons.keyboard_arrow_down_sharp,
                   title: 'Location Type',
+                  readOnly: true,
+                  focusNode: locationTypeFocusNode,
+                  textInputAction: TextInputAction.next,
                   onTap: () async {
                     String? selectedType = await showModalBottomSheet<String>(
                       context: context,
@@ -178,7 +235,9 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
                       });
                     }
                   },
-                  readOnly: true,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(startDateFocusNode);
+                  },
                 ),
                 const SizedBox(height: 20),
                 Row(
@@ -195,28 +254,29 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
                     ),
                     const SizedBox(width: 15),
                     Switch(
-                        value: ifStillWorking,
-                        thumbColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.disabled)) {
-                            return whiteColor;
-                          }
+                      value: ifStillWorking,
+                      thumbColor: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                        if (states.contains(MaterialState.disabled)) {
                           return whiteColor;
-                        }),
-                        trackColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.selected)) {
-                            return primaryColor;
-                          }
-                          return greyColor.withOpacity(0.5);
-                        }),
-                        trackOutlineWidth: MaterialStateProperty.all(0),
-                        onChanged: (value) {
-                          setState(() {
-                            ifStillWorking = value;
-                            widget.ifStillWorkingChanged(value);
-                          });
-                        })
+                        }
+                        return whiteColor;
+                      }),
+                      trackColor: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                        if (states.contains(MaterialState.selected)) {
+                          return primaryColor;
+                        }
+                        return greyColor.withOpacity(0.5);
+                      }),
+                      trackOutlineWidth: MaterialStateProperty.all(0),
+                      onChanged: (value) {
+                        setState(() {
+                          ifStillWorking = value;
+                          widget.ifStillWorkingChanged(value);
+                        });
+                      },
+                    )
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -230,6 +290,8 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
                         suffixIcon: Icons.keyboard_arrow_down_sharp,
                         title: 'From',
                         readOnly: true,
+                        focusNode: startDateFocusNode,
+                        textInputAction: TextInputAction.next,
                         onTap: () async {
                           var selectedDate =
                               await showModalBottomSheet<Map<String, int>>(
@@ -262,6 +324,9 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
                             }
                           }
                         },
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(endDateFocusNode);
+                        },
                       ),
                     ),
                     const SizedBox(width: 20),
@@ -275,6 +340,8 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
                         suffixIcon: Icons.keyboard_arrow_down_sharp,
                         title: 'To',
                         readOnly: true,
+                        focusNode: endDateFocusNode,
+                        textInputAction: TextInputAction.next,
                         onTap: () async {
                           var selectedDate =
                               await showModalBottomSheet<Map<String, int>>(
@@ -319,6 +386,7 @@ class _WorkExperienceFormState extends State<WorkExperienceForm> {
                   textInputType: TextInputType.multiline,
                   obscureText: false,
                   maxLines: 5,
+                  focusNode: descriptionFocusNode,
                 ),
               ],
             ),

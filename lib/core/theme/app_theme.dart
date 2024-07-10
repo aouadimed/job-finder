@@ -1,14 +1,23 @@
+import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 ThemeData theme() {
   return ThemeData(
-    useMaterial3: true,
-    scaffoldBackgroundColor: Colors.white,
-    primaryColor: const Color.fromRGBO(65, 102, 245, 1),
-    fontFamily: 'Poppins',
-    appBarTheme: const AppBarTheme(),
-  );
+      useMaterial3: true,
+      scaffoldBackgroundColor: Colors.white,
+      primaryColor: const Color.fromRGBO(65, 102, 245, 1),
+      fontFamily: 'Poppins',
+      appBarTheme: const AppBarTheme(),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: Colors.black, // Button text color
+        ),
+      ),
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: primaryColor,
+        background: lightColor,
+      ));
 }
 
 AppBarTheme appBarTheme() {

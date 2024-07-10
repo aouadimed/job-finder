@@ -43,22 +43,47 @@ class ProjectForm extends StatefulWidget {
   });
 
   @override
-  State<ProjectForm> createState() => _ProejctFormState();
+  State<ProjectForm> createState() => _ProjectFormState();
 }
 
-class _ProejctFormState extends State<ProjectForm> {
+class _ProjectFormState extends State<ProjectForm> {
   String selectedWorkExperienceId = '';
   bool ifStillWorkingOnIt = false;
   DateTime? _startDate;
   DateTime? _endDate;
   List<WorkExperiencesModel> experiences = [];
 
+  late FocusNode projectNameFocusNode;
+  late FocusNode associatedWithFocusNode;
+  late FocusNode startDateFocusNode;
+  late FocusNode endDateFocusNode;
+  late FocusNode descriptionFocusNode;
+  late FocusNode projectUrlFocusNode;
+
   @override
   void initState() {
     super.initState();
     ifStillWorkingOnIt = widget.initialIfStillWorkingOnIt;
     selectedWorkExperienceId = widget.initialWorkExperienceId;
-   _fetchWorkExperiences();
+    _fetchWorkExperiences();
+
+    projectNameFocusNode = FocusNode();
+    associatedWithFocusNode = FocusNode();
+    startDateFocusNode = FocusNode();
+    endDateFocusNode = FocusNode();
+    descriptionFocusNode = FocusNode();
+    projectUrlFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    projectNameFocusNode.dispose();
+    associatedWithFocusNode.dispose();
+    startDateFocusNode.dispose();
+    endDateFocusNode.dispose();
+    descriptionFocusNode.dispose();
+    projectUrlFocusNode.dispose();
+    super.dispose();
   }
 
   void _fetchWorkExperiences() {
@@ -96,6 +121,11 @@ class _ProejctFormState extends State<ProjectForm> {
                 controller: widget.projectNameTextFieldController,
                 hint: '',
                 title: 'Project name*',
+                focusNode: projectNameFocusNode,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(startDateFocusNode);
+                },
               ),
               const SizedBox(height: 20),
               CommonSwitch(
@@ -119,6 +149,8 @@ class _ProejctFormState extends State<ProjectForm> {
                       suffixIcon: Icons.keyboard_arrow_down_sharp,
                       title: 'From',
                       readOnly: true,
+                      focusNode: startDateFocusNode,
+                      textInputAction: TextInputAction.next,
                       onTap: () async {
                         var selectedDate =
                             await showModalBottomSheet<Map<String, int>>(
@@ -150,6 +182,9 @@ class _ProejctFormState extends State<ProjectForm> {
                           }
                         }
                       },
+                      onFieldSubmitted: (_) {
+                        FocusScope.of(context).requestFocus(endDateFocusNode);
+                      },
                     ),
                   ),
                   const SizedBox(width: 20),
@@ -163,6 +198,8 @@ class _ProejctFormState extends State<ProjectForm> {
                       suffixIcon: Icons.keyboard_arrow_down_sharp,
                       title: 'To',
                       readOnly: true,
+                      focusNode: endDateFocusNode,
+                      textInputAction: TextInputAction.next,
                       onTap: () async {
                         var selectedDate =
                             await showModalBottomSheet<Map<String, int>>(
@@ -194,6 +231,9 @@ class _ProejctFormState extends State<ProjectForm> {
                           }
                         }
                       },
+                      onFieldSubmitted: (_) {
+                        FocusScope.of(context).requestFocus(associatedWithFocusNode);
+                      },
                     ),
                   ),
                 ],
@@ -216,6 +256,8 @@ class _ProejctFormState extends State<ProjectForm> {
                       hintColor: darkColor,
                       suffixIcon: Icons.keyboard_arrow_down_sharp,
                       title: 'Associated with',
+                      focusNode: associatedWithFocusNode,
+                      textInputAction: TextInputAction.next,
                       onTap: () async {
                         if (experiences.isEmpty) {
                           print('Experiences list is empty');
@@ -251,6 +293,9 @@ class _ProejctFormState extends State<ProjectForm> {
                         }
                       },
                       readOnly: true,
+                      onFieldSubmitted: (_) {
+                        FocusScope.of(context).requestFocus(descriptionFocusNode);
+                      },
                     );
                   },
                 ),
@@ -263,13 +308,20 @@ class _ProejctFormState extends State<ProjectForm> {
                 textInputType: TextInputType.multiline,
                 obscureText: false,
                 maxLines: 5,
+                focusNode: descriptionFocusNode,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(projectUrlFocusNode);
+                },
               ),
               const SizedBox(height: 16.0),
               CommanInputField(
                 controller: widget.projectUrlTextFieldController,
                 hint: 'EX: www.yourdomain.com/Project URL/',
                 title: 'Project URL',
-              )
+                focusNode: projectUrlFocusNode,
+                textInputAction: TextInputAction.done,
+              ),
             ],
           ),
         ),

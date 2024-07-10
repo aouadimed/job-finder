@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         title: 'Job Finder',
         theme: theme(),
         onGenerateRoute: route.controller,
-        initialRoute: route.navBar
+        initialRoute: route.boardingScreen
       ),
     );
   }

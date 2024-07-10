@@ -5,7 +5,6 @@ import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-
 class EducationForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController schoolTextFieldController;
@@ -40,6 +39,43 @@ class EducationForm extends StatefulWidget {
 
 class _EducationFormState extends State<EducationForm> {
   DateTime? _startDate;
+  DateTime? _endDate;
+
+  late FocusNode schoolFocusNode;
+  late FocusNode degreeFocusNode;
+  late FocusNode fieldOfStudyFocusNode;
+  late FocusNode startDateFocusNode;
+  late FocusNode endDateFocusNode;
+  late FocusNode gradeFocusNode;
+  late FocusNode activitiesFocusNode;
+  late FocusNode descriptionFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+
+    schoolFocusNode = FocusNode();
+    degreeFocusNode = FocusNode();
+    fieldOfStudyFocusNode = FocusNode();
+    startDateFocusNode = FocusNode();
+    endDateFocusNode = FocusNode();
+    gradeFocusNode = FocusNode();
+    activitiesFocusNode = FocusNode();
+    descriptionFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    schoolFocusNode.dispose();
+    degreeFocusNode.dispose();
+    fieldOfStudyFocusNode.dispose();
+    startDateFocusNode.dispose();
+    endDateFocusNode.dispose();
+    gradeFocusNode.dispose();
+    activitiesFocusNode.dispose();
+    descriptionFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,18 +89,33 @@ class _EducationFormState extends State<EducationForm> {
               controller: widget.schoolTextFieldController,
               hint: 'Ex: Esprit University',
               title: 'School*',
+              focusNode: schoolFocusNode,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (_) {
+                FocusScope.of(context).requestFocus(degreeFocusNode);
+              },
             ),
             const SizedBox(height: 16),
             CommanInputField(
               controller: widget.degreeTextFieldController,
               hint: 'Ex: Bachelor\'s',
               title: 'Degree',
+              focusNode: degreeFocusNode,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (_) {
+                FocusScope.of(context).requestFocus(fieldOfStudyFocusNode);
+              },
             ),
             const SizedBox(height: 16),
             CommanInputField(
               controller: widget.fieldOfStudyTextFieldController,
               hint: 'Ex: Accounting',
               title: 'Field of study*',
+              focusNode: fieldOfStudyFocusNode,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (_) {
+                FocusScope.of(context).requestFocus(startDateFocusNode);
+              },
             ),
             const SizedBox(height: 16),
             CommanInputField(
@@ -74,6 +125,8 @@ class _EducationFormState extends State<EducationForm> {
               suffixIcon: Icons.keyboard_arrow_down_sharp,
               title: 'From',
               readOnly: true,
+              focusNode: startDateFocusNode,
+              textInputAction: TextInputAction.next,
               onTap: () async {
                 var selectedDate = await showModalBottomSheet<Map<String, int>>(
                   elevation: 0,
@@ -104,6 +157,9 @@ class _EducationFormState extends State<EducationForm> {
                   }
                 }
               },
+              onFieldSubmitted: (_) {
+                FocusScope.of(context).requestFocus(endDateFocusNode);
+              },
             ),
             const SizedBox(height: 16),
             CommanInputField(
@@ -114,6 +170,8 @@ class _EducationFormState extends State<EducationForm> {
               suffixIcon: Icons.keyboard_arrow_down_sharp,
               title: 'To',
               readOnly: true,
+              focusNode: endDateFocusNode,
+              textInputAction: TextInputAction.next,
               onTap: () async {
                 var selectedDate = await showModalBottomSheet<Map<String, int>>(
                   elevation: 0,
@@ -142,18 +200,31 @@ class _EducationFormState extends State<EducationForm> {
                   }
                 }
               },
+              onFieldSubmitted: (_) {
+                FocusScope.of(context).requestFocus(gradeFocusNode);
+              },
             ),
             const SizedBox(height: 16.0),
             CommanInputField(
               controller: widget.gradeTextFieldController,
               hint: '',
               title: 'Grade',
+              focusNode: gradeFocusNode,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (_) {
+                FocusScope.of(context).requestFocus(activitiesFocusNode);
+              },
             ),
             const SizedBox(height: 16.0),
             CommanInputField(
               controller: widget.activitiesTextFieldController,
               hint: 'Ex : IEEE, Tunivision, Volleyball',
               title: 'Activities and societies',
+              focusNode: activitiesFocusNode,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (_) {
+                FocusScope.of(context).requestFocus(descriptionFocusNode);
+              },
             ),
             const SizedBox(height: 16.0),
             CommanInputField(
@@ -163,6 +234,7 @@ class _EducationFormState extends State<EducationForm> {
               textInputType: TextInputType.multiline,
               obscureText: false,
               maxLines: 5,
+              focusNode: descriptionFocusNode,
             ),
           ],
         ),

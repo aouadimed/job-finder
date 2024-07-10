@@ -72,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       InkWell(
-                        onTap: () => {},
+                        onTap: () => {goToForgotPasswordScreen(context)},
                         child: Text(
                           "Forgot the password ?",
                           style: TextStyle(
@@ -120,5 +120,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void goToRegister(BuildContext context) {
     Navigator.pushNamed(context, registerScreen);
+  }
+
+  void goToForgotPasswordScreen(BuildContext context) {
+    Navigator.pushNamed(context, forgotPassword);
   }
 }

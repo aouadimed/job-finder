@@ -23,6 +23,7 @@ class SkillsChip extends StatelessWidget {
       children: skills.map((skill) {
         final bool isOldSkill = initialSkills.any((s) => s.id == skill.id);
         return Chip(
+          backgroundColor: whiteColor,
           label: Text(
             skill.skill!,
             style: TextStyle(

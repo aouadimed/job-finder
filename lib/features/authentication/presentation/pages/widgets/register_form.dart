@@ -6,11 +6,9 @@ import 'package:flutter/material.dart';
 class RegisterForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController usernameController;
-
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final void Function() registerAction;
-  
 
   const RegisterForm({
     Key? key,
@@ -20,12 +18,26 @@ class RegisterForm extends StatefulWidget {
     required this.usernameController,
     required this.registerAction,
   }) : super(key: key);
+
   @override
   State<RegisterForm> createState() => _RegisterFormState();
 }
 
 class _RegisterFormState extends State<RegisterForm> {
   bool _hidePassword = true;
+
+  final FocusNode _usernameFocusNode = FocusNode();
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _usernameFocusNode.dispose();
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -37,6 +49,11 @@ class _RegisterFormState extends State<RegisterForm> {
             hint: "Full Name",
             prefixIcon: const Icon(Icons.face, color: Colors.grey),
             textInputType: TextInputType.name,
+            textInputAction: TextInputAction.next,
+            focusNode: _usernameFocusNode,
+            onFieldSubmitted: (_) {
+              FocusScope.of(context).requestFocus(_emailFocusNode);
+            },
             validator: (value) {
               return FormValidator.validateUsername(value);
             },
@@ -47,6 +64,11 @@ class _RegisterFormState extends State<RegisterForm> {
             hint: "Email",
             prefixIcon: const Icon(Icons.email, color: Colors.grey),
             textInputType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.next,
+            focusNode: _emailFocusNode,
+            onFieldSubmitted: (_) {
+              FocusScope.of(context).requestFocus(_passwordFocusNode);
+            },
             validator: (value) {
               return FormValidator.validateEmail(value);
             },
@@ -67,14 +89,16 @@ class _RegisterFormState extends State<RegisterForm> {
                   ? const Icon(Icons.visibility_off)
                   : const Icon(Icons.visibility),
             ),
+            textInputAction: TextInputAction.done,
+            focusNode: _passwordFocusNode,
             validator: (value) {
               return FormValidator.validatePassword(value);
             },
           ),
           const SizedBox(height: 30),
           SizedBox(
-            width: MediaQuery.of(context).size.width, // Adjust width as desired
-            height: 50.0, // Adjust height as desired
+            width: MediaQuery.of(context).size.width,
+            height: 50.0,
             child: ElevatedButton(
               onPressed: widget.registerAction,
               style: ElevatedButton.styleFrom(

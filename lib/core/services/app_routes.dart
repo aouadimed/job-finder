@@ -5,6 +5,7 @@ import 'package:cv_frontend/features/authentication/presentation/pages/account_s
 import 'package:cv_frontend/features/authentication/presentation/pages/login_screen.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/register_screen.dart';
 import 'package:cv_frontend/features/bottom_nav_bar/bottom_nav_bar.dart';
+import 'package:cv_frontend/features/forgot_password/presentation/pages/forgot_password.dart';
 import 'package:cv_frontend/features/home/presentation/pages/home_screen.dart';
 import 'package:cv_frontend/features/onboarding/presentation/on_boarding_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/education_bloc/education_bloc.dart';
@@ -40,6 +41,8 @@ const String projectScreen = '/projectScreen';
 const String languagesScreen = '/languagesScreen';
 const String skillsScreen = '/skillsScreen';
 const String navBar = '/navBar';
+const String forgotPassword = '/forgotPassword';
+
 Route<dynamic> controller(RouteSettings settings) {
   switch (settings.name) {
     case navBar:
@@ -61,6 +64,10 @@ Route<dynamic> controller(RouteSettings settings) {
     case registerScreen:
       return MaterialPageRoute(
         builder: (context) => const RegisterScreen(),
+      );
+    case forgotPassword:
+      return MaterialPageRoute(
+        builder: (context) => const ForgotPassword(),
       );
     case profilScreen:
       return MaterialPageRoute(

@@ -4,6 +4,10 @@ import 'package:cv_frontend/features/authentication/data/repository/user_reposit
 import 'package:cv_frontend/features/authentication/domain/repository/user_repository.dart';
 import 'package:cv_frontend/features/authentication/domain/usecases/sign_up_user_use_case.dart';
 import 'package:cv_frontend/features/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:cv_frontend/features/forgot_password/data/repository/forgot_password_repository_impl.dart';
+import 'package:cv_frontend/features/forgot_password/domain/repository/forgot_password_repository.dart';
+import 'package:cv_frontend/features/forgot_password/domain/usecases/check_email_use_case.dart';
+import 'package:cv_frontend/features/forgot_password/presentation/bloc/forgot_password_bloc.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/edcation_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/language_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/project_remote_data_source.dart';
@@ -59,6 +63,7 @@ import 'package:http/http.dart' as http;
 
 import 'core/network/network_info.dart';
 import 'features/authentication/domain/usecases/login_user_use_case.dart';
+import 'features/forgot_password/data/data_source/forgot_password_remote_data_source.dart';
 
 final sl = GetIt.instance;
 
@@ -102,6 +107,33 @@ Future<void> initializeDependencies() async {
   // Data Sources
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(
+      client: sl(),
+    ),
+  );
+
+/* ----------------------------------------------------- */
+/*
+ * forgotPassword
+ */
+/* ----------------------------------------------------- */
+  // Bloc
+  sl.registerFactory(() => ForgotPasswordBloc(checkEmailUseCase:  sl(),      
+    ));
+
+// Use Cases
+  sl.registerLazySingleton(
+      () => CheckEmailUseCase(forgotPasswordRepository:  sl()));
+
+
+
+// Repositories
+  sl.registerLazySingleton<ForgotPasswordRepository>(
+    () => ForgotPasswordRepositoryImpl(networkInfo: sl(), forgotPasswordRemoteDataSource:  sl(),),
+  );
+
+// Data Sources
+  sl.registerLazySingleton<ForgotPasswordRemoteDataSource>(
+    () => ForgotPasswordRemoteDataSourceImpl(
       client: sl(),
     ),
   );

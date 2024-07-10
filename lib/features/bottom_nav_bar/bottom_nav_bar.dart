@@ -73,7 +73,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         showUnselectedLabels: true,
         items:  [
           BottomNavigationBarItem(
-            icon: _getIcon(0, Icons.home, Icons.home_outlined),
+            icon: _getIcon(0, Icons.home , Icons.home_outlined),
             label: 'Home',
           ),
           BottomNavigationBarItem(

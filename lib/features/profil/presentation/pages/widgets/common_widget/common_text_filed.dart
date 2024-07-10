@@ -17,6 +17,9 @@ class CommanInputField extends StatelessWidget {
   final int? maxLines;
   final bool? enabled;
   final Color? textColor;
+  final FocusNode? focusNode;
+  final Function(String)? onFieldSubmitted;
+  final TextInputAction? textInputAction;
 
   const CommanInputField({
     Key? key,
@@ -32,7 +35,11 @@ class CommanInputField extends StatelessWidget {
     this.onChanged,
     this.hintColor,
     this.maxLines,
-    this.onTap, this.enabled, this.textColor,
+    this.onTap,
+    this.enabled,
+    this.textColor,
+    this.focusNode,
+    this.onFieldSubmitted, this.textInputAction,
   }) : super(key: key);
 
   @override
@@ -50,12 +57,14 @@ class CommanInputField extends StatelessWidget {
         ),
         const SizedBox(height: 8.0),
         TextFormField(
+          focusNode: focusNode,
+          onFieldSubmitted: onFieldSubmitted,
           enabled: enabled ?? true,
           maxLines: maxLines ?? 1,
           readOnly: readOnly ?? false,
           controller: controller,
           keyboardType: textInputType ?? TextInputType.text,
-          textInputAction: TextInputAction.done,
+          textInputAction: textInputAction,
           obscureText: obscureText ?? false,
           onChanged: onChanged,
           onTap: readOnly == true ? onTap : null,

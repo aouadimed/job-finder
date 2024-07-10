@@ -11,7 +11,8 @@ class InputField extends StatelessWidget {
   final bool? readOnly;
   final bool? autofocus;
   final ValueChanged<String>? onFieldSubmitted;
-
+  final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
   const InputField({
     Key? key,
     required this.controller,
@@ -23,18 +24,21 @@ class InputField extends StatelessWidget {
     this.obscureText,
     void Function(String value)? onChanged,
     this.readOnly,
-    this.autofocus, this.onFieldSubmitted,
+    this.autofocus,
+    this.onFieldSubmitted,
+    this.focusNode, this.textInputAction,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      onFieldSubmitted : onFieldSubmitted,
+      textInputAction: textInputAction,
+      focusNode: focusNode,
+      onFieldSubmitted: onFieldSubmitted,
       autofocus: autofocus ?? false,
       readOnly: readOnly ?? false,
       controller: controller,
       keyboardType: textInputType ?? TextInputType.text,
-      textInputAction: TextInputAction.done,
       obscureText: obscureText ?? false,
       decoration: InputDecoration(
         prefixIcon: prefixIcon,
