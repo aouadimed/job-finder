@@ -17,7 +17,6 @@ import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_ex
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_expanded_cards/work_experience_card.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfilScreen extends StatefulWidget {

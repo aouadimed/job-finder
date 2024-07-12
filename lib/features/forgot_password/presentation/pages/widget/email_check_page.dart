@@ -9,13 +9,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class EmailCheckPage extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController emailTextFieldController;
-  final VoidCallback onNext;
 
   const EmailCheckPage({
     Key? key,
     required this.formKey,
     required this.emailTextFieldController,
-    required this.onNext,
   }) : super(key: key);
 
   @override

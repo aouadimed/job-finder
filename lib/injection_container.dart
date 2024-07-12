@@ -6,7 +6,9 @@ import 'package:cv_frontend/features/authentication/domain/usecases/sign_up_user
 import 'package:cv_frontend/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:cv_frontend/features/forgot_password/data/repository/forgot_password_repository_impl.dart';
 import 'package:cv_frontend/features/forgot_password/domain/repository/forgot_password_repository.dart';
+import 'package:cv_frontend/features/forgot_password/domain/usecases/change_password_use_case.dart';
 import 'package:cv_frontend/features/forgot_password/domain/usecases/check_email_use_case.dart';
+import 'package:cv_frontend/features/forgot_password/domain/usecases/code_verification_use_case.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/bloc/forgot_password_bloc.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/edcation_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/language_remote_data_source.dart';
@@ -117,18 +119,26 @@ Future<void> initializeDependencies() async {
  */
 /* ----------------------------------------------------- */
   // Bloc
-  sl.registerFactory(() => ForgotPasswordBloc(checkEmailUseCase:  sl(),      
-    ));
+  sl.registerFactory(() => ForgotPasswordBloc(
+        checkEmailUseCase: sl(),
+        codeVerificationUseCase: sl(),
+        changePasswordUseCase: sl(),
+      ));
 
 // Use Cases
   sl.registerLazySingleton(
-      () => CheckEmailUseCase(forgotPasswordRepository:  sl()));
-
-
+      () => CheckEmailUseCase(forgotPasswordRepository: sl()));
+  sl.registerLazySingleton(
+      () => CodeVerificationUseCase(forgotPasswordRepository: sl()));
+  sl.registerLazySingleton(
+      () => ChangePasswordUseCase(forgotPasswordRepository: sl()));
 
 // Repositories
   sl.registerLazySingleton<ForgotPasswordRepository>(
-    () => ForgotPasswordRepositoryImpl(networkInfo: sl(), forgotPasswordRemoteDataSource:  sl(),),
+    () => ForgotPasswordRepositoryImpl(
+      networkInfo: sl(),
+      forgotPasswordRemoteDataSource: sl(),
+    ),
   );
 
 // Data Sources
@@ -315,13 +325,9 @@ Future<void> initializeDependencies() async {
       getSkillsUseCase: sl()));
 
 // Use Cases
-  sl.registerLazySingleton(
-      () => CreateSkillUseCase(skillRepository: sl()));
-  sl.registerLazySingleton(
-      () => DeleteSkillUseCase(skillRepository: sl()));
-  sl.registerLazySingleton(
-      () => GetSkillsUseCase(skillRepository: sl()));
-
+  sl.registerLazySingleton(() => CreateSkillUseCase(skillRepository: sl()));
+  sl.registerLazySingleton(() => DeleteSkillUseCase(skillRepository: sl()));
+  sl.registerLazySingleton(() => GetSkillsUseCase(skillRepository: sl()));
 
 // Repositories
   sl.registerLazySingleton<SkillRepository>(

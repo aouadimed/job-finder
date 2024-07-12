@@ -17,3 +17,8 @@ class ConnexionFailure extends Failure {}
 
 class EmailExistsFailure extends Failure {}
 
+class EmailFailure extends Failure {}
+
+class InvalidRestCodeFailure extends Failure {}
+
+

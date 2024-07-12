@@ -1,18 +1,20 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
+import 'package:cv_frontend/features/forgot_password/presentation/bloc/forgot_password_bloc.dart';
 import 'package:cv_frontend/global/common_widget/big_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class OtpVerificationPage extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController otpTextFieldController;
-  final VoidCallback onNext;
+  final String email;
 
   const OtpVerificationPage({
     Key? key,
     required this.formKey,
     required this.otpTextFieldController,
-    required this.onNext,
+    required this.email,
   }) : super(key: key);
 
   @override
@@ -36,6 +38,7 @@ class OtpVerificationPage extends StatelessWidget {
               const SizedBox(height: 8.0),
               PinCodeTextField(
                 appContext: context,
+                autoDisposeControllers : false,
                 length: 6,
                 obscureText: false,
                 animationType: AnimationType.fade,
@@ -68,7 +71,15 @@ class OtpVerificationPage extends StatelessWidget {
               const SizedBox(height: 20),
               BigButton(
                 text: 'Verify',
-                onPressed: onNext,
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    BlocProvider.of<ForgotPasswordBloc>(context).add(
+                      CodeVerificationEvent(
+                          email: email,
+                          resetCode: otpTextFieldController.text),
+                    );
+                  }
+                },
               ),
             ],
           ),

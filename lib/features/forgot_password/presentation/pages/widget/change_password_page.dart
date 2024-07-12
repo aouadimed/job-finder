@@ -1,19 +1,24 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
+import 'package:cv_frontend/features/forgot_password/presentation/bloc/forgot_password_bloc.dart';
 import 'package:cv_frontend/global/common_widget/big_button.dart';
+import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
 import 'package:cv_frontend/global/common_widget/text_form_field.dart';
 import 'package:cv_frontend/global/utils/form_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController passwordTextFieldController;
   final TextEditingController confirmPasswordTextFieldController;
+  final String email;
 
   const ChangePasswordPage({
     Key? key,
     required this.formKey,
     required this.passwordTextFieldController,
     required this.confirmPasswordTextFieldController,
+    required this.email,
   }) : super(key: key);
 
   @override
@@ -22,16 +27,6 @@ class ChangePasswordPage extends StatefulWidget {
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
   bool _hidePassword = true;
-
-  final FocusNode _passwordFocusNode = FocusNode();
-  final FocusNode _confirmPasswordFocusNode = FocusNode();
-
-  @override
-  void dispose() {
-    _passwordFocusNode.dispose();
-    _confirmPasswordFocusNode.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,22 +51,15 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 controller: widget.passwordTextFieldController,
                 hint: "Password",
                 obscureText: _hidePassword,
-                prefixIcon:  Icon(Icons.lock, color: greyColor),
+                prefixIcon: const Icon(Icons.lock, color: Colors.grey),
                 suffixIcon: InkWell(
-                  onTap: () => {
-                    setState(() {
-                      _hidePassword = !_hidePassword;
-                    })
-                  },
+                  onTap: () => setState(() {
+                    _hidePassword = !_hidePassword;
+                  }),
                   child: _hidePassword
                       ? const Icon(Icons.visibility_off)
                       : const Icon(Icons.visibility),
                 ),
-                focusNode: _passwordFocusNode,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_confirmPasswordFocusNode);
-                },
                 validator: (value) {
                   return FormValidator.validatePassword(value);
                 },
@@ -81,19 +69,15 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 controller: widget.confirmPasswordTextFieldController,
                 hint: "Confirm new password",
                 obscureText: _hidePassword,
-                prefixIcon:  Icon(Icons.lock, color: greyColor),
+                prefixIcon: const Icon(Icons.lock, color: Colors.grey),
                 suffixIcon: InkWell(
-                  onTap: () => {
-                    setState(() {
-                      _hidePassword = !_hidePassword;
-                    })
-                  },
+                  onTap: () => setState(() {
+                    _hidePassword = !_hidePassword;
+                  }),
                   child: _hidePassword
                       ? const Icon(Icons.visibility_off)
                       : const Icon(Icons.visibility),
                 ),
-                focusNode: _confirmPasswordFocusNode,
-                textInputAction: TextInputAction.done,
                 validator: (value) {
                   return FormValidator.validatePassword(value);
                 },
@@ -103,7 +87,18 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 text: 'Change password',
                 onPressed: () {
                   if (widget.formKey.currentState!.validate()) {
-                    // Add your change password logic here
+                    if (widget.passwordTextFieldController.text ==
+                        widget.confirmPasswordTextFieldController.text) {
+                      BlocProvider.of<ForgotPasswordBloc>(context).add(
+                        ChangePasswordEvent(
+                            email: widget.email,
+                            newPassword:
+                                widget.passwordTextFieldController.text),
+                      );
+                    } else {
+                      showSnackBar(
+                          context: context, message: "Passwords don't match");
+                    }
                   }
                 },
               ),

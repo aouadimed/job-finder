@@ -1,11 +1,13 @@
-const String url = "192.168.1.12:5000";
+const String url = "10.0.2.2:5000";
 
 const String token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjVkZTExNTEwYzU4YjUzZGQ4ZTQ0YjciLCJpYXQiOjE3MjA2MTAyNTMsImV4cCI6MTcyMDY5NjY1M30.LdhiX-xe3-j5k0o9PlTzWHYevYl6Z_fBu4zh6RnmSf4';
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjVkZTExNTEwYzU4YjUzZGQ4ZTQ0YjciLCJpYXQiOjE3MjA3Nzk5MTQsImV4cCI6MTcyMDg2NjMxNH0.zUl-9mpl7TIiEs_Aeaqbwbv87p38LZpncG05FQ2_rbw';
 //auth :
 const String loginBaseUrl = '/api/auth/login';
 const String registerBaseUrl = '/api/auth/register';
 const String forgotPasswordBaseUrl = '/api/auth/forgotPassword';
+const String verifyResetCodeBaseUrl = '/api/auth/verifyResetCode';
+const String resetPasswordBaseUrl = '/api/auth/resetPassword';
 //summary :
 const String addOrUpadateSummaryBaseUrl = '/api/summary/createOrUpdate';
 const String getSummaryBaseUrl = '/api/summary/summarie';

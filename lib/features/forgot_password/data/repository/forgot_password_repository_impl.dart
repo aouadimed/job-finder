@@ -22,7 +22,53 @@ class ForgotPasswordRepositoryImpl extends ForgotPasswordRepository {
           await forgotPasswordRemoteDataSource.checkEmail(email: email);
       return Right(status);
     } catch (e) {
-      return Left(ServerFailure());
+      if (e.runtimeType == EmailFailure) {
+        return Left(EmailFailure());
+      } else {
+        return Left(ServerFailure());
+      }
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> checkVerificationCode(
+      {required String email, required String resetCode}) async {
+    if (await networkInfo.isConnected == false) {
+      return Left(ConnexionFailure());
+    }
+    try {
+      final status = await forgotPasswordRemoteDataSource.codeVerfication(
+          email: email, resetCode: resetCode);
+      return Right(status);
+    } catch (e) {
+      if (e.runtimeType == EmailFailure) {
+        return Left(EmailFailure());
+      } else if (e.runtimeType == InvalidRestCodeFailure) {
+        return Left(InvalidRestCodeFailure());
+      } else {
+        return Left(ServerFailure());
+      }
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> changePassword(
+      {required String email, required String newPassword}) async {
+    if (await networkInfo.isConnected == false) {
+      return Left(ConnexionFailure());
+    }
+    try {
+      final status = await forgotPasswordRemoteDataSource.changePassword(
+          email: email, newPassword: newPassword);
+      return Right(status);
+    } catch (e) {
+      if (e.runtimeType == EmailFailure) {
+        return Left(EmailFailure());
+      } else if (e.runtimeType == InvalidRestCodeFailure) {
+        return Left(InvalidRestCodeFailure());
+      } else {
+        return Left(ServerFailure());
+      }
     }
   }
 }

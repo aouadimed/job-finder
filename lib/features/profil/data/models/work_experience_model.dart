@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:intl/intl.dart';
 
 WorkExperienceModel workExperienceModelFromJson(String str) =>
     WorkExperienceModel.fromJson(json.decode(str));

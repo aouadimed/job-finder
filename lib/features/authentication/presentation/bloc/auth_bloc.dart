@@ -67,16 +67,16 @@ Future<void> _registerEvent(RegisterEvent event, Emitter<AuthState> emit) async 
       (failure) {
         final isIntentFailure = failure.runtimeType == ConnexionFailure;
         final message = mapFailureToMessage(failure);
-        print('Failure: $failure, Intent Failure: $isIntentFailure, Message: $message');
+       // print('Failure: $failure, Intent Failure: $isIntentFailure, Message: $message');
         emit(AuthFailure(isIntentFailure: isIntentFailure, message: message));
       },
       (success) {
-        print('Success: $success');
+       // print('Success: $success');
         emit(RegisterSuccess());
       },
     );
   } catch (e) {
-    print('Exception: $e');
+  //  print('Exception: $e');
     emit(AuthFailure(isIntentFailure: false, message: e.toString()));
   }
 }

@@ -27,6 +27,6 @@ class ForgotPasswordFailure extends ForgotPasswordState {
 
 class ForgotPasswordSuccess extends ForgotPasswordState {}
 
+class CodeVerificationSuccess extends ForgotPasswordState {}
 
-
-
+class ChangePasswordSuccess extends ForgotPasswordState {}

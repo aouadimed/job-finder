@@ -1,4 +1,5 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
+import 'package:cv_frontend/core/services/app_routes.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/bloc/forgot_password_bloc.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/pages/widget/change_password_page.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/pages/widget/email_check_page.dart';
@@ -43,6 +44,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     _otpTextFieldController.dispose();
     _passwordTextFieldController.dispose();
     _confirmPasswordTextFieldController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -62,17 +64,28 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           if (state is ForgotPasswordFailure) {
             showSnackBar(context: context, message: state.message);
           } else if (state is ForgotPasswordSuccess) {
-            setState(() {
-              isOtpSent = true;
-            });
             QuickAlert.show(
               text: "Check inbox",
               context: context,
               headerBackgroundColor: primaryColor,
               type: QuickAlertType.success,
             );
-            _emailTextFieldController.clear();
             _goToNextPage();
+          } else if (state is CodeVerificationSuccess) {
+            QuickAlert.show(
+              text: "Verification success",
+              context: context,
+              headerBackgroundColor: primaryColor,
+              type: QuickAlertType.success,
+            );
+            _goToNextPage();
+          } else if (state is ChangePasswordSuccess) {
+            QuickAlert.show(
+              text: "Password has been updated",
+              context: context,
+              headerBackgroundColor: primaryColor,
+              type: QuickAlertType.success,
+            );
           }
         },
         child: BlocBuilder<ForgotPasswordBloc, ForgotPasswordState>(
@@ -93,17 +106,19 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           EmailCheckPage(
                             formKey: GlobalKey<FormState>(),
                             emailTextFieldController: _emailTextFieldController,
-                            onNext: _goToNextPage,
                           ),
                           OtpVerificationPage(
                             formKey: GlobalKey<FormState>(),
                             otpTextFieldController: _otpTextFieldController,
-                            onNext: _goToNextPage,
+                            email: _emailTextFieldController.text,
                           ),
                           ChangePasswordPage(
                             formKey: GlobalKey<FormState>(),
-                            passwordTextFieldController: _passwordTextFieldController,
-                            confirmPasswordTextFieldController: _confirmPasswordTextFieldController,
+                            passwordTextFieldController:
+                                _passwordTextFieldController,
+                            confirmPasswordTextFieldController:
+                                _confirmPasswordTextFieldController,
+                            email: _emailTextFieldController.text,
                           ),
                         ],
                       ),
