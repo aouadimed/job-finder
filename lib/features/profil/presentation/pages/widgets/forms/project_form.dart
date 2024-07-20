@@ -2,7 +2,7 @@ import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/features/profil/data/models/work_experience_model.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/common_widget/common_switch.dart';
-import 'package:cv_frontend/features/profil/presentation/pages/widgets/common_widget/common_text_filed.dart';
+import 'package:cv_frontend/global/common_widget/common_text_filed.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/selection_widgets.dart/asso_with_sheet.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/selection_widgets.dart/date_selection_sheet.dart';
 import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';

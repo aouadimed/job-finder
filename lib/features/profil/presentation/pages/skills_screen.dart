@@ -102,11 +102,14 @@ class _SkillsScreenState extends State<SkillsScreen> {
           return CommonFormsScreen(
             isLoading: state is SkillLoading,
             title: "Skills",
-            form: SkillsForm(
-              formKey: _formKey,
-              skills: _initialSkills,
-              onSkillsChanged: _updateSkills,
-              onDeleted: _onDeleteSkill,
+            form: Padding(
+              padding: const EdgeInsets.all(20),
+              child: SkillsForm(
+                formKey: _formKey,
+                skills: _initialSkills,
+                onSkillsChanged: _updateSkills,
+                onDeleted: _onDeleteSkill,
+              ),
             ),
             onSave: () {
               if (_formKey.currentState!.validate()) {

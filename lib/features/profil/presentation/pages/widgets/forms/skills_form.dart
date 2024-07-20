@@ -56,44 +56,41 @@ class _SkillsFormState extends State<SkillsForm> {
     return SingleChildScrollView(
       child: Form(
         key: widget.formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Skills",
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.normal,
-                  color: Colors.black,
-                ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Skills",
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.normal,
+                color: Colors.black,
               ),
-              const SizedBox(height: 8.0),
-              InputField(
-                controller: _skillController,
-                hint: "Type here",
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () {
-                    _addSkill(_skillController.text);
-                  },
-                ),
-                textInputType: TextInputType.text,
-                onFieldSubmitted: (value) {
-                  _addSkill(value);
+            ),
+            const SizedBox(height: 8.0),
+            InputField(
+              controller: _skillController,
+              hint: "Type here",
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: () {
+                  _addSkill(_skillController.text);
                 },
               ),
-              const SizedBox(height: 20),
-              SkillsChip(
-                skills: _skills,
-                initialSkills: widget.skills,
-                onDeleted: (SkillsModel skill) {
-                  _removeSkill(skill);
-                },
-              ),
-            ],
-          ),
+              textInputType: TextInputType.text,
+              onFieldSubmitted: (value) {
+                _addSkill(value);
+              },
+            ),
+            const SizedBox(height: 20),
+            SkillsChip(
+              skills: _skills,
+              initialSkills: widget.skills,
+              onDeleted: (SkillsModel skill) {
+                _removeSkill(skill);
+              },
+            ),
+          ],
         ),
       ),
     );

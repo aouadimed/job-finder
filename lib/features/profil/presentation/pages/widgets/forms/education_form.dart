@@ -1,5 +1,5 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
-import 'package:cv_frontend/features/profil/presentation/pages/widgets/common_widget/common_text_filed.dart';
+import 'package:cv_frontend/global/common_widget/common_text_filed.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/selection_widgets.dart/date_selection_sheet.dart';
 import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
 import 'package:flutter/material.dart';

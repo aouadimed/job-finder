@@ -5,7 +5,7 @@ class CommanInputField extends StatelessWidget {
   final TextEditingController controller;
   final Widget? prefixIcon;
   final IconData? suffixIcon;
-  final String hint;
+  final String? hint;
   final String title;
   final String? Function(String?)? validator;
   final TextInputType? textInputType;
@@ -15,6 +15,7 @@ class CommanInputField extends StatelessWidget {
   final void Function()? onTap;
   final Color? hintColor;
   final int? maxLines;
+  final int? maxLength;
   final bool? enabled;
   final Color? textColor;
   final FocusNode? focusNode;
@@ -26,7 +27,7 @@ class CommanInputField extends StatelessWidget {
     required this.controller,
     required this.title,
     this.prefixIcon,
-    required this.hint,
+    this.hint,
     this.validator,
     this.textInputType,
     this.suffixIcon,
@@ -39,7 +40,7 @@ class CommanInputField extends StatelessWidget {
     this.enabled,
     this.textColor,
     this.focusNode,
-    this.onFieldSubmitted, this.textInputAction,
+    this.onFieldSubmitted, this.textInputAction, this.maxLength,
   }) : super(key: key);
 
   @override
@@ -57,6 +58,7 @@ class CommanInputField extends StatelessWidget {
         ),
         const SizedBox(height: 8.0),
         TextFormField(
+          maxLength : maxLength,
           focusNode: focusNode,
           onFieldSubmitted: onFieldSubmitted,
           enabled: enabled ?? true,

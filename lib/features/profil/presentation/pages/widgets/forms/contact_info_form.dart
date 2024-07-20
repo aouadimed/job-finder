@@ -1,5 +1,5 @@
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:cv_frontend/features/profil/presentation/pages/widgets/common_widget/common_text_filed.dart';
+import 'package:cv_frontend/global/common_widget/common_text_filed.dart';
 import 'package:cv_frontend/global/common_widget/text_form_field.dart';
 import 'package:cv_frontend/global/utils/form_validator.dart';
 import 'package:cv_frontend/global/utils/functions.dart';
