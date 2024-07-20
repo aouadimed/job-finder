@@ -1,7 +1,7 @@
 const String url = "10.0.2.2:5000";
 
 const String token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjVkZTExNTEwYzU4YjUzZGQ4ZTQ0YjciLCJpYXQiOjE3MjA3Nzk5MTQsImV4cCI6MTcyMDg2NjMxNH0.zUl-9mpl7TIiEs_Aeaqbwbv87p38LZpncG05FQ2_rbw';
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjVkZTExNTEwYzU4YjUzZGQ4ZTQ0YjciLCJpYXQiOjE3MjE0Njg1MDYsImV4cCI6MTcyMTU1NDkwNn0._taiX0payZjzoH1ms_nULdVEl_qtdXOCS91fAFi7THs';
 //auth :
 const String loginBaseUrl = '/api/auth/login';
 const String registerBaseUrl = '/api/auth/register';
@@ -37,3 +37,7 @@ const String updateLanguageUrl = '/api/language/update';
 const String deleteLanguageUrl = '/api/language/delete';
 //Skills :
 const String skillsUrl = '/api/skill/skills';
+//Contact info :
+const String contactInfoUrl = '/api/contactinfo/contact-info';
+//profilHeader :
+const String profilHeaderUrl = '/api/users/profil-header';

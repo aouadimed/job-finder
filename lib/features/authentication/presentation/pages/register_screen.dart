@@ -18,12 +18,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late TextEditingController _usernameTextFieldController;
   late TextEditingController _emailTextFieldController;
   late TextEditingController _passwordTextFieldController;
+  late TextEditingController _confirmPasswordController;
 
   @override
   void initState() {
     _emailTextFieldController = TextEditingController();
     _passwordTextFieldController = TextEditingController();
     _usernameTextFieldController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
     super.initState();
   }
 
@@ -32,6 +34,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _emailTextFieldController.dispose();
     _passwordTextFieldController.dispose();
     _usernameTextFieldController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -56,6 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   passwordController: _passwordTextFieldController,
                   usernameController: _usernameTextFieldController,
                   registerAction: () => finshProfil(context),
+                  confirmPasswordController: _confirmPasswordController,
                 ),
               ),
               const ThirdPartyLogin(),
@@ -81,26 +85,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void finshProfil(BuildContext context) {
-      if (_formKey.currentState!.validate()) {
-Navigator.pushNamed(
-  context,
-  countryScreen,
-  arguments: {
-    'username': _usernameTextFieldController.text.trim(),
-    'email': _emailTextFieldController.text,
-    'password': _passwordTextFieldController.text,
-  },
-);
-      }
+    if (_formKey.currentState!.validate()) {
+      Navigator.pushNamed(
+        context,
+        countryScreen,
+        arguments: {
+          'username': _usernameTextFieldController.text.trim(),
+          'email': _emailTextFieldController.text,
+          'password': _passwordTextFieldController.text,
+        },
+      );
+    }
   }
 
-  /*void registerNewUser(BuildContext context) {
-    BlocProvider.of<AuthBloc>(context).add(
-      RegisterEvent(
-        username: _usernameTextFieldController.text.trim(),
-        email: _emailTextFieldController.text,
-        password: _passwordTextFieldController.text,
-      ),
-    );
-  }*/
 }

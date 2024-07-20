@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class InputField extends StatelessWidget {
   final TextEditingController controller;
@@ -13,6 +14,8 @@ class InputField extends StatelessWidget {
   final ValueChanged<String>? onFieldSubmitted;
   final FocusNode? focusNode;
   final TextInputAction? textInputAction;
+  final List<TextInputFormatter>? inputFormatters;
+
   const InputField({
     Key? key,
     required this.controller,
@@ -26,12 +29,15 @@ class InputField extends StatelessWidget {
     this.readOnly,
     this.autofocus,
     this.onFieldSubmitted,
-    this.focusNode, this.textInputAction,
+    this.focusNode,
+    this.textInputAction,
+    this.inputFormatters,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      inputFormatters: inputFormatters,
       textInputAction: textInputAction,
       focusNode: focusNode,
       onFieldSubmitted: onFieldSubmitted,

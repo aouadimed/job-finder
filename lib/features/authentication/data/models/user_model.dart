@@ -1,19 +1,25 @@
-// Postman Echo is service you can use to test your REST clients and make sample API calls.
-// It provides endpoints for `GET`, `POST`, `PUT`, various auth mechanisms and other utility
-// endpoints.
-//
-// The documentation for the endpoints as well as example responses can be found at
-// [https://postman-echo.com](https://postman-echo.com/?source=echo-collection-app-onboarding)
-// To parse this JSON data, do
-//
-//     final userModel = userModelFromJson(jsonString);
-
 import 'dart:convert';
 
 UserModel userModelFromJson(String str) => UserModel.fromJson(json.decode(str));
 
 
 class UserModel {
+    User? user;
+    String? token;
+
+    UserModel({
+        this.user,
+        this.token,
+    });
+
+    factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
+        user: User.fromJson(json["user"]),
+        token: json["token"],
+    );
+}
+
+class User {
+    String? id;
     String? username;
     String? firstName;
     String? lastName;
@@ -27,12 +33,13 @@ class UserModel {
     String? password;
     String? profileImg;
     bool? active;
-    String? id;
     DateTime? createdAt;
     DateTime? updatedAt;
-    String? token;
+    int? v;
+    String? address;
 
-    UserModel({
+    User({
+        this.id,
         this.username,
         this.firstName,
         this.lastName,
@@ -46,13 +53,14 @@ class UserModel {
         this.password,
         this.profileImg,
         this.active,
-        this.id,
         this.createdAt,
         this.updatedAt,
-        this.token,
+        this.v,
+        this.address,
     });
 
-    factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
+    factory User.fromJson(Map<String, dynamic> json) => User(
+        id: json["_id"],
         username: json["username"],
         firstName: json["firstName"],
         lastName: json["lastName"],
@@ -66,10 +74,11 @@ class UserModel {
         password: json["password"],
         profileImg: json["profileImg"],
         active: json["active"],
-        id: json["_id"],
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
-        token: json["token"],
+        v: json["__v"],
+        address: json["address"],
     );
+
 
 }

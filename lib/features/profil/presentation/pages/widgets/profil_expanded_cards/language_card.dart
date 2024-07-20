@@ -11,7 +11,7 @@ class LanguageCard extends StatelessWidget {
   final Function(String) onEditPressed;
   final bool isExpanded;
   final ValueChanged<bool> onExpansionChanged;
-    final GlobalKey sectionKey; 
+  final GlobalKey sectionKey;
 
   const LanguageCard(
       {super.key,
@@ -19,7 +19,8 @@ class LanguageCard extends StatelessWidget {
       required this.onEditPressed,
       required this.language,
       required this.isExpanded,
-      required this.onExpansionChanged, required this.sectionKey});
+      required this.onExpansionChanged,
+      required this.sectionKey});
 
   @override
   Widget build(BuildContext context) {
@@ -58,14 +59,15 @@ class LanguageCard extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.edit, color: primaryColor),
               onPressed: () {
-                onEditPressed(language.id!); // Pass the ID here
+                onEditPressed(language.id!);
               },
             ),
           ],
         );
       },
       isExpanded: isExpanded,
-      onExpansionChanged: onExpansionChanged, sectionKey: sectionKey,
+      onExpansionChanged: onExpansionChanged,
+      sectionKey: sectionKey,
     );
   }
 }

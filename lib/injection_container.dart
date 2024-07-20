@@ -10,24 +10,32 @@ import 'package:cv_frontend/features/forgot_password/domain/usecases/change_pass
 import 'package:cv_frontend/features/forgot_password/domain/usecases/check_email_use_case.dart';
 import 'package:cv_frontend/features/forgot_password/domain/usecases/code_verification_use_case.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/bloc/forgot_password_bloc.dart';
+import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/contact_info_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/edcation_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/language_remote_data_source.dart';
+import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/profil_header_remote_date_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/project_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/skill_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/summary_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/work_experience_data_source.dart';
+import 'package:cv_frontend/features/profil/data/repository/contact_info_repository_impl.dart';
 import 'package:cv_frontend/features/profil/data/repository/education_repository_impl.dart';
 import 'package:cv_frontend/features/profil/data/repository/language_repository_impl.dart';
+import 'package:cv_frontend/features/profil/data/repository/profil_header_repository_impl.dart';
 import 'package:cv_frontend/features/profil/data/repository/project_repository_impl.dart';
 import 'package:cv_frontend/features/profil/data/repository/skill_repository_impl.dart';
 import 'package:cv_frontend/features/profil/data/repository/summary_repository_impl.dart';
 import 'package:cv_frontend/features/profil/data/repository/work_experience_repository_impl.dart';
+import 'package:cv_frontend/features/profil/domain/repository/contact_info_repository.dart';
 import 'package:cv_frontend/features/profil/domain/repository/education_repository.dart';
 import 'package:cv_frontend/features/profil/domain/repository/languages_repository.dart';
+import 'package:cv_frontend/features/profil/domain/repository/profil_header_repository.dart';
 import 'package:cv_frontend/features/profil/domain/repository/project_repository.dart';
 import 'package:cv_frontend/features/profil/domain/repository/skill_repository.dart';
 import 'package:cv_frontend/features/profil/domain/repository/summarry_repository.dart';
 import 'package:cv_frontend/features/profil/domain/repository/work_experience_repository.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/contact_info_use_cases/get_contact_info_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/contact_info_use_cases/update_contact_info_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/education_use_cases/create_education_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/education_use_cases/delete_education_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/education_use_cases/get_all_education_use_case.dart';
@@ -38,6 +46,7 @@ import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/G
 import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/GetSingleLanguageUseCase.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/UpdateLanguageUseCase.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/create_language_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/profil_header_use_cases/get_profil_header_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/project_use_cases/create_project_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/project_use_cases/delete_project_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/project_use_cases/get_all_project_use_case.dart';
@@ -53,8 +62,10 @@ import 'package:cv_frontend/features/profil/domain/usecases/work_experience_use_
 import 'package:cv_frontend/features/profil/domain/usecases/work_experience_use_cases/get_all_work_experience_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/work_experience_use_cases/get_single_work_experiance.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/work_experience_use_cases/update_work_experince_use_case.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/contact_info_bloc/contact_info_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/education_bloc/education_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/languages_bloc/language_bloc.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/profil_header_bloc/profil_header_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/project_bloc/project_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/skill_bloc/skill_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
@@ -173,7 +184,8 @@ Future<void> initializeDependencies() async {
       client: sl(),
     ),
   );
-  /* ----------------------------------------------------- */
+
+/* ----------------------------------------------------- */
 /*
  * profile/WorkExperience
  */
@@ -337,6 +349,57 @@ Future<void> initializeDependencies() async {
 // Data Sources
   sl.registerLazySingleton<SkillRemoteDataSource>(
     () => SkillRemoteDataSourceImpl(
+      client: sl(),
+    ),
+  );
+
+/* ----------------------------------------------------- */
+/*
+ * profile/ContactInfo
+ */
+/* ----------------------------------------------------- */
+//bloc
+  sl.registerFactory(() => ContactInfoBloc(
+      getContactInfoUseCase: sl(), updateContactInfoUseCase: sl()));
+//use cases
+  sl.registerLazySingleton(
+      () => GetContactInfoUseCase(contactInfoRepository: sl()));
+  sl.registerLazySingleton(
+      () => UpdateContactInfoUseCase(contactInfoRepository: sl()));
+//repositories
+  sl.registerLazySingleton<ContactInfoRepository>(
+    () => ContactInfoRepositoryImpl(
+      networkInfo: sl(),
+      contactInfoRemoteDataSource: sl(),
+    ),
+  );
+// Data Sources
+  sl.registerLazySingleton<ContactInfoRemoteDataSource>(
+    () => ContactInfoRemoteDataSourceImpl(
+      client: sl(),
+    ),
+  );
+/* ----------------------------------------------------- */
+/*
+ * profile/ContactInfo
+ */
+/* ----------------------------------------------------- */
+//bloc
+  sl.registerFactory(() => ProfilHeaderBloc(getProfilHeaderUseCase: sl()));
+//use cases
+
+  sl.registerLazySingleton(
+      () => GetProfilHeaderUseCase(profilHeaderRepository: sl()));
+//repositories
+  sl.registerLazySingleton<ProfilHeaderRepository>(
+    () => ProfilHeaderRepositoryImpl(
+      networkInfo: sl(),
+      profilHeaderRemoteDataSource: sl(),
+    ),
+  );
+// Data Sources
+  sl.registerLazySingleton<ProfilHeaderRemoteDataSource>(
+    () => ProfilHeaderRemoteDataSourceImpl(
       client: sl(),
     ),
   );

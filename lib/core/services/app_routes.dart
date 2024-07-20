@@ -1,3 +1,4 @@
+import 'package:cv_frontend/core/services/profil_screen_route.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/account_setup/pages/country_screen.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/account_setup/pages/profile_finish.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/account_setup/pages/role_picking.dart';
@@ -8,16 +9,19 @@ import 'package:cv_frontend/features/bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/pages/forgot_password.dart';
 import 'package:cv_frontend/features/home/presentation/pages/home_screen.dart';
 import 'package:cv_frontend/features/onboarding/presentation/on_boarding_screen.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/contact_info_bloc/contact_info_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/education_bloc/education_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/languages_bloc/language_bloc.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/profil_header_bloc/profil_header_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/project_bloc/project_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/skill_bloc/skill_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
+import 'package:cv_frontend/features/profil/presentation/pages/contact_info_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/education_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/languages_screen.dart';
-import 'package:cv_frontend/features/profil/presentation/pages/main_profil_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/project_screen.dart';
+import 'package:cv_frontend/features/profil/presentation/pages/simple_profil_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/skills_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/summary_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/work_experience_screen.dart';
@@ -42,6 +46,8 @@ const String languagesScreen = '/languagesScreen';
 const String skillsScreen = '/skillsScreen';
 const String navBar = '/navBar';
 const String forgotPassword = '/forgotPassword';
+const String contactInfo = '/contactInfo';
+const String simpleProfil = '/simpleProfil';
 
 Route<dynamic> controller(RouteSettings settings) {
   switch (settings.name) {
@@ -69,32 +75,24 @@ Route<dynamic> controller(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (context) => const ForgotPassword(),
       );
+    case contactInfo:
+      return MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (context) => sl<ContactInfoBloc>(),
+          child: const ContactInfoScreen(),
+        ),
+      );
+    case simpleProfil:
+      return MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (context) =>
+              sl<ProfilHeaderBloc>()..add(GetProfilHeaderEvent()),
+          child: const SimpleProfilScreen(),
+        ),
+      );
     case profilScreen:
       return MaterialPageRoute(
-        builder: (context) => MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (context) => sl<SummaryBloc>()..add(GetSummaryEvent()),
-            ),
-            BlocProvider(
-              create: (context) =>
-                  sl<WorkExperienceBloc>()..add(GetAllWorkExperienceEvent()),
-            ),
-            BlocProvider(
-              create: (context) =>
-                  sl<EducationBloc>()..add(GetAllEducationEvent()),
-            ),
-            BlocProvider(
-              create: (context) =>
-                  sl<ProjectBloc>()..add(GetAllProjectsEvent()),
-            ),
-            BlocProvider(
-              create: (context) =>
-                  sl<LanguageBloc>()..add(GetAllLanguagesEvent()),
-            )
-          ],
-          child: const ProfilScreen(),
-        ),
+        builder: (context) => profilScreenProvider(), // Use the new function
       );
     case summaryScreen:
       return MaterialPageRoute(

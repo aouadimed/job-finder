@@ -12,7 +12,10 @@ class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
 
-class LoginSuccess extends AuthState {}
+class LoginSuccess extends AuthState {
+
+  
+}
 
 class AuthFailure extends AuthState {
   final bool isIntentFailure;

@@ -20,6 +20,6 @@ abstract class UserRepository {
     required String role,
     required List<int> expertise,
     required String password,
-    required String profileImg,
+    required String address
   });
 }

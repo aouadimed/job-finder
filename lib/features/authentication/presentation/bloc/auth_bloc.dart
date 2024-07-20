@@ -32,7 +32,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await _loginUserUseCase.call(
       LoginUserParams(email: event.email, password: event.password),
     );
-
     result.fold(
       (failure) => emit(
         AuthFailure(
@@ -44,40 +43,41 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
-Future<void> _registerEvent(RegisterEvent event, Emitter<AuthState> emit) async {
-  try {
-    final result = await _signUpUserUseCase.call(
-      SignUpUserParams(
-        username: event.username,
-        email: event.email,
-        password: event.password,
-        firstName: event.firstName,
-        lastName: event.lastName,
-        dateOfBirth: event.dateOfBirth,
-        phone: event.phone,
-        gender: event.gender,
-        country: event.country,
-        role: event.role,
-        expertise: event.expertise,
-        profileImg: event.profileImg,
-      ),
-    );
+  Future<void> _registerEvent(
+      RegisterEvent event, Emitter<AuthState> emit) async {
+    try {
+      final result = await _signUpUserUseCase.call(
+        SignUpUserParams(
+          username: event.username,
+          email: event.email,
+          password: event.password,
+          firstName: event.firstName,
+          lastName: event.lastName,
+          dateOfBirth: event.dateOfBirth,
+          phone: event.phone,
+          gender: event.gender,
+          country: event.country,
+          role: event.role,
+          expertise: event.expertise,
+          address: event.address,
+        ),
+      );
 
-    result.fold(
-      (failure) {
-        final isIntentFailure = failure.runtimeType == ConnexionFailure;
-        final message = mapFailureToMessage(failure);
-       // print('Failure: $failure, Intent Failure: $isIntentFailure, Message: $message');
-        emit(AuthFailure(isIntentFailure: isIntentFailure, message: message));
-      },
-      (success) {
-       // print('Success: $success');
-        emit(RegisterSuccess());
-      },
-    );
-  } catch (e) {
-  //  print('Exception: $e');
-    emit(AuthFailure(isIntentFailure: false, message: e.toString()));
+      result.fold(
+        (failure) {
+          final isIntentFailure = failure.runtimeType == ConnexionFailure;
+          final message = mapFailureToMessage(failure);
+          // print('Failure: $failure, Intent Failure: $isIntentFailure, Message: $message');
+          emit(AuthFailure(isIntentFailure: isIntentFailure, message: message));
+        },
+        (success) {
+          // print('Success: $success');
+          emit(RegisterSuccess());
+        },
+      );
+    } catch (e) {
+      //  print('Exception: $e');
+      emit(AuthFailure(isIntentFailure: false, message: e.toString()));
+    }
   }
-}
 }

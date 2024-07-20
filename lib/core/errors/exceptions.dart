@@ -7,3 +7,5 @@ class UserExistException implements Exception {}
 class EmailException implements Exception {}
 
 class InvalidRestCodeException  implements Exception {}
+
+class UserNameException  implements Exception {}

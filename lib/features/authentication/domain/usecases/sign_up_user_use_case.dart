@@ -26,7 +26,7 @@ class SignUpUserUseCase extends UseCase<UserModel, SignUpUserParams> {
       country: params.country,
       role: params.role,
       expertise: params.expertise,
-      profileImg: params.profileImg,
+      address: params.address,
     );
   }
 }
@@ -43,22 +43,21 @@ class SignUpUserParams extends Equatable {
   final String role;
   final List<int> expertise;
   final String password;
-  final String profileImg;
+  final String address;
 
-  const SignUpUserParams({
-    required this.firstName,
-    required this.lastName,
-    required this.dateOfBirth,
-    required this.phone,
-    required this.gender,
-    required this.country,
-    required this.role,
-    required this.expertise,
-    required this.profileImg, 
-    required this.username,
-    required this.email,
-    required this.password,
-  });
+  const SignUpUserParams(
+      {required this.firstName,
+      required this.lastName,
+      required this.dateOfBirth,
+      required this.phone,
+      required this.gender,
+      required this.country,
+      required this.role,
+      required this.expertise,
+      required this.username,
+      required this.email,
+      required this.password,
+      required this.address});
 
   @override
   List<Object?> get props => [username, email, password];

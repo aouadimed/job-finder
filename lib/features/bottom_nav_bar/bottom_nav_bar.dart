@@ -1,14 +1,7 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
+import 'package:cv_frontend/core/services/profil_screen_route.dart';
 import 'package:cv_frontend/features/home/presentation/pages/home_screen.dart';
-import 'package:cv_frontend/features/profil/presentation/bloc/education_bloc/education_bloc.dart';
-import 'package:cv_frontend/features/profil/presentation/bloc/languages_bloc/language_bloc.dart';
-import 'package:cv_frontend/features/profil/presentation/bloc/project_bloc/project_bloc.dart';
-import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
-import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
-import 'package:cv_frontend/features/profil/presentation/pages/main_profil_screen.dart';
-import 'package:cv_frontend/injection_container.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -25,27 +18,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     const HomeScreen(),
     const HomeScreen(),
     const HomeScreen(),
-    MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => sl<SummaryBloc>()..add(GetSummaryEvent()),
-        ),
-        BlocProvider(
-          create: (context) =>
-              sl<WorkExperienceBloc>()..add(GetAllWorkExperienceEvent()),
-        ),
-        BlocProvider(
-          create: (context) => sl<EducationBloc>()..add(GetAllEducationEvent()),
-        ),
-        BlocProvider(
-          create: (context) => sl<ProjectBloc>()..add(GetAllProjectsEvent()),
-        ),
-        BlocProvider(
-          create: (context) => sl<LanguageBloc>()..add(GetAllLanguagesEvent()),
-        )
-      ],
-      child: const ProfilScreen(),
-    ),
+    profilScreenProvider()
   ];
 
   void _onTabTapped(int index) {

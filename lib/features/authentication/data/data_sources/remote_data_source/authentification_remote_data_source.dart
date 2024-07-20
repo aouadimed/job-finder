@@ -24,7 +24,7 @@ abstract class AuthRemoteDataSource {
     required String role,
     required List<int> expertise,
     required String password,
-    required String profileImg,
+    required String address,
   });
 }
 
@@ -82,49 +82,50 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String role,
     required List<int> expertise,
     required String password,
-    required String profileImg, // Expecting the path as a string
+    required String address,
   }) async {
     try {
-      // Create a multipart request
-      var request = https.MultipartRequest(
-        "POST",
-        Uri.parse(url + registerBaseUrl), // Replace with your base URL
-      )..files.add(await https.MultipartFile.fromPath("profileImg", profileImg))
-     ..fields["username"] = username
-      ..fields["email"] = email
-      ..fields["password"] = password
-      ..fields["firstName"] = firstName
-      ..fields["lastName"] = lastName
-      ..fields["dateOfBirth"] = dateOfBirth.toIso8601String()
-      ..fields["phone"] = phone
-      ..fields["gender"] = gender
-      ..fields["country"] = country
-      ..fields["role"] = role
-      ..fields["expertise"] = jsonEncode(expertise);
+      var uri = Uri.http(url, registerBaseUrl);
 
-      // Send the multipart request
-      final response = await request.send();
-print(response.statusCode);
+        Map<String, dynamic> requestBody = {
+          "username": username,
+          "email": email,
+          "password": password,
+          "firstName": firstName,
+          "lastName": lastName,
+          "dateOfBirth": dateOfBirth.toIso8601String(),
+          "phone": phone,
+          "gender": gender,
+          "country": country,
+          "address": address,
+          "role": role,
+          "expertise": jsonEncode(expertise),
+        };
 
-      // Check the response status code
-      if (response.statusCode == 201) {
-        // Read the response body as a string
-        final responseBody = await response.stream.bytesToString();
-        // Assuming userModelFromJson is a function to convert JSON string to UserModel object
-        return userModelFromJson(responseBody);
-      } else if (response.statusCode == 300 ){
-        throw UserExistException();
-      }
-     else if (response.statusCode == 100 ){
-        throw UserExistException();
-      }else {
-        throw ServerException();
-      }
+        final response = await https.post(
+          uri,
+          body: jsonEncode(requestBody),
+          headers: {"Content-Type": "application/json"},
+        ).catchError((e) => throw ServerException());
+        final responseBody = response.body;
+        if (response.statusCode == 201) {
+          return userModelFromJson(responseBody);
+        } else if (response.statusCode == 300) {
+          throw UserExistException();
+        } else if (response.statusCode == 320) {
+          throw UserNameException();
+        } else {
+          throw ServerException();
+        }
+      
     } catch (e) {
-      if (e.runtimeType == UserExistException) {
+      if (e is UserExistException) {
         throw EmailExistsFailure();
+      } else if (e is UserNameException) {
+        throw UsernameFailure();
       } else {
         throw ServerException();
-      }    }
+      }
+    }
   }
 }

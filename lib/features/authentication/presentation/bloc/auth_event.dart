@@ -33,7 +33,7 @@ class RegisterEvent extends AuthEvent {
   final String role;
   final List<int> expertise;
   final String password;
-  final String profileImg;
+  final String address;
 
   const RegisterEvent({
     required this.firstName,
@@ -44,10 +44,10 @@ class RegisterEvent extends AuthEvent {
     required this.country,
     required this.role,
     required this.expertise,
-    required this.profileImg,
     required this.username,
     required this.email,
     required this.password,
+    required this.address
   });
 
   @override

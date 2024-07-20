@@ -1,14 +1,11 @@
-import 'dart:io';
-
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/core/services/app_routes.dart';
 import 'package:cv_frontend/global/common_widget/combo_box.dart';
 import 'package:cv_frontend/global/common_widget/text_form_field.dart';
-import 'package:cv_frontend/global/utils/country_code_data.dart';
 import 'package:cv_frontend/global/utils/form_validator.dart';
+import 'package:cv_frontend/global/utils/functions.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ProfilForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
@@ -19,10 +16,8 @@ class ProfilForm extends StatefulWidget {
   final TextEditingController dobTextFieldController;
   final TextEditingController numberTextFieldController;
   final TextEditingController genderController;
-  final File? image;
-  final void Function(File?)? onImageSelected;
+  final TextEditingController addressTextFieldController;
   final String? selectedCountry;
-  
 
   const ProfilForm({
     Key? key,
@@ -34,9 +29,8 @@ class ProfilForm extends StatefulWidget {
     required this.dobTextFieldController,
     required this.numberTextFieldController,
     required this.genderController,
-    required this.image,
-    required this.onImageSelected,
     required this.selectedCountry,
+    required this.addressTextFieldController,
   }) : super(key: key);
 
   @override
@@ -44,12 +38,26 @@ class ProfilForm extends StatefulWidget {
 }
 
 class _ProfilFormState extends State<ProfilForm> {
-  late File? _image;
+  final _usernameFocusNode = FocusNode();
+  final _firstnameFocusNode = FocusNode();
+  final _lastnameFocusNode = FocusNode();
+  final _dobFocusNode = FocusNode();
+  final _emailFocusNode = FocusNode();
+  final _phoneNumberFocusNode = FocusNode();
+  final _addressFocusNode = FocusNode();
+  final _genderFocusNode = FocusNode();
 
   @override
-  void initState() {
-    _image = widget.image; // Initialize _image with widget's image
-    super.initState();
+  void dispose() {
+    _usernameFocusNode.dispose();
+    _firstnameFocusNode.dispose();
+    _lastnameFocusNode.dispose();
+    _dobFocusNode.dispose();
+    _emailFocusNode.dispose();
+    _phoneNumberFocusNode.dispose();
+    _addressFocusNode.dispose();
+    _genderFocusNode.dispose();
+    super.dispose();
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -79,21 +87,6 @@ class _ProfilFormState extends State<ProfilForm> {
     }
   }
 
-  Future<void> _getImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      final File image = File(pickedFile.path);
-      setState(() {
-        _image = image;
-      });
-      if (widget.onImageSelected != null) {
-        widget.onImageSelected!(image); // Call onImageSelected callback
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -104,56 +97,17 @@ class _ProfilFormState extends State<ProfilForm> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
-                Stack(
-                  alignment: const Alignment(1, 1.2),
-                  children: [
-                    Container(
-                      width: 150.0,
-                      height: 150.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.grey.shade200,
-                      ),
-                      child: _image != null
-                          ? ClipOval(
-                              child: Image.file(
-                                _image!,
-                                fit: BoxFit.cover,
-                                width: 150.0,
-                                height: 150.0,
-                              ),
-                            )
-                          : Icon(
-                              Icons.person,
-                              color: Colors.grey.shade500,
-                              size: 100,
-                            ),
-                    ),
-                    IconButton(
-                      onPressed: _getImage,
-                      icon: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15.0),
-                          color: primaryColor,
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
                 const SizedBox(height: 20),
                 InputField(
                   controller: widget.usernameTextFieldController,
                   hint: "Username",
                   prefixIcon: null,
                   textInputType: TextInputType.name,
+                  textInputAction: TextInputAction.next,
+                  focusNode: _usernameFocusNode,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_firstnameFocusNode);
+                  },
                   validator: (value) {
                     return FormValidator.validateUsername(value);
                   },
@@ -164,6 +118,17 @@ class _ProfilFormState extends State<ProfilForm> {
                   hint: "First name",
                   prefixIcon: null,
                   textInputType: TextInputType.name,
+                  textInputAction: TextInputAction.next,
+                  focusNode: _firstnameFocusNode,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_lastnameFocusNode);
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your first name';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 20),
                 InputField(
@@ -171,6 +136,17 @@ class _ProfilFormState extends State<ProfilForm> {
                   hint: "Last name",
                   prefixIcon: null,
                   textInputType: TextInputType.name,
+                  textInputAction: TextInputAction.next,
+                  focusNode: _lastnameFocusNode,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_dobFocusNode);
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your last name';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 20),
                 GestureDetector(
@@ -182,7 +158,18 @@ class _ProfilFormState extends State<ProfilForm> {
                       prefixIcon:
                           const Icon(Icons.date_range, color: Colors.grey),
                       textInputType: TextInputType.datetime,
+                      textInputAction: TextInputAction.next,
+                      focusNode: _dobFocusNode,
+                      onFieldSubmitted: (_) {
+                        FocusScope.of(context).requestFocus(_emailFocusNode);
+                      },
                       readOnly: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please select your date of birth';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 ),
@@ -192,6 +179,11 @@ class _ProfilFormState extends State<ProfilForm> {
                   hint: "E-mail",
                   prefixIcon: const Icon(Icons.email, color: Colors.grey),
                   textInputType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  focusNode: _emailFocusNode,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_phoneNumberFocusNode);
+                  },
                   validator: (value) {
                     return FormValidator.validateEmail(value);
                   },
@@ -208,7 +200,7 @@ class _ProfilFormState extends State<ProfilForm> {
                       ),
                       child: CountryCodePicker(
                         onChanged: (c) => c.code,
-                        enabled: true,
+                        enabled: false,
                         initialSelection: countryCodeFromCountryName(
                             widget.selectedCountry ?? ""),
                         showCountryOnly: true,
@@ -226,17 +218,48 @@ class _ProfilFormState extends State<ProfilForm> {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.grey[200],
+                          color: Colors.transparent,
                         ),
                         child: InputField(
                           controller: widget.numberTextFieldController,
                           hint: "Phone number",
                           prefixIcon: null,
                           textInputType: TextInputType.number,
+                          textInputAction: TextInputAction.next,
+                          focusNode: _phoneNumberFocusNode,
+                          onFieldSubmitted: (_) {
+                            FocusScope.of(context)
+                                .requestFocus(_addressFocusNode);
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your phone number';
+                            }
+                            return null;
+                          },
                         ),
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(height: 20),
+                InputField(
+                  controller: widget.addressTextFieldController,
+                  hint: "Address",
+                  prefixIcon:
+                      const Icon(Icons.location_pin, color: Colors.grey),
+                  textInputType: TextInputType.streetAddress,
+                  textInputAction: TextInputAction.next,
+                  focusNode: _addressFocusNode,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_genderFocusNode);
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your address';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 20),
                 ComboBoxField(
@@ -248,6 +271,13 @@ class _ProfilFormState extends State<ProfilForm> {
                       widget.genderController.text = value ?? "";
                     });
                   },
+                  focusNode: _genderFocusNode,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select your gender';
+                    }
+                    return null;
+                  },
                 )
               ],
             ),
@@ -257,12 +287,6 @@ class _ProfilFormState extends State<ProfilForm> {
     );
   }
 
-  String countryCodeFromCountryName(String countryName) {
-    String? countryCode = countryNameToCode[countryName];
-    return countryCode ?? '';
-  }
-
-  
   void goToHome(BuildContext context) {
     Navigator.pushReplacementNamed(context, homeScreen);
   }

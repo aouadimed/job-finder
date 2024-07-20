@@ -5,24 +5,26 @@ class CommonExpandableList<T> extends StatefulWidget {
   final VoidCallback? iconOnPressed;
   final List<T> items;
   final String headerTitle;
-  final Function(String) editIconOnPressed;
+  final Function(String)? editIconOnPressed;
   final Widget Function(T) itemBuilder;
   final IconData headerIcon;
   final bool isExpanded;
   final Function(bool) onExpansionChanged;
   final GlobalKey sectionKey;
+  final IconData? icon;
 
   const CommonExpandableList({
     Key? key,
     required this.iconOnPressed,
     required this.items,
     required this.headerTitle,
-    required this.editIconOnPressed,
+    this.editIconOnPressed,
     required this.itemBuilder,
     required this.headerIcon,
     required this.isExpanded,
     required this.onExpansionChanged,
     required this.sectionKey,
+    this.icon,
   }) : super(key: key);
 
   @override
@@ -30,6 +32,16 @@ class CommonExpandableList<T> extends StatefulWidget {
 }
 
 class _CommonExpandableListState<T> extends State<CommonExpandableList<T>> {
+  @override
+  void initState() {
+    if (widget.items.isEmpty && widget.isExpanded) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.onExpansionChanged(false);
+      });
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     bool hasItems = widget.items.isNotEmpty;
@@ -93,7 +105,7 @@ class _CommonExpandableListState<T> extends State<CommonExpandableList<T>> {
                       const SizedBox(width: 16),
                       IconButton(
                         icon: Icon(
-                          Icons.add,
+                          widget.icon ?? Icons.add,
                           color: primaryColor,
                         ),
                         onPressed: widget.iconOnPressed,

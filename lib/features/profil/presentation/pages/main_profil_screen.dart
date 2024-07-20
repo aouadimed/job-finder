@@ -1,15 +1,21 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
+import 'package:cv_frontend/features/profil/data/models/contact_info_model.dart';
 import 'package:cv_frontend/features/profil/data/models/education_model.dart';
 import 'package:cv_frontend/features/profil/data/models/language_model.dart';
+import 'package:cv_frontend/features/profil/data/models/profil_header_model.dart';
 import 'package:cv_frontend/features/profil/data/models/project_model.dart';
 import 'package:cv_frontend/features/profil/data/models/work_experience_model.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/contact_info_bloc/contact_info_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/education_bloc/education_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/languages_bloc/language_bloc.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/profil_header_bloc/profil_header_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/project_bloc/project_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
-import 'package:cv_frontend/features/profil/presentation/pages/utils/navigation.dart';
+import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_expanded_cards/profil_header.dart';
+import 'package:cv_frontend/features/profil/presentation/pages/widgets/utils/navigation.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_expanded_cards/common_card.dart';
+import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_expanded_cards/contact_inforamtion_card.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_expanded_cards/education_card.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_expanded_cards/language_card.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_expanded_cards/projects_card.dart';
@@ -32,17 +38,38 @@ class _ProfilScreenState extends State<ProfilScreen> {
   List<EducationsModel> educations = [];
   List<ProjectsModel> projects = [];
   List<LanguageModel> languages = [];
+  ContactInfoModel contactInfo = ContactInfoModel();
+  ProfilHeaderModel profileHeader = ProfilHeaderModel();
+
   String? expandedSection;
   GlobalKey educationKey = GlobalKey();
   GlobalKey workExperienceKey = GlobalKey();
   GlobalKey languageKey = GlobalKey();
   GlobalKey projectKey = GlobalKey();
-  final ScrollController _scrollController = ScrollController();
+  GlobalKey summaryKey = GlobalKey();
+  GlobalKey contactInfoKey = GlobalKey();
 
+  final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<ProfilHeaderBloc, ProfilHeaderState>(
+            listener: (context, state) {
+          if (state is GetProfilHeaderSuccess) {
+            setState(() {
+              profileHeader = state.profileHeader;
+            });
+          }
+        }),
+        BlocListener<ContactInfoBloc, ContactInfoState>(
+            listener: (context, state) {
+          if (state is GetContactInfoSuccess) {
+            setState(() {
+              contactInfo = state.contactInfoModel;
+            });
+          }
+        }),
         BlocListener<SummaryBloc, SummaryState>(listener: (context, state) {
           if (state is GetSummarySuccess) {
             setState(() {
@@ -91,41 +118,11 @@ class _ProfilScreenState extends State<ProfilScreen> {
             controller: _scrollController,
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Row(
-                    children: [
-                      const CircleAvatar(
-                        radius: 35,
-                        backgroundImage: NetworkImage(
-                            'http://192.168.1.12:5000/userimg/1717428491056-446084121.jpg'),
-                      ),
-                      const SizedBox(width: 16),
-                      const Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Mohamed Aouadi',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Text(
-                              'UI/UX Designer at Paypal Inc.',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Icon(Icons.edit, color: primaryColor),
-                    ],
-                  ),
+                MainProfileHeader(
+                  profileHeader: profileHeader,
+                  onEdit: () {
+                    goToSimpleProfilScreen(context);
+                  },
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -138,11 +135,19 @@ class _ProfilScreenState extends State<ProfilScreen> {
                   child: Column(
                     children: [
                       const SizedBox(height: 10),
-                      Summary(
+                      ContactInformationCard(
                         iconOnPressed: () {
-                          goToSummaryScreen(context);
+                          goToContactInfoScreen(context);
                         },
-                        summaryDescription: summaryDescription,
+                        isExpanded: expandedSection == 'contactInfo',
+                        onExpansionChanged: (bool value) {
+                          setState(() {
+                            expandedSection = value ? 'contactInfo' : null;
+                          });
+                          if (value) _scrollToSection(contactInfoKey);
+                        },
+                        sectionKey: contactInfoKey,
+                        contactInfo: contactInfo,
                       ),
                       const SizedBox(height: 20),
                       BlocBuilder<SummaryBloc, SummaryState>(
@@ -153,11 +158,19 @@ class _ProfilScreenState extends State<ProfilScreen> {
                                   color: primaryColor),
                             );
                           } else {
-                            return Summary(
+                            return SummaryCard(
                               iconOnPressed: () {
                                 goToSummaryScreen(context);
                               },
                               summaryDescription: summaryDescription,
+                              isExpanded: expandedSection == 'summary',
+                              onExpansionChanged: (bool value) {
+                                setState(() {
+                                  expandedSection = value ? 'summary' : null;
+                                });
+                                if (value) _scrollToSection(summaryKey);
+                              },
+                              sectionKey: summaryKey,
                             );
                           }
                         },

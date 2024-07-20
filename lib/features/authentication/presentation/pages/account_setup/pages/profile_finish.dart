@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cv_frontend/core/constants/appcolors.dart';
+import 'package:cv_frontend/core/services/app_routes.dart';
 import 'package:cv_frontend/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/account_setup/pages/widgets/finish_profile_form.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
@@ -11,9 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FinishProfil extends StatefulWidget {
-  final File? image;
 
-  const FinishProfil({Key? key, this.image}) : super(key: key);
+
+  const FinishProfil({Key? key}) : super(key: key);
 
   @override
   State<FinishProfil> createState() => _FinishProfilState();
@@ -28,25 +29,33 @@ class _FinishProfilState extends State<FinishProfil> {
   late TextEditingController _numberTextFieldController;
   late TextEditingController _genderController;
   late TextEditingController _usernameTextFieldController;
-  File? _selectedImage;
+  late TextEditingController _addressTextFieldController;
+
 
   @override
   void initState() {
-    _emailTextFieldController =
-        TextEditingController(); // Initialize without text
-    _lastnameTextFieldController =
-        TextEditingController(); // Initialize without text
-    _firstnameTextFieldController =
-        TextEditingController(); // Initialize without text
-    _dobTextFieldController =
-        TextEditingController(); // Initialize without text
-    _numberTextFieldController =
-        TextEditingController(); // Initialize without text
-    _genderController = TextEditingController(); // Initialize without text
-    _usernameTextFieldController =
-        TextEditingController(); // Initialize without text
-    _selectedImage = widget.image;
+    _emailTextFieldController = TextEditingController();
+    _lastnameTextFieldController = TextEditingController();
+    _firstnameTextFieldController = TextEditingController();
+    _dobTextFieldController = TextEditingController();
+    _numberTextFieldController = TextEditingController();
+    _genderController = TextEditingController();
+    _usernameTextFieldController = TextEditingController();
+    _addressTextFieldController = TextEditingController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _emailTextFieldController.dispose();
+    _lastnameTextFieldController.dispose();
+    _firstnameTextFieldController.dispose();
+    _dobTextFieldController.dispose();
+    _numberTextFieldController.dispose();
+    _genderController.dispose();
+    _usernameTextFieldController.dispose();
+    _addressTextFieldController.dispose();
+    super.dispose();
   }
 
   @override
@@ -78,7 +87,7 @@ class _FinishProfilState extends State<FinishProfil> {
                 "created successfully ",
             backgroundColor: greenColor,
           );
-          //  goBackToLogin(context);
+           goBackToLogin(context);
         }
       }, child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
         return Scaffold(
@@ -93,19 +102,16 @@ class _FinishProfilState extends State<FinishProfil> {
                       formKey: _formKey,
                       firstnameTextFieldController:
                           _firstnameTextFieldController,
-                      usernameTextFieldController: _usernameTextFieldController,
+                      usernameTextFieldController:
+                          _usernameTextFieldController,
                       emailTextFieldController: _emailTextFieldController,
-                      lastnameTextFieldController: _lastnameTextFieldController,
+                      lastnameTextFieldController:
+                          _lastnameTextFieldController,
                       dobTextFieldController: _dobTextFieldController,
                       numberTextFieldController: _numberTextFieldController,
                       genderController: _genderController,
-                      image: _selectedImage,
-                      onImageSelected: (File? image) {
-                        setState(() {
-                          _selectedImage = image;
-                        });
-                      },
                       selectedCountry: selectedcountry,
+                      addressTextFieldController: _addressTextFieldController,
                     ),
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 30),
@@ -119,7 +125,7 @@ class _FinishProfilState extends State<FinishProfil> {
                         : Padding(
                             padding: const EdgeInsets.all(15.0),
                             child: BigButton(
-                              text: 'Continue',
+                              text: 'Finish',
                               onPressed: () {
                                 handleRegister(
                                     context,
@@ -147,14 +153,10 @@ class _FinishProfilState extends State<FinishProfil> {
         : (selectedroleindex == 1)
             ? "admin"
             : "unknown";
-    if (_selectedImage == null) {
-      showSnackBar(
-        context: context,
-        message: "Please select a profil picture",
-        backgroundColor: redColor,
-      );
-    } else if (_formKey.currentState!.validate()) {
+
+    if (_formKey.currentState!.validate()) {
       BlocProvider.of<AuthBloc>(context).add(RegisterEvent(
+          address: _addressTextFieldController.text,
           firstName: _firstnameTextFieldController.text,
           lastName: _lastnameTextFieldController.text,
           dateOfBirth: DateTime.parse(_dobTextFieldController.text),
@@ -163,10 +165,13 @@ class _FinishProfilState extends State<FinishProfil> {
           country: selectedcountry,
           role: selectedRole,
           expertise: selectedexpertise,
-          profileImg: _selectedImage!.path,
           username: _usernameTextFieldController.text,
           email: _emailTextFieldController.text,
           password: password));
     }
+  }
+
+    void goBackToLogin(BuildContext context) {
+    Navigator.pushReplacementNamed(context,loginScreen);
   }
 }

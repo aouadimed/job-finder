@@ -1,104 +1,75 @@
+import 'package:cv_frontend/core/constants/appcolors.dart';
+import 'package:cv_frontend/features/profil/data/models/contact_info_model.dart';
+import 'package:cv_frontend/features/profil/presentation/pages/widgets/common_widget/comman_expandable.dart';
 import 'package:flutter/material.dart';
 
-class ContactInformationCard extends StatefulWidget {
-  const ContactInformationCard({Key? key}) : super(key: key);
+class ContactInformationCard extends StatelessWidget {
+  final VoidCallback? iconOnPressed;
+  final bool isExpanded;
+  final ValueChanged<bool> onExpansionChanged;
+  final GlobalKey sectionKey;
+  final ContactInfoModel contactInfo;
 
-  @override
-  State<ContactInformationCard> createState() => _ContactInformationCardState();
-}
-
-class _ContactInformationCardState extends State<ContactInformationCard> {
-  bool _isExpanded = false;
+  const ContactInformationCard({
+    Key? key,
+    required this.iconOnPressed,
+    required this.isExpanded,
+    required this.onExpansionChanged,
+    required this.sectionKey,
+    required this.contactInfo,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(width: 0.4, color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(25),
-      ),
-      child: Column(
-        children: [
-          InkWell(
-            onTap: () {
-              setState(() {
-                _isExpanded = !_isExpanded;
-              });
-            },
-            child: Container(
-              height: 56, // Set a fixed height for the header
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                children: [
-                  Icon(Icons.person, color: Colors.blue),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      "Contact Information",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  Icon(
-                    _isExpanded
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
-                    color: Colors.blue,
-                  ),
-                  SizedBox(width: 16),
-                  IconButton(
-                    icon: Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () {
-                      // Implement your edit functionality here
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          if (_isExpanded)
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Divider(thickness: 0.5),
-                ),
-                ListTile(
-                  leading: Icon(Icons.location_on, color: Colors.grey),
-                  title: Text("New York, United States"),
-                ),
-                ListTile(
-                  leading: Icon(Icons.phone, color: Colors.grey),
-                  title: Row(
-                    children: [
-                      Text("+1 111 467 378 399"),
-                      SizedBox(width: 4),
-                      Icon(Icons.check_circle, color: Colors.blue, size: 16),
-                    ],
-                  ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.email, color: Colors.grey),
-                  title: Row(
-                    children: [
-                      Text(
-                        "andrew_ainsley@yourdomain.com",
-                        style: TextStyle(fontSize: 10),
-                      ),
-                      SizedBox(width: 4),
-                      Icon(Icons.check_circle, color: Colors.blue, size: 16),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+    return CommonExpandableList<Widget>(
+       icon: Icons.edit,
+      iconOnPressed: iconOnPressed,
+      items: [
+        _buildContactInfoRow(
+          context,
+          icon: Icons.location_on,
+          label: contactInfo.address!,
+        ),
+        _buildContactInfoRow(
+          context,
+          icon: Icons.phone,
+          label: contactInfo.phone!,
+        ),
+        _buildContactInfoRow(
+          context,
+          icon: Icons.email,
+          label: contactInfo.email!,
+        ),
+      ],
+      headerTitle: "Contact Information",
+      headerIcon: Icons.person,
+      itemBuilder: (item) => item,
+      isExpanded: isExpanded,
+      onExpansionChanged: onExpansionChanged,
+      sectionKey: sectionKey,
+    );
+  }
+
+  Widget _buildContactInfoRow(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    TextStyle? textStyle,
+    Widget? trailing,
+  }) {
+    return Row(
+      children: [
+        Icon(icon, color: greyColor),
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: textStyle ?? const TextStyle(fontSize: 14, color: Colors.black),
+        ),
+        if (trailing != null) ...[
+          const SizedBox(width: 4),
+          trailing,
         ],
-      ),
+      ],
     );
   }
 }

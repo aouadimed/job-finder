@@ -1,9 +1,11 @@
 import 'package:cv_frontend/core/services/app_routes.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/contact_info_bloc/contact_info_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/education_bloc/education_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/languages_bloc/language_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/project_bloc/project_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
+import 'package:cv_frontend/features/profil/presentation/pages/contact_info_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/education_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/languages_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/project_screen.dart';
@@ -78,6 +80,28 @@ void goToSkillScreen(BuildContext context) async {
   );
 }
 
+void goToContactInfoScreen(BuildContext context) async {
+  await Navigator.pushNamed(
+    context,
+    contactInfo,
+  ).then(
+    (_) {
+      if (context.mounted) {
+        BlocProvider.of<ContactInfoBloc>(context).add(GetContactInfoEvent());
+      }
+    },
+  );
+}
 
-
-
+void goToSimpleProfilScreen(BuildContext context) async {
+  await Navigator.pushNamed(
+    context,
+    simpleProfil,
+  ).then(
+    (_) {
+      if (context.mounted) {
+        BlocProvider.of<ContactInfoBloc>(context).add(GetContactInfoEvent());
+      }
+    },
+  );
+}

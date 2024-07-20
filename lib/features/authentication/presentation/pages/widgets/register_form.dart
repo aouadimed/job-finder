@@ -8,6 +8,7 @@ class RegisterForm extends StatefulWidget {
   final TextEditingController usernameController;
   final TextEditingController emailController;
   final TextEditingController passwordController;
+  final TextEditingController confirmPasswordController;
   final void Function() registerAction;
 
   const RegisterForm({
@@ -15,6 +16,7 @@ class RegisterForm extends StatefulWidget {
     required this.formKey,
     required this.emailController,
     required this.passwordController,
+    required this.confirmPasswordController,
     required this.usernameController,
     required this.registerAction,
   }) : super(key: key);
@@ -25,16 +27,19 @@ class RegisterForm extends StatefulWidget {
 
 class _RegisterFormState extends State<RegisterForm> {
   bool _hidePassword = true;
+  bool _hideConfirmPassword = true;
 
   final FocusNode _usernameFocusNode = FocusNode();
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _confirmPasswordFocusNode = FocusNode();
 
   @override
   void dispose() {
     _usernameFocusNode.dispose();
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
+    _confirmPasswordFocusNode.dispose();
     super.dispose();
   }
 
@@ -89,10 +94,41 @@ class _RegisterFormState extends State<RegisterForm> {
                   ? const Icon(Icons.visibility_off)
                   : const Icon(Icons.visibility),
             ),
-            textInputAction: TextInputAction.done,
+            textInputAction: TextInputAction.next,
             focusNode: _passwordFocusNode,
+            onFieldSubmitted: (_) {
+              FocusScope.of(context).requestFocus(_confirmPasswordFocusNode);
+            },
             validator: (value) {
               return FormValidator.validatePassword(value);
+            },
+          ),
+          const SizedBox(height: 16),
+          InputField(
+            controller: widget.confirmPasswordController,
+            hint: "Confirm Password",
+            obscureText: _hideConfirmPassword,
+            prefixIcon: const Icon(Icons.lock, color: Colors.grey),
+            suffixIcon: InkWell(
+              onTap: () => {
+                setState(() {
+                  _hideConfirmPassword = !_hideConfirmPassword;
+                })
+              },
+              child: _hideConfirmPassword
+                  ? const Icon(Icons.visibility_off)
+                  : const Icon(Icons.visibility),
+            ),
+            textInputAction: TextInputAction.done,
+            focusNode: _confirmPasswordFocusNode,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please confirm your password';
+              }
+              if (value != widget.passwordController.text) {
+                return 'Passwords do not match';
+              }
+              return null;
             },
           ),
           const SizedBox(height: 30),
