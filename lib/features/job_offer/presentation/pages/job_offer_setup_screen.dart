@@ -72,7 +72,7 @@ class _JobOfferSetupScreenState extends State<JobOfferSetupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: GeneralAppBar(
-        titleText: 'Step ${_currentPage + 1}',
+        titleText: 'Job Offer',
       ),
       body: PageView(
         controller: _pageController,

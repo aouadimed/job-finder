@@ -93,8 +93,8 @@ class ProjectRepositoryImpl implements ProjectRepository {
       throw ConnexionFailure();
     }
     try {
-      final result = await dataSource.deleteProject(id: id);
-      return Right(result);
+       await dataSource.deleteProject(id: id);
+      return const Right(null);
     } on ServerException {
       return Left(ServerFailure());
     }

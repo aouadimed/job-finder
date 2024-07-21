@@ -3,7 +3,7 @@ import 'package:cv_frontend/core/constants/constants.dart';
 import 'package:cv_frontend/core/errors/exceptions.dart';
 import 'package:cv_frontend/core/errors/failures.dart';
 import 'package:cv_frontend/features/profil/data/models/language_model.dart';
-import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/UpdateLanguageUseCase.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/update_language_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/create_language_use_case.dart';
 import 'package:http/http.dart' as https;
 

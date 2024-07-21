@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/core/services/app_routes.dart';
 import 'package:cv_frontend/features/authentication/presentation/bloc/auth_bloc.dart';

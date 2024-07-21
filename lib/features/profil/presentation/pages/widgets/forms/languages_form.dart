@@ -55,7 +55,7 @@ class _LanguagesFormState extends State<LanguagesForm> {
                 hint: 'Please select',
                 hintColor: darkColor,
                 onTap: () async {
-                  String? selectedLanguage = await showModalBottomSheet<String>(
+                  await showModalBottomSheet<String>(
                     context: context,
                     isScrollControlled: true,
                     useSafeArea: true,

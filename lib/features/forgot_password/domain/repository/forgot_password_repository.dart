@@ -1,5 +1,4 @@
 import 'package:cv_frontend/core/errors/failures.dart';
-import 'package:cv_frontend/features/forgot_password/presentation/pages/widget/change_password_page.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class ForgotPasswordRepository {

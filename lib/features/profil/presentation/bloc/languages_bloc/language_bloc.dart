@@ -1,10 +1,10 @@
 import 'package:cv_frontend/core/errors/failures.dart';
 import 'package:cv_frontend/core/errors/functions.dart';
 import 'package:cv_frontend/features/profil/data/models/language_model.dart';
-import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/DeleteLanguageUseCase.dart';
-import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/GetAllLanguagesUseCase.dart';
-import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/GetSingleLanguageUseCase.dart';
-import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/UpdateLanguageUseCase.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/delete_language_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/get_all_languages_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/get_single_language_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/update_language_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/create_language_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/summary_use_cases/get_summary_use_cases.dart';
 

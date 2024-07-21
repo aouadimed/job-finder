@@ -41,10 +41,10 @@ import 'package:cv_frontend/features/profil/domain/usecases/education_use_cases/
 import 'package:cv_frontend/features/profil/domain/usecases/education_use_cases/get_all_education_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/education_use_cases/get_single_education_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/education_use_cases/update_education_use_case.dart';
-import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/DeleteLanguageUseCase.dart';
-import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/GetAllLanguagesUseCase.dart';
-import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/GetSingleLanguageUseCase.dart';
-import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/UpdateLanguageUseCase.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/delete_language_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/get_all_languages_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/get_single_language_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/update_language_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/create_language_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/profil_header_use_cases/get_profil_header_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/project_use_cases/create_project_use_case.dart';

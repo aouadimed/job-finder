@@ -19,7 +19,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     const JobOfferSetupScreen(),
     const HomeScreen(),
     const HomeScreen(),
-    profilScreenProvider()
+    profilScreenProvider(null)
   ];
 
   void _onTabTapped(int index) {

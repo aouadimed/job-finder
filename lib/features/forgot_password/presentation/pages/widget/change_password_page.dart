@@ -38,12 +38,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+               Text(
                 "Change password",
                 style: TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.normal,
-                  color: Colors.black,
+                  color: darkColor,
                 ),
               ),
               const SizedBox(height: 8.0),
@@ -69,7 +69,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 controller: widget.confirmPasswordTextFieldController,
                 hint: "Confirm new password",
                 obscureText: _hidePassword,
-                prefixIcon: const Icon(Icons.lock, color: Colors.grey),
+                prefixIcon:  Icon(Icons.lock, color: greyColor),
                 suffixIcon: InkWell(
                   onTap: () => setState(() {
                     _hidePassword = !_hidePassword;

@@ -9,7 +9,14 @@ import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summa
 import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
 import 'package:cv_frontend/injection_container.dart';
 
-MultiBlocProvider profilScreenProvider() {
+class ProfilScreenArguments {
+  final bool? isApplyForJob;
+  final String? id;
+
+  ProfilScreenArguments({this.isApplyForJob, this.id});
+}
+
+MultiBlocProvider profilScreenProvider(ProfilScreenArguments? args) {
   return MultiBlocProvider(
     providers: [
       BlocProvider(
@@ -34,6 +41,6 @@ MultiBlocProvider profilScreenProvider() {
         create: (context) => sl<LanguageBloc>()..add(GetAllLanguagesEvent()),
       ),
     ],
-    child: const ProfilScreen(),
+    child: args!= null ? ProfilScreen(arguments: args) : const ProfilScreen(),
   );
 }

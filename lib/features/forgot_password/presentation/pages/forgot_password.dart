@@ -1,5 +1,4 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
-import 'package:cv_frontend/core/services/app_routes.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/bloc/forgot_password_bloc.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/pages/widget/change_password_page.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/pages/widget/email_check_page.dart';

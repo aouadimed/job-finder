@@ -3,7 +3,7 @@ import 'package:cv_frontend/core/network/network_info.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/language_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/models/language_model.dart';
 import 'package:cv_frontend/features/profil/domain/repository/languages_repository.dart';
-import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/UpdateLanguageUseCase.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/update_language_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/create_language_use_case.dart';
 import 'package:dartz/dartz.dart';
 

@@ -8,6 +8,8 @@ import 'package:cv_frontend/features/authentication/presentation/pages/register_
 import 'package:cv_frontend/features/bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/pages/forgot_password.dart';
 import 'package:cv_frontend/features/home/presentation/pages/home_screen.dart';
+import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/apply_with_cv_screen.dart';
+import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/job_details_screen.dart';
 import 'package:cv_frontend/features/job_offer/presentation/pages/job_offer_setup_screen.dart';
 import 'package:cv_frontend/features/onboarding/presentation/on_boarding_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/contact_info_bloc/contact_info_bloc.dart';
@@ -50,6 +52,8 @@ const String forgotPassword = '/forgotPassword';
 const String contactInfo = '/contactInfo';
 const String simpleProfil = '/simpleProfil';
 const String jobOfferSetup = '/jobOfferSetup';
+const String jobDetailsPage = '/jobDetailsPage';
+const String applyWithCvScreen = '/applyWithCvScreen';
 
 Route<dynamic> controller(RouteSettings settings) {
   switch (settings.name) {
@@ -81,6 +85,10 @@ Route<dynamic> controller(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (context) => const JobOfferSetupScreen(),
       );
+    case jobDetailsPage:
+      return MaterialPageRoute(
+        builder: (context) => const JobDetailsScreen(),
+      );
     case contactInfo:
       return MaterialPageRoute(
         builder: (context) => BlocProvider(
@@ -97,8 +105,10 @@ Route<dynamic> controller(RouteSettings settings) {
         ),
       );
     case profilScreen:
+      final args = settings.arguments as ProfilScreenArguments?;
       return MaterialPageRoute(
-        builder: (context) => profilScreenProvider(), // Use the new function
+        builder: (context) =>
+            profilScreenProvider(args ?? ProfilScreenArguments()),
       );
     case summaryScreen:
       return MaterialPageRoute(
@@ -204,7 +214,9 @@ Route<dynamic> controller(RouteSettings settings) {
     case finishprofil:
       return MaterialPageRoute(
           builder: (context) => const FinishProfil(), settings: settings);
-
+    case applyWithCvScreen:
+      return MaterialPageRoute(
+          builder: (context) =>  ApplyWithCVScreen(), settings: settings);
     default:
       return MaterialPageRoute(
         builder: (context) => Scaffold(

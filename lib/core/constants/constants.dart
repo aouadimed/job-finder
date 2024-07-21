@@ -1,7 +1,7 @@
 const String url = "10.0.2.2:5000";
 
 const String token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjVkZTExNTEwYzU4YjUzZGQ4ZTQ0YjciLCJpYXQiOjE3MjE0Njg1MDYsImV4cCI6MTcyMTU1NDkwNn0._taiX0payZjzoH1ms_nULdVEl_qtdXOCS91fAFi7THs';
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjVkZTExNTEwYzU4YjUzZGQ4ZTQ0YjciLCJpYXQiOjE3MjE1MzY4NTAsImV4cCI6MTcyMTYyMzI1MH0.QM0mg6_EqUJIyxgc_z2YfK_F--BnIA_ijEhDfkMxHaw';
 //auth :
 const String loginBaseUrl = '/api/auth/login';
 const String registerBaseUrl = '/api/auth/register';

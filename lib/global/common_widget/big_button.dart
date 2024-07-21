@@ -4,8 +4,10 @@ import 'package:cv_frontend/core/constants/appcolors.dart';
 class BigButton extends StatelessWidget {
   final String? text;
   final VoidCallback? onPressed;
+  final Color? color;
+  final Color? textColor;
 
-  const BigButton({super.key, required this.text, required this.onPressed});
+  const BigButton({super.key, required this.text, required this.onPressed, this.color, this.textColor});
 
   @override
   Widget build(BuildContext context) {
@@ -20,15 +22,15 @@ class BigButton extends StatelessWidget {
           }
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: primaryColor,
+          backgroundColor: color ?? primaryColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
         ),
         child: Text(
           text ?? '',
-          style: const TextStyle(
-            color: Colors.white,
+          style:  TextStyle(
+            color: textColor ?? Colors.white,
           ),
         ),
       ),

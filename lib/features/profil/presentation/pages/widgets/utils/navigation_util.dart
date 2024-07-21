@@ -5,7 +5,6 @@ import 'package:cv_frontend/features/profil/presentation/bloc/languages_bloc/lan
 import 'package:cv_frontend/features/profil/presentation/bloc/project_bloc/project_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
-import 'package:cv_frontend/features/profil/presentation/pages/contact_info_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/education_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/languages_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/project_screen.dart';

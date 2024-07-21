@@ -21,6 +21,7 @@ class _CountryScreenState extends State<CountryScreen> {
   String? username;
   String? email;
   String? password;
+  
 
   @override
   void initState() {
@@ -84,7 +85,6 @@ class _CountryScreenState extends State<CountryScreen> {
                   if (_countryList.getSelectedCountry().isNotEmpty) {
                     finshProfil(context);
                   } else {
-                    print(username);
                     showSnackBar(
                       context: context,
                       message: 'Select a country first!',
