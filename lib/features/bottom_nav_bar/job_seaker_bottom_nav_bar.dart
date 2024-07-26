@@ -1,7 +1,7 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/core/services/profil_screen_route.dart';
-import 'package:cv_frontend/features/home/presentation/pages/home_screen.dart';
-import 'package:cv_frontend/features/job_offer/presentation/pages/job_offer_setup_screen.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/pages/job_seeker_home_screen.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/pages/job_offer_setup_screen.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavBar extends StatefulWidget {

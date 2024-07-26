@@ -9,3 +9,5 @@ class EmailException implements Exception {}
 class InvalidRestCodeException  implements Exception {}
 
 class UserNameException  implements Exception {}
+
+class CompanyDataEmptyException  implements Exception {}

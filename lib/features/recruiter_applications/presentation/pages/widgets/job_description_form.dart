@@ -1,5 +1,5 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
-import 'package:cv_frontend/features/job_offer/presentation/pages/widgets/skill_chip.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/pages/widgets/skill_chip.dart';
 import 'package:cv_frontend/global/common_widget/text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:cv_frontend/global/common_widget/common_text_filed.dart';
@@ -92,6 +92,14 @@ class _JobDescriptionPageState extends State<JobDescriptionPage> {
                   _addSkill(value);
                 },
               ),
+              if (_skills.length < 3)
+                Padding(
+                  padding: const EdgeInsets.only(top: 5.0),
+                  child: Text(
+                    "At least 3 skills are required.",
+                    style: TextStyle(color: redColor),
+                  ),
+                ),
               if (_skills.length >= 12)
                 Padding(
                   padding: const EdgeInsets.only(top: 5.0),
@@ -119,7 +127,7 @@ class _JobDescriptionPageState extends State<JobDescriptionPage> {
                 maxLength: 500,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Enter your Minimum Qualifications';
+                    return 'Please enter your Minimum Qualifications';
                   }
                   return null;
                 },

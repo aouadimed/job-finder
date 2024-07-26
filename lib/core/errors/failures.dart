@@ -23,3 +23,4 @@ class InvalidRestCodeFailure extends Failure {}
 
 class UsernameFailure extends Failure {}
 
+class CompanyDataEmptyFailure extends Failure {}

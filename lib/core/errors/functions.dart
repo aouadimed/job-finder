@@ -14,8 +14,10 @@ String mapFailureToMessage(Failure failure) {
       return "Please verify your E-mail";
     case InvalidRestCodeFailure:
       return "Invalid reset code or expired";
-          case UsernameFailure:
+    case UsernameFailure:
       return "Username is already in use";
+    case CompanyDataEmptyFailure:
+      return "Please complete the company profile to proceed.";
     default:
       return "";
   }

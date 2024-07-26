@@ -138,7 +138,7 @@ class _ApplyWithCVFormState extends State<ApplyWithCVForm> {
                                     Text(fileName!,
                                         style: TextStyle(color: darkColor)),
                                     Text(
-                                        '${(fileSize! / 1024).toStringAsFixed(2)} KB',
+                                        '${(fileSize! / 1000).toStringAsFixed(0)} KB',
                                         style: TextStyle(color: greyColor)),
                                   ],
                                 ),

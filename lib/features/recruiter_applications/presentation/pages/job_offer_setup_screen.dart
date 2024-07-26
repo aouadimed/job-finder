@@ -1,5 +1,5 @@
-import 'package:cv_frontend/features/job_offer/presentation/pages/widgets/job_description_form.dart';
-import 'package:cv_frontend/features/job_offer/presentation/pages/widgets/job_details_form.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/pages/widgets/job_description_form.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/pages/widgets/job_details_form.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:cv_frontend/core/constants/appcolors.dart';
@@ -15,6 +15,9 @@ class _JobOfferSetupScreenState extends State<JobOfferSetupScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
+  final GlobalKey<FormState> _jobDetailsFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _jobDescriptionFormKey = GlobalKey<FormState>();
+
   final TextEditingController _jobTitleController = TextEditingController();
   final TextEditingController _empTypeTextFieldController =
       TextEditingController();
@@ -27,11 +30,7 @@ class _JobOfferSetupScreenState extends State<JobOfferSetupScreen> {
   final TextEditingController _requiredSkillsController =
       TextEditingController();
 
-  final List<String> _initialSkills = [
-    "Communication",
-    "Teamwork",
-    "Problem Solving"
-  ];
+  final List<String> _initialSkills = [];
 
   @override
   void dispose() {
@@ -46,11 +45,13 @@ class _JobOfferSetupScreenState extends State<JobOfferSetupScreen> {
   }
 
   void _goToNextPage() {
-    if (_currentPage < 1) {
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
+    if (_currentPage == 0) {
+      if (_jobDetailsFormKey.currentState!.validate()) {
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
     } else {
       _saveJobOffer();
     }
@@ -64,8 +65,17 @@ class _JobOfferSetupScreenState extends State<JobOfferSetupScreen> {
   }
 
   void _saveJobOffer() {
-    // Implement your save logic here
-    print("Job offer saved!");
+    if (_jobDescriptionFormKey.currentState!.validate() && _skillsAreValid()) {
+      print("Job offer saved!");
+      // Implement your save logic here
+    }
+  }
+
+  bool _skillsAreValid() {
+    if (_requiredSkillsController.text.split(',').length >= 3) {
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -84,14 +94,14 @@ class _JobOfferSetupScreenState extends State<JobOfferSetupScreen> {
         },
         children: [
           JobDetailsPage(
-            formKey: GlobalKey<FormState>(),
+            formKey: _jobDetailsFormKey,
             jobTitleController: _jobTitleController,
             empTypeTextFieldController: _empTypeTextFieldController,
             locationTypeTextFieldController: _locationTypeTextFieldController,
             jobDescriptionController: _jobDescriptionController,
           ),
           JobDescriptionPage(
-            formKey: GlobalKey<FormState>(),
+            formKey: _jobDescriptionFormKey,
             minimumQualificationsController: _minimumQualificationsController,
             requiredSkillsController: _requiredSkillsController,
             initialSkills: _initialSkills,

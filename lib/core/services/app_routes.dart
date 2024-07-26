@@ -5,12 +5,14 @@ import 'package:cv_frontend/features/authentication/presentation/pages/account_s
 import 'package:cv_frontend/features/authentication/presentation/pages/account_setup/pages/expertise_picking.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/login_screen.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/register_screen.dart';
-import 'package:cv_frontend/features/bottom_nav_bar/bottom_nav_bar.dart';
+import 'package:cv_frontend/features/bottom_nav_bar/job_seaker_bottom_nav_bar.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/pages/forgot_password.dart';
-import 'package:cv_frontend/features/home/presentation/pages/home_screen.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/pages/job_seeker_home_screen.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/apply_with_cv_screen.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/job_details_screen.dart';
-import 'package:cv_frontend/features/job_offer/presentation/pages/job_offer_setup_screen.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/company_bloc.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/pages/company_profil_section.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/pages/job_offer_setup_screen.dart';
 import 'package:cv_frontend/features/onboarding/presentation/on_boarding_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/contact_info_bloc/contact_info_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/education_bloc/education_bloc.dart';
@@ -54,6 +56,7 @@ const String simpleProfil = '/simpleProfil';
 const String jobOfferSetup = '/jobOfferSetup';
 const String jobDetailsPage = '/jobDetailsPage';
 const String applyWithCvScreen = '/applyWithCvScreen';
+const String companyProfilScreen = '/companyProfilScreen';
 
 Route<dynamic> controller(RouteSettings settings) {
   switch (settings.name) {
@@ -94,6 +97,13 @@ Route<dynamic> controller(RouteSettings settings) {
         builder: (context) => BlocProvider(
           create: (context) => sl<ContactInfoBloc>(),
           child: const ContactInfoScreen(),
+        ),
+      );
+    case companyProfilScreen:
+      return MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (context) => sl<CompanyBloc>()..add(GetCompaniesEvent()),
+          child: const CompanyProfilScreen(),
         ),
       );
     case simpleProfil:
@@ -201,7 +211,6 @@ Route<dynamic> controller(RouteSettings settings) {
           ),
         ),
       );
-
     case countryScreen:
       return MaterialPageRoute(
           builder: (context) => const CountryScreen(), settings: settings);
@@ -216,7 +225,7 @@ Route<dynamic> controller(RouteSettings settings) {
           builder: (context) => const FinishProfil(), settings: settings);
     case applyWithCvScreen:
       return MaterialPageRoute(
-          builder: (context) =>  ApplyWithCVScreen(), settings: settings);
+          builder: (context) => ApplyWithCVScreen(), settings: settings);
     default:
       return MaterialPageRoute(
         builder: (context) => Scaffold(

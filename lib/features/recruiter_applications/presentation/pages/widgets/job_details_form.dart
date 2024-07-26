@@ -1,5 +1,5 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
-import 'package:cv_frontend/features/job_offer/presentation/pages/widgets/job_category_selection.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/pages/widgets/job_category_selection.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/selection_widgets.dart/emp_type_sheet.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/selection_widgets.dart/location_type_sheet.dart';
 import 'package:cv_frontend/global/common_widget/common_text_filed.dart';
@@ -79,6 +79,12 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                 suffixIcon: Icons.keyboard_arrow_down_sharp,
                 title: 'Job Title',
                 readOnly: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select a job title';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 20),
               CommanInputField(
@@ -118,6 +124,12 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(companyNameFocusNode);
                 },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select an employment type';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 20),
               CommanInputField(
@@ -138,7 +150,7 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                         onSelect: (String value, int indexValue) {
                           setState(() {
                             selectedLocationTypeIndex = indexValue;
-                            widget.locationTypeTextFieldController.text= value;
+                            widget.locationTypeTextFieldController.text = value;
                           });
                           Navigator.pop(context, value);
                         },
@@ -156,6 +168,12 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(startDateFocusNode);
                 },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select a location type';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 20),
               CommanInputField(
@@ -169,7 +187,7 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                 focusNode: descriptionFocusNode,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Enter you Job Description';
+                    return 'Please enter a job description';
                   }
                   return null;
                 },

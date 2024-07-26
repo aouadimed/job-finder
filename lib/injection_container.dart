@@ -70,6 +70,12 @@ import 'package:cv_frontend/features/profil/presentation/bloc/project_bloc/proje
 import 'package:cv_frontend/features/profil/presentation/bloc/skill_bloc/skill_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
+import 'package:cv_frontend/features/recruiter_applications/data/data_source/company_remote_data_source.dart';
+import 'package:cv_frontend/features/recruiter_applications/data/repository/company_repository_impl.dart';
+import 'package:cv_frontend/features/recruiter_applications/domain/repository/company_repository.dart';
+import 'package:cv_frontend/features/recruiter_applications/domain/usecases/add_job_offer_use_case.dart';
+import 'package:cv_frontend/features/recruiter_applications/domain/usecases/get_company_use_case.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/company_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -400,6 +406,32 @@ Future<void> initializeDependencies() async {
 // Data Sources
   sl.registerLazySingleton<ProfilHeaderRemoteDataSource>(
     () => ProfilHeaderRemoteDataSourceImpl(
+      client: sl(),
+    ),
+  );
+
+/* ----------------------------------------------------- */
+/*
+ * CompanyData
+ */
+/* ----------------------------------------------------- */
+//bloc
+  sl.registerFactory(() => CompanyBloc(
+      createOrUpdateCompanyUseCase: sl(), getCompaniesUseCase: sl()));
+//use cases
+  sl.registerLazySingleton(
+      () => CreateOrUpdateCompanyUseCase(companyRepository: sl()));
+  sl.registerLazySingleton(() => GetCompaniesUseCase(companyRepository: sl()));
+//repositories
+  sl.registerLazySingleton<CompanyRepository>(
+    () => CompanyRepositoryImpl(
+      networkInfo: sl(),
+      companyRemoteDataSource: sl(),
+    ),
+  );
+// Data Sources
+  sl.registerLazySingleton<CompanyRemoteDataSource>(
+    () => CompanyRemoteDataSourceImpl(
       client: sl(),
     ),
   );

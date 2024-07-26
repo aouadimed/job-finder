@@ -1,5 +1,5 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
-import 'package:cv_frontend/features/home/presentation/pages/widgets/job_card.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/pages/widgets/job_card.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
 import 'package:cv_frontend/global/common_widget/text_form_field.dart';
 import 'package:flutter/material.dart';
