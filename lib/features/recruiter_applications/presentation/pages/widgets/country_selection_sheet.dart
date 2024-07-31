@@ -1,3 +1,4 @@
+import 'package:cv_frontend/global/common_widget/app_bar.dart';
 import 'package:cv_frontend/global/common_widget/text_form_field.dart';
 import 'package:flutter/material.dart';
 
@@ -47,8 +48,8 @@ class _CountrySelectionSheetState extends State<CountrySelectionSheet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Select Country"),
+      appBar: const GeneralAppBar(
+        titleText: "Select Country",
       ),
       body: SafeArea(
         child: Padding(

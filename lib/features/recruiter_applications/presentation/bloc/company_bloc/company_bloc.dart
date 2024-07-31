@@ -1,6 +1,6 @@
 import 'package:cv_frontend/features/recruiter_applications/data/models/company_model.dart';
-import 'package:cv_frontend/features/recruiter_applications/domain/usecases/add_job_offer_use_case.dart';
-import 'package:cv_frontend/features/recruiter_applications/domain/usecases/get_company_use_case.dart';
+import 'package:cv_frontend/features/recruiter_applications/domain/usecases/company_use_cases/add_update_company_use_case.dart';
+import 'package:cv_frontend/features/recruiter_applications/domain/usecases/company_use_cases/get_company_use_case.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

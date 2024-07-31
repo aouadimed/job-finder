@@ -58,6 +58,7 @@ dependencies:
   pin_code_fields: ^8.0.1
   file_picker: ^8.0.0+1
   path: ^1.8.0
+  skeletonizer: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -86,6 +87,8 @@ flutter:
   assets:
     - assets/images/
     - assets/animations/
+    - assets/icons/
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

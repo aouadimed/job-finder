@@ -1,7 +1,7 @@
 const String url = "10.0.2.2:5000";
 
 const String token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjVkZTExNTEwYzU4YjUzZGQ4ZTQ0YjciLCJpYXQiOjE3MjE5ODYzNTMsImV4cCI6MTcyMjA3Mjc1M30.y_34cYSUceT_Z_PnQKx2LslzOvX6IwZxXCgvU303360';
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjVkZTExNTEwYzU4YjUzZGQ4ZTQ0YjciLCJpYXQiOjE3MjI0MTc5ODMsImV4cCI6MTcyMjUwNDM4M30.9Olo3xQ7ivo_wLvBK1yoMAyBb2cDtkk3oTUi-ePKib0';
 //auth :
 const String loginBaseUrl = '/api/auth/login';
 const String registerBaseUrl = '/api/auth/register';
@@ -43,3 +43,7 @@ const String contactInfoUrl = '/api/contactinfo/contact-info';
 const String profilHeaderUrl = '/api/users/profil-header';
 //companyData
 const String companyData = '/api/company/company';
+//job offer
+const String jobOfferData = '/api/job-offers/job-offers';
+//job category
+const String jobcategoryData = '/api/job-category/job-category';

@@ -24,7 +24,7 @@ class GeneralAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: logo != null
           ? Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Image(image: logo!),
+              child: ClipRRect(borderRadius:BorderRadius.circular(10.0) ,child: Image(image: logo!)),
             )
           : IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black),

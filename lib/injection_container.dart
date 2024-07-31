@@ -71,11 +71,22 @@ import 'package:cv_frontend/features/profil/presentation/bloc/skill_bloc/skill_b
 import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
 import 'package:cv_frontend/features/recruiter_applications/data/data_source/company_remote_data_source.dart';
+import 'package:cv_frontend/features/recruiter_applications/data/data_source/job_category_remote_data_source.dart';
+import 'package:cv_frontend/features/recruiter_applications/data/data_source/job_offer_remote_data_source.dart';
 import 'package:cv_frontend/features/recruiter_applications/data/repository/company_repository_impl.dart';
+import 'package:cv_frontend/features/recruiter_applications/data/repository/job_category_repository_impl.dart';
+import 'package:cv_frontend/features/recruiter_applications/data/repository/job_offer_repository_impl.dart';
 import 'package:cv_frontend/features/recruiter_applications/domain/repository/company_repository.dart';
-import 'package:cv_frontend/features/recruiter_applications/domain/usecases/add_job_offer_use_case.dart';
-import 'package:cv_frontend/features/recruiter_applications/domain/usecases/get_company_use_case.dart';
-import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/company_bloc.dart';
+import 'package:cv_frontend/features/recruiter_applications/domain/repository/job_category_repository.dart';
+import 'package:cv_frontend/features/recruiter_applications/domain/repository/job_offer_repository.dart';
+import 'package:cv_frontend/features/recruiter_applications/domain/usecases/company_use_cases/add_update_company_use_case.dart';
+import 'package:cv_frontend/features/recruiter_applications/domain/usecases/company_use_cases/get_company_use_case.dart';
+import 'package:cv_frontend/features/recruiter_applications/domain/usecases/job_category_use_cases/get_job_category_use_case.dart';
+import 'package:cv_frontend/features/recruiter_applications/domain/usecases/job_offer_use_cases/add_job_offer_use_cases.dart';
+import 'package:cv_frontend/features/recruiter_applications/domain/usecases/job_offer_use_cases/get_list_job_offer_use_cases.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/company_bloc/company_bloc.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/job_category_bloc/job_category_bloc.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/job_offer_bloc/job_offer_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -432,6 +443,55 @@ Future<void> initializeDependencies() async {
 // Data Sources
   sl.registerLazySingleton<CompanyRemoteDataSource>(
     () => CompanyRemoteDataSourceImpl(
+      client: sl(),
+    ),
+  );
+  /* ----------------------------------------------------- */
+/*
+ * CompanyData
+ */
+/* ----------------------------------------------------- */
+//bloc
+  sl.registerFactory(
+      () => JobOfferBloc(addJobOfferUseCase: sl(), getJobOffersUseCase: sl()));
+//use cases
+  sl.registerLazySingleton(() => AddJobOfferUseCase(jobOfferRepository: sl()));
+  sl.registerLazySingleton(
+      () => GetListJobOfferUseCase(jobOfferRepository: sl()));
+
+//repositories
+  sl.registerLazySingleton<JobOfferRepository>(
+    () => JobOfferRepositoryImpl(
+      networkInfo: sl(),
+      jobOfferRemoteDataSource: sl(),
+    ),
+  );
+// Data Sources
+  sl.registerLazySingleton<JobOfferRemoteDataSource>(
+    () => JobOfferRemoteDataSourceImpl(
+      client: sl(),
+    ),
+  );
+
+  /* ----------------------------------------------------- */
+/*
+ * CompanyData
+ */
+/* ----------------------------------------------------- */
+//bloc
+  sl.registerFactory(
+      () => JobCategoryBloc(getJobCategoryUseCase: sl()));
+//use cases
+  sl.registerLazySingleton(() => GetJobCategoryUseCase(jobCategoryRepository: sl()));
+//repositories
+  sl.registerLazySingleton<JobCategoryRepository>(
+    () => JobCategoryRepositoryImpl(
+      networkInfo: sl(), jobCategoryRemoteDataSource: sl(),
+    ),
+  );
+// Data Sources
+  sl.registerLazySingleton<JobCategoryRemoteDataSource>(
+    () => JobCategoryRemoteDataSourceImpl(
       client: sl(),
     ),
   );

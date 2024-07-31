@@ -1,20 +1,22 @@
+import 'package:cv_frontend/features/recruiter_applications/data/models/job_category_model.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/job_category_bloc/job_category_bloc.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
+import 'package:cv_frontend/global/common_widget/loading_widget.dart';
 import 'package:cv_frontend/global/common_widget/text_form_field.dart';
-import 'package:cv_frontend/global/utils/job_category_data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class JobCategorySelectionSheet extends StatefulWidget {
-  final void Function(String, int, int) onSelect;
-  final List<JobCategory> list;
-  final int selectedCategoryIndex;
-  final int selectedSubcategoryIndex;
+  final void Function(String categoryId, String subcategoryId, String name)
+      onSelect;
+  final String selectedCategoryId;
+  final String selectedSubcategoryId;
 
   const JobCategorySelectionSheet({
     Key? key,
     required this.onSelect,
-    required this.list,
-    required this.selectedCategoryIndex,
-    required this.selectedSubcategoryIndex,
+    required this.selectedCategoryId,
+    required this.selectedSubcategoryId,
   }) : super(key: key);
 
   @override
@@ -24,39 +26,20 @@ class JobCategorySelectionSheet extends StatefulWidget {
 
 class _JobCategorySelectionSheetState extends State<JobCategorySelectionSheet> {
   final TextEditingController _searchController = TextEditingController();
-  List<MapEntry<String, List<int>>> _filteredSubcategories = [];
 
   @override
   void initState() {
     super.initState();
-    _filteredSubcategories = _getAllSubcategories(widget.list);
-    _searchController.addListener(() {
-      setState(() {
-        _filteredSubcategories = _getAllSubcategories(widget.list)
-            .where((subcategory) => subcategory.key
-                .toLowerCase()
-                .contains(_searchController.text.toLowerCase()))
-            .toList();
-      });
-    });
+    _searchController.addListener(_onSearchChanged);
+    _fetchJobCategories();
   }
 
-  List<MapEntry<String, List<int>>> _getAllSubcategories(
-      List<JobCategory> categories) {
-    List<MapEntry<String, List<int>>> subcategories = [];
-    for (int categoryIndex = 0;
-        categoryIndex < categories.length;
-        categoryIndex++) {
-      for (int subcategoryIndex = 0;
-          subcategoryIndex < categories[categoryIndex].subcategories.length;
-          subcategoryIndex++) {
-        String subcategory =
-            categories[categoryIndex].subcategories[subcategoryIndex];
-        subcategories
-            .add(MapEntry(subcategory, [categoryIndex, subcategoryIndex]));
-      }
-    }
-    return subcategories;
+  void _fetchJobCategories() {
+    context.read<JobCategoryBloc>().add(const GetJobCategoryEvent(searshQuery: ''));
+  }
+
+  void _onSearchChanged() {
+    context.read<JobCategoryBloc>().add(GetJobCategoryEvent(searshQuery: _searchController.text));
   }
 
   @override
@@ -67,26 +50,6 @@ class _JobCategorySelectionSheetState extends State<JobCategorySelectionSheet> {
 
   @override
   Widget build(BuildContext context) {
-    List<MapEntry<String, List<int>>> sortedSubcategories =
-        _filteredSubcategories;
-    if (widget.selectedCategoryIndex >= 0 &&
-        widget.selectedSubcategoryIndex >= 0) {
-      final selectedSubcategory = sortedSubcategories.firstWhere(
-        (subcategory) =>
-            subcategory.value[0] == widget.selectedCategoryIndex &&
-            subcategory.value[1] == widget.selectedSubcategoryIndex,
-        orElse: () => MapEntry('', [-1, -1]),
-      );
-      sortedSubcategories = [
-        if (selectedSubcategory.key.isNotEmpty) selectedSubcategory,
-        ...sortedSubcategories.where(
-          (subcategory) =>
-              !(subcategory.value[0] == widget.selectedCategoryIndex &&
-                  subcategory.value[1] == widget.selectedSubcategoryIndex),
-        ),
-      ];
-    }
-
     return Scaffold(
       appBar: const GeneralAppBar(
         titleText: "Select Job Category",
@@ -106,37 +69,131 @@ class _JobCategorySelectionSheetState extends State<JobCategorySelectionSheet> {
               ),
               const SizedBox(height: 20),
               Expanded(
-                child: ListView.builder(
-                  itemCount: sortedSubcategories.length,
-                  itemBuilder: (context, index) {
-                    final subcategory = sortedSubcategories[index].key;
-                    final categoryIndex = sortedSubcategories[index].value[0];
-                    final subcategoryIndex =
-                        sortedSubcategories[index].value[1];
-                    final isSelected =
-                        categoryIndex == widget.selectedCategoryIndex &&
-                            subcategoryIndex == widget.selectedSubcategoryIndex;
-                    return ListTile(
-                      title: Text(
-                        subcategory,
-                        style: TextStyle(
-                          fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.normal,
-                          color: isSelected
-                              ? Theme.of(context).primaryColor
-                              : Colors.black,
-                        ),
-                      ),
-                      leading: isSelected
-                          ? Icon(Icons.check,
-                              color: Theme.of(context).primaryColor)
-                          : null,
-                      onTap: () {
-                        widget.onSelect(
-                            subcategory, categoryIndex, subcategoryIndex);
-                        Navigator.pop(context);
-                      },
-                    );
+                child: BlocBuilder<JobCategoryBloc, JobCategoryState>(
+                  builder: (context, state) {
+                    if (state is JobCategoryLoading) {
+                      return const Center(child: LoadingWidget());
+                    } else if (state is JobCategorySuccess) {
+                      final jobCategories = state.jobCategoryModel;
+                      final filteredCategories = _getFilteredCategories(
+                          jobCategories, _searchController.text);
+
+                      if (filteredCategories.isEmpty) {
+                        return const Center(child: Text('No data available.'));
+                      }
+
+                      JobCategoryModel? selectedCategory;
+                      Subcategory? selectedSubcategory;
+
+                      if (widget.selectedCategoryId.isNotEmpty &&
+                          widget.selectedSubcategoryId.isNotEmpty) {
+                        selectedCategory = filteredCategories.firstWhere(
+                          (category) => category.subcategories!.any(
+                              (subcategory) =>
+                                  subcategory.id ==
+                                  widget.selectedSubcategoryId),
+                          orElse: () => JobCategoryModel(name: '', subcategories: []),
+                        );
+
+                        selectedSubcategory = selectedCategory.subcategories!
+                            .firstWhere(
+                                (subcategory) =>
+                                    subcategory.id ==
+                                    widget.selectedSubcategoryId,
+                                orElse: () => Subcategory(name: '', id: ''));
+                      }
+
+                      return ListView.builder(
+                        itemCount: filteredCategories.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index == 0 &&
+                              selectedSubcategory != null &&
+                              selectedSubcategory.id?.isNotEmpty == true) {
+                            return ListTile(
+                              title: Text(
+                                selectedSubcategory.name ?? '',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                              leading: Icon(Icons.check,
+                                  color: Theme.of(context).primaryColor),
+                              onTap: () {
+                                final categoryId = selectedCategory?.id ?? '';
+                                final subcategoryId =
+                                    selectedSubcategory?.id ?? '';
+                                final subcategoryName =
+                                    selectedSubcategory?.name ?? '';
+
+                                if (categoryId.isNotEmpty &&
+                                    subcategoryId.isNotEmpty &&
+                                    subcategoryName.isNotEmpty) {
+                                  widget.onSelect(categoryId, subcategoryId, subcategoryName);
+                                  Navigator.pop(context);
+                                }
+                              },
+                            );
+                          }
+
+                          final categoryIndex =
+                              selectedSubcategory == null ? index : index - 1;
+                          if (categoryIndex < 0 || categoryIndex >= filteredCategories.length) {
+                            return Container(); // Avoiding out-of-bound access
+                          }
+
+                          final category = filteredCategories[categoryIndex];
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Text(
+                                  category.name ?? '',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                              ...category.subcategories!.map((subcategory) {
+                                final isSelected = subcategory.id ==
+                                    widget.selectedSubcategoryId;
+                                return ListTile(
+                                  title: Text(
+                                    subcategory.name ?? '',
+                                    style: TextStyle(
+                                      fontWeight: isSelected
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      color: isSelected
+                                          ? Theme.of(context).primaryColor
+                                          : Colors.black,
+                                    ),
+                                  ),
+                                  leading: isSelected
+                                      ? Icon(Icons.check, color: Theme.of(context).primaryColor)
+                                      : null,
+                                  onTap: () {
+                                    widget.onSelect(
+                                        category.id ?? '',
+                                        subcategory.id ?? '',
+                                        subcategory.name ?? '');
+                                    Navigator.pop(context);
+                                  },
+                                );
+                              }).toList(),
+                            ],
+                          );
+                        },
+                      );
+                    } else if (state is JobCategoryFailure) {
+                      return Center(child: Text(state.message));
+                    } else {
+                      return const Center(child: Text('No data available.'));
+                    }
                   },
                 ),
               ),
@@ -145,5 +202,18 @@ class _JobCategorySelectionSheetState extends State<JobCategorySelectionSheet> {
         ),
       ),
     );
+  }
+
+  List<JobCategoryModel> _getFilteredCategories(
+      List<JobCategoryModel> categories, String query) {
+    if (query.isEmpty) {
+      return categories;
+    }
+    return categories
+        .where((category) =>
+            (category.name?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+            category.subcategories!.any((subcategory) =>
+                subcategory.name?.toLowerCase().contains(query.toLowerCase()) ?? false))
+        .toList();
   }
 }

@@ -140,6 +140,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
       },
     );
   }
+
   void goToProfilScreen(BuildContext context) async {
     await Navigator.pushNamed(
       context,

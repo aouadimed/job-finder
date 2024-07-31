@@ -10,7 +10,9 @@ import 'package:cv_frontend/features/forgot_password/presentation/pages/forgot_p
 import 'package:cv_frontend/features/job_seeker_home/presentation/pages/job_seeker_home_screen.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/apply_with_cv_screen.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/job_details_screen.dart';
-import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/company_bloc.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/company_bloc/company_bloc.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/job_offer_bloc/job_offer_bloc.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/pages/applications_screen.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/pages/company_profil_section.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/pages/job_offer_setup_screen.dart';
 import 'package:cv_frontend/features/onboarding/presentation/on_boarding_screen.dart';
@@ -57,6 +59,7 @@ const String jobOfferSetup = '/jobOfferSetup';
 const String jobDetailsPage = '/jobDetailsPage';
 const String applyWithCvScreen = '/applyWithCvScreen';
 const String companyProfilScreen = '/companyProfilScreen';
+const String applicationsScreen = '/applicationsScreen';
 
 Route<dynamic> controller(RouteSettings settings) {
   switch (settings.name) {
@@ -86,7 +89,10 @@ Route<dynamic> controller(RouteSettings settings) {
       );
     case jobOfferSetup:
       return MaterialPageRoute(
-        builder: (context) => const JobOfferSetupScreen(),
+        builder: (context) => BlocProvider(
+          create: (context) => sl<JobOfferBloc>(),
+          child: const JobOfferSetupScreen(),
+        ),
       );
     case jobDetailsPage:
       return MaterialPageRoute(
@@ -104,6 +110,13 @@ Route<dynamic> controller(RouteSettings settings) {
         builder: (context) => BlocProvider(
           create: (context) => sl<CompanyBloc>()..add(GetCompaniesEvent()),
           child: const CompanyProfilScreen(),
+        ),
+      );
+    case applicationsScreen:
+      return MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (context) => sl<JobOfferBloc>()..add(const GetJobOffersEvent()),
+          child: const ApplicationScreen(),
         ),
       );
     case simpleProfil:

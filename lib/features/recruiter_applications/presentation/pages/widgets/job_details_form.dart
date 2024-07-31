@@ -1,11 +1,13 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/job_category_bloc/job_category_bloc.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/pages/widgets/job_category_selection.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/selection_widgets.dart/emp_type_sheet.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/selection_widgets.dart/location_type_sheet.dart';
 import 'package:cv_frontend/global/common_widget/common_text_filed.dart';
 import 'package:cv_frontend/global/utils/emploments_type_data.dart';
-import 'package:cv_frontend/global/utils/job_category_data.dart';
+import 'package:cv_frontend/injection_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class JobDetailsPage extends StatefulWidget {
   final GlobalKey<FormState> formKey;
@@ -13,6 +15,10 @@ class JobDetailsPage extends StatefulWidget {
   final TextEditingController empTypeTextFieldController;
   final TextEditingController locationTypeTextFieldController;
   final TextEditingController jobDescriptionController;
+  final void Function(String categoryIndex, String subcategoryIndex)
+      onCategorySelected;
+  final void Function(int index) onEmploymentTypeSelected;
+  final void Function(int index) onLocationTypeSelected;
 
   const JobDetailsPage({
     Key? key,
@@ -21,6 +27,9 @@ class JobDetailsPage extends StatefulWidget {
     required this.empTypeTextFieldController,
     required this.locationTypeTextFieldController,
     required this.jobDescriptionController,
+    required this.onCategorySelected,
+    required this.onEmploymentTypeSelected,
+    required this.onLocationTypeSelected,
   }) : super(key: key);
 
   @override
@@ -28,10 +37,10 @@ class JobDetailsPage extends StatefulWidget {
 }
 
 class _JobDetailsPageState extends State<JobDetailsPage> {
-  int selectedEmplomentTypeIndex = 0;
+  int selectedEmploymentTypeIndex = 0;
   int selectedLocationTypeIndex = 0;
-  int selectedCategoryIndex = -1;
-  int selectedSubcategoryIndex = -1;
+  String selectedCategoryId = "";
+  String selectedSubcategoryId = "";
   final FocusNode empTypeFocusNode = FocusNode();
   final FocusNode companyNameFocusNode = FocusNode();
   final FocusNode locationTypeFocusNode = FocusNode();
@@ -59,19 +68,23 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                     useSafeArea: true,
                     elevation: 0,
                     builder: (BuildContext context) {
-                      return JobCategorySelectionSheet(
-                        onSelect: (String value, int categoryIndex,
-                            int subcategoryIndex) {
-                          setState(() {
-                            widget.jobTitleController.text = value;
-                            selectedCategoryIndex = categoryIndex;
-                            selectedSubcategoryIndex = subcategoryIndex;
-                            print("$categoryIndex ,$subcategoryIndex");
-                          });
-                        },
-                        list: jobCategories,
-                        selectedCategoryIndex: selectedCategoryIndex,
-                        selectedSubcategoryIndex: selectedSubcategoryIndex,
+                      return BlocProvider(
+                        create: (context) =>  sl<JobCategoryBloc>()..add(const GetJobCategoryEvent(searshQuery: '')),
+                        child: JobCategorySelectionSheet(
+                          onSelect: (String categoryId, String subcategoryId,String name) {
+                            setState(() {
+                              widget.jobTitleController.text = name;
+                              selectedCategoryId = categoryId;
+                              selectedSubcategoryId = subcategoryId;
+                              widget.onCategorySelected(
+                                  categoryId, subcategoryId);
+                              print(
+                                  "categoryId $categoryId , subcategoryId $subcategoryId");
+                            });
+                          },
+                          selectedCategoryId: selectedCategoryId,
+                          selectedSubcategoryId: selectedSubcategoryId,
+                        ),
                       );
                     },
                   );
@@ -101,13 +114,14 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                       return SelectionSheet(
                         onSelect: (String value, int indexValue) {
                           setState(() {
-                            selectedEmplomentTypeIndex = indexValue;
+                            selectedEmploymentTypeIndex = indexValue;
                             widget.empTypeTextFieldController.text = value;
+                            widget.onEmploymentTypeSelected(indexValue);
                           });
 
                           Navigator.pop(context, value);
                         },
-                        selectedIndex: selectedEmplomentTypeIndex,
+                        selectedIndex: selectedEmploymentTypeIndex,
                         list: employmentTypes,
                       );
                     },
@@ -151,6 +165,7 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                           setState(() {
                             selectedLocationTypeIndex = indexValue;
                             widget.locationTypeTextFieldController.text = value;
+                            widget.onLocationTypeSelected(indexValue);
                           });
                           Navigator.pop(context, value);
                         },

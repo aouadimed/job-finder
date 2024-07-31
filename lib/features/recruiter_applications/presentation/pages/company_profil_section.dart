@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:cv_frontend/features/recruiter_applications/data/models/company_model.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/company_bloc/company_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/company_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/common_widget/common_forms_screen.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/pages/widgets/company_profil_form.dart';
 import 'package:cv_frontend/core/constants/appcolors.dart';
@@ -30,6 +30,13 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
 
   File? _selectedLogoFile;
   String? _selectedLogoUrl;
+  File? _initialLogoFile;
+  String? _initialLogoUrl;
+  String? _initialCompanyName;
+  String? _initialAboutCompany;
+  String? _initialWebsite;
+  String? _initialCountry;
+  List<String> _initialAddresses = [];
   bool _isImageError = false;
 
   @override
@@ -37,6 +44,8 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
     super.initState();
     _selectedLogoFile = widget.logoFile;
     _selectedLogoUrl = widget.logoUrl;
+    _initialLogoFile = widget.logoFile;
+    _initialLogoUrl = widget.logoUrl;
 
     _companyNameController = TextEditingController();
     _aboutCompanyController = TextEditingController();
@@ -64,30 +73,55 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
 
   void _revertChanges() {
     setState(() {
-      _selectedLogoFile = widget.logoFile;
-      _selectedLogoUrl = widget.logoUrl;
+      _selectedLogoFile = _initialLogoFile;
+      _selectedLogoUrl = _initialLogoUrl;
+      _companyNameController.text = _initialCompanyName ?? '';
+      _aboutCompanyController.text = _initialAboutCompany ?? '';
+      _websiteController.text = _initialWebsite ?? '';
+      _countryController.text = _initialCountry ?? '';
+      for (var i = 0; i < _addressControllers.length; i++) {
+        _addressControllers[i].text = _initialAddresses.length > i ? _initialAddresses[i] : '';
+      }
     });
   }
 
   Future<void> _showSaveConfirmationDialog(
       BuildContext context, VoidCallback onSave) async {
-    QuickAlert.show(
-      context: context,
-      type: QuickAlertType.confirm,
-      title: 'Confirm Save',
-      text: 'Are you sure you want to save changes?',
-      confirmBtnText: 'Yes',
-      cancelBtnText: 'No',
-      onConfirmBtnTap: () {
-        Navigator.pop(context);
-        onSave();
-        _refresh();
-      },
-      onCancelBtnTap: () {
-        Navigator.pop(context);
-        _revertChanges();
-      },
-    );
+    if (_isDataChanged()) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.confirm,
+        title: 'Confirm Save',
+        text: 'Are you sure you want to save changes?',
+        confirmBtnText: 'Yes',
+        cancelBtnText: 'No',
+        onConfirmBtnTap: () {
+          Navigator.pop(context);
+          onSave();
+          _refresh();
+        },
+        onCancelBtnTap: () {
+          Navigator.pop(context);
+          _revertChanges();
+        },
+      );
+    } else {
+      showSnackBar(
+        context: context,
+        message: "No changes made to save.",
+        backgroundColor: Colors.yellow[700],
+      );
+    }
+  }
+
+  bool _isDataChanged() {
+    return _selectedLogoFile != _initialLogoFile ||
+        _selectedLogoUrl != _initialLogoUrl ||
+        _companyNameController.text != _initialCompanyName ||
+        _aboutCompanyController.text != _initialAboutCompany ||
+        _websiteController.text != _initialWebsite ||
+        _countryController.text != _initialCountry ||
+        _addressControllers.any((controller) => controller.text.isNotEmpty && !_initialAddresses.contains(controller.text));
   }
 
   @override
@@ -103,6 +137,12 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
               backgroundColor: greenColor);
         } else if (state is CompaniesLoaded) {
           final company = state.companies;
+          _initialCompanyName = company.companyName;
+          _initialAboutCompany = company.aboutCompany;
+          _initialWebsite = company.website;
+          _initialCountry = company.country;
+          _initialAddresses = company.addresses!.map((e) => e.address!).toList();
+
           _companyNameController.text = company.companyName ?? '';
           _aboutCompanyController.text = company.aboutCompany ?? '';
           _websiteController.text = company.website ?? '';
@@ -115,6 +155,7 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
           }
 
           _selectedLogoUrl = company.logoName;
+          _initialLogoUrl = company.logoName;
         }
       },
       child: BlocBuilder<CompanyBloc, CompanyState>(

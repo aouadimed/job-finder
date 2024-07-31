@@ -57,7 +57,7 @@ class JobCard extends StatelessWidget {
               Center(
                 child: Text(
                   companyName,
-                  style: const TextStyle(fontSize: 18, color: Colors.blue),
+                  style:  TextStyle(fontSize: 18, color: primaryColor),
                 ),
               ),
               const SizedBox(height: 16),

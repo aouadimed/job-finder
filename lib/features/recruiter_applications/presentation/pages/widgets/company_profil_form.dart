@@ -50,8 +50,21 @@ class _CompanyProfilFormState extends State<CompanyProfilForm> {
   }
 
   @override
+  void didUpdateWidget(covariant CompanyProfilForm oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.logoFile != oldWidget.logoFile || widget.logoUrl != oldWidget.logoUrl) {
+      setState(() {
+        _logoFile = widget.logoFile;
+        _logoUrl = widget.logoUrl;
+      });
+    }
+  }
+
+  @override
   void dispose() {
-    _focusNodes.forEach((focusNode) => focusNode.dispose());
+    for (var focusNode in _focusNodes) {
+      focusNode.dispose();
+    }
     super.dispose();
   }
 
@@ -167,33 +180,14 @@ class _CompanyProfilFormState extends State<CompanyProfilForm> {
               ),
               const SizedBox(height: 20),
               InputField(
-                controller: widget.aboutCompanyController,
-                labelText: "About Company",
-                prefixIcon: null,
-                textInputType: TextInputType.multiline,
-                textInputAction: TextInputAction.next,
-                focusNode: _focusNodes[1],
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_focusNodes[2]);
-                },
-                maxLines: 5,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter details about the company';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              InputField(
                 controller: widget.websiteController,
                 labelText: "Website",
                 prefixIcon: null,
                 textInputType: TextInputType.url,
                 textInputAction: TextInputAction.next,
-                focusNode: _focusNodes[2],
+                focusNode: _focusNodes[1],
                 onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_focusNodes[3]);
+                  FocusScope.of(context).requestFocus(_focusNodes[2]);
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -209,7 +203,7 @@ class _CompanyProfilFormState extends State<CompanyProfilForm> {
                 prefixIcon: const Icon(Icons.public),
                 suffixIcon: const Icon(Icons.keyboard_arrow_down_sharp),
                 readOnly: true,
-                focusNode: _focusNodes[3],
+                focusNode: _focusNodes[2],
                 onTap: () async {
                   await showModalBottomSheet<String>(
                     context: context,
@@ -229,7 +223,7 @@ class _CompanyProfilFormState extends State<CompanyProfilForm> {
                   );
                 },
                 onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_focusNodes[4]);
+                  FocusScope.of(context).requestFocus(_focusNodes[3]);
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -299,9 +293,25 @@ class _CompanyProfilFormState extends State<CompanyProfilForm> {
                   } else {
                     setState(() {
                       widget.addressControllers.add(TextEditingController());
-                      _focusNodes.add(FocusNode()); 
+                      _focusNodes.add(FocusNode());
                     });
                   }
+                },
+              ),
+              const SizedBox(height: 20),
+              InputField(
+                controller: widget.aboutCompanyController,
+                labelText: "About Company",
+                prefixIcon: null,
+                textInputType: TextInputType.multiline,
+                textInputAction: TextInputAction.newline,
+                focusNode: _focusNodes.last,
+                maxLines: 5,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter details about the company';
+                  }
+                  return null;
                 },
               ),
             ],
@@ -311,6 +321,3 @@ class _CompanyProfilFormState extends State<CompanyProfilForm> {
     );
   }
 }
-
-
-
