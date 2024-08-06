@@ -1,11 +1,22 @@
+import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/core/services/app_routes.dart';
 import 'package:cv_frontend/core/services/profil_screen_route.dart';
+import 'package:cv_frontend/features/job_details_and_apply/data/models/job_offer_details.dart';
+import 'package:cv_frontend/features/job_details_and_apply/presentation/bloc/job_detail_bloc/job_detail_bloc.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/widget/apply_job_sheet.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/widget/chip_widget.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/widget/job_detail_header.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/save_job_bloc/save_job_bloc.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
 import 'package:cv_frontend/global/common_widget/big_button.dart';
+import 'package:cv_frontend/global/common_widget/loading_widget.dart';
+import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
+import 'package:cv_frontend/global/utils/emploments_type_data.dart';
+import 'package:cv_frontend/global/utils/functions.dart';
+import 'package:cv_frontend/global/utils/location_type_data.dart';
+import 'package:cv_frontend/injection_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class JobDetailsScreen extends StatefulWidget {
   const JobDetailsScreen({super.key});
@@ -15,117 +26,161 @@ class JobDetailsScreen extends StatefulWidget {
 }
 
 class _JobDetailsScreenState extends State<JobDetailsScreen> {
-  List<String> jobDetails = ['Full Time', 'Onsite'];
-  List<String> skills = [
-    'Creative Thinking',
-    'UI/UX Design',
-    'Figma',
-    'Graphic Design',
-    'Web Design',
-    'Layout'
-  ];
+  JobOfferDetailsModel? jobOfferDetailsModel;
+  List<String> jobDetails = [];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: GeneralAppBar(
-        rightIcon: Icons.bookmark_border,
-        rightIconOnPressed: () {},
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              JobCard(
-                companyName: 'Google LLC',
-                jobTitle: 'UI/UX Designer',
-                location: 'California, United States',
-                jobDetails: jobDetails,
-                postDate: 'Posted 10 days ago, ends in 31 Dec.',
-                companyLogoUrl: 'https://logo.clearbit.com/google.com',
+    return BlocProvider(
+      create: (context) => sl<SavedJobBloc>(),
+      child: BlocListener<JobDetailBloc, JobDetailState>(
+        listener: (context, state) {
+          if (state is JobDetailFailure) {
+            showSnackBar(context: context, message: state.message);
+          } else if (state is JobDetailSuccess) {
+            setState(() {
+              jobOfferDetailsModel = state.jobOfferDetailsModel;
+              jobDetails = [
+                jobOfferDetailsModel?.employmentTypeIndex != null
+                    ? employmentTypes[jobOfferDetailsModel!.employmentTypeIndex]
+                    : 'Unknown Employment Type',
+                jobOfferDetailsModel?.locationTypeIndex != null
+                    ? locationTypes[jobOfferDetailsModel!.locationTypeIndex]
+                    : 'Unknown Location Type',
+              ];
+
+              // Check if the job is already saved
+              context.read<SavedJobBloc>().add(
+                    CheckSavedJobEvent(id: jobOfferDetailsModel!.id),
+                  );
+            });
+          }
+        },
+        child: BlocBuilder<JobDetailBloc, JobDetailState>(
+          builder: (context, state) {
+            return Scaffold(
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(kToolbarHeight),
+                child: BlocBuilder<SavedJobBloc, SavedJobState>(
+                  builder: (context, savedState) {
+                    bool isSaved = false;
+                    if (savedState is SavedJobCheckSuccess) {
+                      isSaved = savedState.isSaved;
+                    } else if (savedState is SavedJobSaveSuccess) {
+                      isSaved = savedState.isSaved;
+                    }
+
+                    return GeneralAppBar(
+                      rightIconColor: primaryColor,
+                      rightIcon:
+                          isSaved ? Icons.bookmark : Icons.bookmark_border,
+                      rightIconOnPressed: () {
+                        if (isSaved) {
+                          context.read<SavedJobBloc>().add(
+                                RemoveSavedJobEvent(
+                                    id: jobOfferDetailsModel!.id),
+                              );
+                        } else {
+                          context.read<SavedJobBloc>().add(
+                                SaveJobOfferEvent(id: jobOfferDetailsModel!.id),
+                              );
+                        }
+                      },
+                    );
+                  },
+                ),
               ),
-              const SizedBox(height: 16),
-              const Divider(height: 32),
-              const Text(
-                'Job Description:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                '• Able to run design sprint to deliver the best user experience based on research.\n'
-                '• Able to lead a team, delegate, & initiative.\n'
-                '• Able to mold the junior designer to strategize how certain feature needs to be collected.\n'
-                '• Able to aggregate and be data minded on the decision that\'s taking place.',
-              ),
-              const Divider(height: 32),
-              const Text(
-                'Minimum Qualifications:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                '• Experience as UI/UX Designer for 2+ years.\n'
-                '• Use platform Figma, Sketch, and Miro.\n'
-                '• Ability to analyze and convert numerical design sprints into UI/UX.\n'
-                '• Have experience in relevant B2C user centric products previously.',
-              ),
-              const Divider(height: 32),
-              const Text(
-                'Perks and Benefits:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                '• Medical / Health Insurance\n'
-                '• Medical, Prescription, or Vision Plans\n'
-                '• Performance Bonus\n'
-                '• Paid Sick Leave\n'
-                '• Paid Vacation Leave\n'
-                '• Transportation Allowances',
-              ),
-              const Divider(height: 32),
-              const Text(
-                'Required Skills:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              ChipWidget(
-                items: skills,
-              ),
-              const Divider(height: 32),
-              const Text(
-                'About:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Google LLC is an American multinational technology company that focuses on search engine technology, online advertising, cloud computing, computer software, quantum computing, e-commerce, artificial intelligence, and consumer electronics.\n\n'
-                'Google was founded on September 4, 1998, by Larry Page and Sergey Brin while they were Ph.D. students at Stanford University in California.',
-              ),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: BigButton(
-          onPressed: () async {
-            await showModalBottomSheet<Map<String, int>>(
-              elevation: 0,
-              context: context,
-              builder: (context) => JobApplySheet(
-                onSelectWithCv: () {
-                  goToApplyWithCvScreen(context);
-                },
-                onSelectWithProfil: () {
-                  goToProfilScreen(context);
-                },
+              body: state is JobDetailLoading
+                  ? const Center(child: LoadingWidget())
+                  : jobOfferDetailsModel == null
+                      ? const Center(child: Text('No job details available.'))
+                      : SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                JobCard(
+                                  companyName:
+                                      jobOfferDetailsModel!.companyName,
+                                  jobTitle:
+                                      jobOfferDetailsModel!.subcategoryName,
+                                  location:
+                                      jobOfferDetailsModel!.companyCountry,
+                                  jobDetails: jobDetails,
+                                  postDate:
+                                      'Posted ${timeAgo(DateTime.parse(jobOfferDetailsModel!.createdAt))}',
+                                  companyLogoUrl:
+                                      jobOfferDetailsModel!.logoName,
+                                ),
+                                const Divider(height: 32),
+                                const Text(
+                                  'Job Description:',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 8),
+                                ...formatBulletPoints(
+                                        jobOfferDetailsModel!.jobDescription)
+                                    .map((line) => Text(line)),
+                                const Divider(height: 32),
+                                const Text(
+                                  'Minimum Qualifications:',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 8),
+                                ...formatBulletPoints(jobOfferDetailsModel!
+                                        .minimumQualifications)
+                                    .map((line) => Text(line)),
+                                const Divider(height: 32),
+                                const Text(
+                                  'Required Skills:',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 8),
+                                ChipWidget(
+                                  items: jobOfferDetailsModel!.requiredSkills,
+                                ),
+                                const Divider(height: 32),
+                                const Text(
+                                  'About:',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(jobOfferDetailsModel!.companyAbout),
+                              ],
+                            ),
+                          ),
+                        ),
+              bottomNavigationBar: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: BigButton(
+                  onPressed: () async {
+                    await showModalBottomSheet<Map<String, int>>(
+                      elevation: 0,
+                      context: context,
+                      builder: (context) => JobApplySheet(
+                        onSelectWithCv: () {
+                          goToApplyWithCvScreen(context);
+                        },
+                        onSelectWithProfil: () {
+                          goToProfilScreen(context);
+                        },
+                      ),
+                    );
+                  },
+                  text: 'Apply',
+                ),
               ),
             );
           },
-          text: 'Apply',
         ),
       ),
     );
@@ -136,7 +191,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
       context,
       applyWithCvScreen,
       arguments: {
-        'jobOfferId': 'some-id-cv',
+        'jobOfferId': jobOfferDetailsModel!.id,
       },
     );
   }
@@ -147,7 +202,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
       profilScreen,
       arguments: ProfilScreenArguments(
         isApplyForJob: true,
-        id: 'some-id',
+        id: jobOfferDetailsModel!.id,
       ),
     );
   }

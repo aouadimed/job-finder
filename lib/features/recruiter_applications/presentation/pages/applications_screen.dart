@@ -6,7 +6,6 @@ import 'package:cv_frontend/features/recruiter_applications/presentation/pages/w
 import 'package:cv_frontend/features/recruiter_applications/presentation/pages/widgets/vacancies_card.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
 import 'package:cv_frontend/global/common_widget/big_button.dart';
-import 'package:cv_frontend/global/common_widget/loading_widget.dart';
 import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
 import 'package:cv_frontend/global/common_widget/text_form_field.dart';
 import 'package:cv_frontend/global/utils/emploments_type_data.dart';

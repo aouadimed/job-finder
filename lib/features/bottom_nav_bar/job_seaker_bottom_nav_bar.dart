@@ -1,4 +1,5 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
+import 'package:cv_frontend/core/services/home_screen_route.dart';
 import 'package:cv_frontend/core/services/profil_screen_route.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/pages/job_seeker_home_screen.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/pages/job_offer_setup_screen.dart';
@@ -15,10 +16,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    const HomeScreen(),
-    const JobOfferSetupScreen(),
-    const HomeScreen(),
-    const HomeScreen(),
+    homeScreenProvider(),
+    homeScreenProvider(),
+    homeScreenProvider(),
+    homeScreenProvider(),
     profilScreenProvider(null)
   ];
 
@@ -28,11 +29,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
     });
   }
 
-   Icon _getIcon(int index, IconData filledIcon, IconData outlinedIcon) {
+  Icon _getIcon(int index, IconData filledIcon, IconData outlinedIcon) {
     return Icon(_currentIndex == index ? filledIcon : outlinedIcon);
   }
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_currentIndex],
@@ -45,9 +46,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
         selectedItemColor: primaryColor,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
-        items:  [
+        items: [
           BottomNavigationBarItem(
-            icon: _getIcon(0, Icons.home , Icons.home_outlined),
+            icon: _getIcon(0, Icons.home, Icons.home_outlined),
             label: 'Home',
           ),
           BottomNavigationBarItem(
@@ -55,7 +56,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
             label: 'Saved Jobs',
           ),
           BottomNavigationBarItem(
-            icon: _getIcon(2, Icons.business_center, Icons.business_center_outlined),
+            icon: _getIcon(
+                2, Icons.business_center, Icons.business_center_outlined),
             label: 'Applications',
           ),
           BottomNavigationBarItem(
@@ -67,7 +69,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
             label: 'Profile',
           ),
         ],
-        selectedLabelStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.normal),
+        selectedLabelStyle:
+            const TextStyle(fontSize: 10, fontWeight: FontWeight.normal),
         unselectedLabelStyle: const TextStyle(fontSize: 8),
       ),
     );

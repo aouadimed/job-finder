@@ -4,7 +4,7 @@ import 'package:cv_frontend/global/common_widget/big_button.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/widget/apply_with_cv.dart';
 
 class ApplyWithCVScreen extends StatefulWidget {
-  ApplyWithCVScreen({super.key});
+  const ApplyWithCVScreen({super.key});
 
   @override
   State<ApplyWithCVScreen> createState() => _ApplyWithCVScreenState();

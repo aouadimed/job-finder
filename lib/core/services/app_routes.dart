@@ -1,3 +1,4 @@
+import 'package:cv_frontend/core/services/home_screen_route.dart';
 import 'package:cv_frontend/core/services/profil_screen_route.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/account_setup/pages/country_screen.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/account_setup/pages/profile_finish.dart';
@@ -73,7 +74,7 @@ Route<dynamic> controller(RouteSettings settings) {
       );
     case homeScreen:
       return MaterialPageRoute(
-        builder: (context) => const HomeScreen(),
+        builder: (context) => homeScreenProvider(),
       );
     case loginScreen:
       return MaterialPageRoute(

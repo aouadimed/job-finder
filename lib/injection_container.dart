@@ -10,6 +10,28 @@ import 'package:cv_frontend/features/forgot_password/domain/usecases/change_pass
 import 'package:cv_frontend/features/forgot_password/domain/usecases/check_email_use_case.dart';
 import 'package:cv_frontend/features/forgot_password/domain/usecases/code_verification_use_case.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/bloc/forgot_password_bloc.dart';
+import 'package:cv_frontend/features/job_details_and_apply/data/data_source/job_details_remote_data_source.dart';
+import 'package:cv_frontend/features/job_details_and_apply/data/repository/job_offer_detail_repository_impl.dart';
+import 'package:cv_frontend/features/job_details_and_apply/domain/repository/job_details_repository.dart';
+import 'package:cv_frontend/features/job_details_and_apply/domain/usecases/get_job_offer_detail.dart';
+import 'package:cv_frontend/features/job_details_and_apply/presentation/bloc/job_detail_bloc/job_detail_bloc.dart';
+import 'package:cv_frontend/features/job_seeker_home/data/data_source/category_remote_data_source.dart';
+import 'package:cv_frontend/features/job_seeker_home/data/data_source/home_remote_data_source.dart';
+import 'package:cv_frontend/features/job_seeker_home/data/data_source/save_job_remote_data_source.dart';
+import 'package:cv_frontend/features/job_seeker_home/data/repository/category_repository_impl.dart';
+import 'package:cv_frontend/features/job_seeker_home/data/repository/home_repository_impl.dart';
+import 'package:cv_frontend/features/job_seeker_home/data/repository/save_job_repository.dart';
+import 'package:cv_frontend/features/job_seeker_home/domain/repository/category_repository.dart';
+import 'package:cv_frontend/features/job_seeker_home/domain/repository/home_repository.dart';
+import 'package:cv_frontend/features/job_seeker_home/domain/repository/save_job_repository.dart';
+import 'package:cv_frontend/features/job_seeker_home/domain/usecases/check_saved_job_use_case.dart';
+import 'package:cv_frontend/features/job_seeker_home/domain/usecases/get_categorys_use_case.dart';
+import 'package:cv_frontend/features/job_seeker_home/domain/usecases/get_recent_jobs_use_case.dart';
+import 'package:cv_frontend/features/job_seeker_home/domain/usecases/remove_saved_job_case.dart';
+import 'package:cv_frontend/features/job_seeker_home/domain/usecases/save_job_offer_use_case.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/category_bloc/category_bloc.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/home_bloc/home_bloc.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/save_job_bloc/save_job_bloc.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/contact_info_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/edcation_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/language_remote_data_source.dart';
@@ -448,7 +470,7 @@ Future<void> initializeDependencies() async {
   );
   /* ----------------------------------------------------- */
 /*
- * CompanyData
+ * job offer
  */
 /* ----------------------------------------------------- */
 //bloc
@@ -475,23 +497,121 @@ Future<void> initializeDependencies() async {
 
   /* ----------------------------------------------------- */
 /*
- * CompanyData
+ * jobCategorys
  */
 /* ----------------------------------------------------- */
 //bloc
-  sl.registerFactory(
-      () => JobCategoryBloc(getJobCategoryUseCase: sl()));
+  sl.registerFactory(() => JobCategoryBloc(getJobCategoryUseCase: sl()));
 //use cases
-  sl.registerLazySingleton(() => GetJobCategoryUseCase(jobCategoryRepository: sl()));
+  sl.registerLazySingleton(
+      () => GetJobCategoryUseCase(jobCategoryRepository: sl()));
 //repositories
   sl.registerLazySingleton<JobCategoryRepository>(
     () => JobCategoryRepositoryImpl(
-      networkInfo: sl(), jobCategoryRemoteDataSource: sl(),
+      networkInfo: sl(),
+      jobCategoryRemoteDataSource: sl(),
     ),
   );
 // Data Sources
   sl.registerLazySingleton<JobCategoryRemoteDataSource>(
     () => JobCategoryRemoteDataSourceImpl(
+      client: sl(),
+    ),
+  );
+  /* ----------------------------------------------------- */
+/*
+ * Category selction
+ */
+/* ----------------------------------------------------- */
+//bloc
+  sl.registerFactory(() => CategoryBloc(getJobCategorysUse: sl()));
+//use cases
+  sl.registerLazySingleton(
+      () => GetCategoryssUsecase(categoryRepository: sl()));
+//repositories
+  sl.registerLazySingleton<CategoryRepository>(
+    () => CategoryRepositoryImpl(
+      networkInfo: sl(),
+      categoryRemoteDataSource: sl(),
+    ),
+  );
+// Data Sources
+  sl.registerLazySingleton<CategoryRemoteDataSource>(
+    () => CategoryRemoteDataSourceImpl(
+      client: sl(),
+    ),
+  );
+  /* ----------------------------------------------------- */
+/*
+ * recent job offer
+ */
+/* ----------------------------------------------------- */
+//bloc
+  sl.registerFactory(() => HomeBloc(getRecentJobsUseCases: sl()));
+//use cases
+  sl.registerLazySingleton(() => GetRecentJobsUseCases(homeRepository: sl()));
+//repositories
+  sl.registerLazySingleton<HomeRepository>(
+    () => HomeRepositoryImpl(
+      networkInfo: sl(),
+      homeRemoteDataSource: sl(),
+    ),
+  );
+// Data Sources
+  sl.registerLazySingleton<HomeRemoteDataSource>(
+    () => HomeRemoteDataSourceImpl(
+      client: sl(),
+    ),
+  );
+  /* ----------------------------------------------------- */
+/*
+ * job details
+ */
+/* ----------------------------------------------------- */
+//bloc
+  sl.registerFactory(() => JobDetailBloc(getJobOfferDetailUseCase: sl()));
+//use cases
+  sl.registerLazySingleton(
+      () => GetJobOfferDetailUseCase(jobDetailsRepository: sl()));
+//repositories
+  sl.registerLazySingleton<JobDetailsRepository>(
+    () => JobDetailsRepositoryImpl(
+      networkInfo: sl(),
+      jobDetailsRemoteDataSource: sl(),
+    ),
+  );
+// Data Sources
+  sl.registerLazySingleton<JobDetailsRemoteDataSource>(
+    () => JobDetailsRemoteDataSourceImpl(
+      client: sl(),
+    ),
+  );
+/* ----------------------------------------------------- */
+/*
+ * saved jobs
+ */
+/* ----------------------------------------------------- */
+//bloc
+  sl.registerFactory(() => SavedJobBloc(
+      checkSavedJobUseCase: sl(),
+      saveJobOfferUseCase: sl(),
+      removeSavedJobUseCase: sl()));
+//use cases
+  sl.registerLazySingleton(
+      () => CheckSavedJobUseCase(savedJobRepository: sl()));
+  sl.registerLazySingleton(() => SaveJobOfferUseCase(savedJobRepository: sl()));
+  sl.registerLazySingleton(
+      () => RemoveSavedJobUseCase(savedJobRepository: sl()));
+//repositories
+  sl.registerLazySingleton<SavedJobRepository>(
+    () => SavedJobRepositoryImpl(
+      networkInfo: sl(),
+      savedJobRemoteDataSource: sl(),
+    ),
+  );
+// Data Sources
+  sl.registerLazySingleton<SavedJobRemoteDataSource>(
+    () => SavedJobRemoteDataSourceImpl(
       client: sl(),
     ),
   );

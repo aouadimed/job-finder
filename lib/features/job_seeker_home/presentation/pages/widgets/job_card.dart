@@ -1,115 +1,123 @@
-import 'package:cv_frontend/core/constants/appcolors.dart';
+import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/widget/chip_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:cv_frontend/core/constants/appcolors.dart';
 
 class JobCard extends StatelessWidget {
   final String companyName;
   final String jobTitle;
   final String location;
-  final String jobType;
-  final String workType;
   final String companyLogoUrl;
   final VoidCallback onSave;
+  final List<String> items;
+  final VoidCallback onTap;
+  final bool isSaved;
 
   const JobCard({
-    super.key,
+    Key? key,
     required this.companyName,
     required this.jobTitle,
     required this.location,
-    required this.jobType,
-    required this.workType,
     required this.companyLogoUrl,
     required this.onSave,
-  });
+    required this.items,
+    required this.onTap,
+    required this.isSaved,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 350,
-      margin: const EdgeInsets.all(6.0),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-          side: BorderSide(width: 1, color: Colors.grey.shade400),
-        ),
-        color: whiteColor,
-        elevation: 0,
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(
-                        color: Colors.grey.shade400,
-                        width: 0.9,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(companyLogoUrl),
-                        radius: 30,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return InkWell(
+          onTap: onTap,
+          child: Container(
+            width: constraints.maxWidth * 0.95,
+            margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                side: BorderSide(width: 1, color: Colors.grey.shade400),
+              ),
+              color: whiteColor,
+              elevation: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          jobTitle,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                              color: Colors.grey.shade400,
+                              width: 0.9,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: CircleAvatar(
+                              backgroundImage: NetworkImage(companyLogoUrl),
+                              radius: 30,
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          companyName,
-                          style: const TextStyle(
-                            fontSize: 16,
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                jobTitle,
+                                style: TextStyle(
+                                  fontSize:
+                                      constraints.maxWidth > 350 ? 18 : 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                companyName,
+                                style: TextStyle(
+                                  fontSize:
+                                      constraints.maxWidth > 350 ? 16 : 14,
+                                ),
+                              ),
+                            ],
                           ),
+                        ),
+                        IconButton(
+                          icon: isSaved
+                              ? Icon(Icons.bookmark, color: primaryColor)
+                              : const Icon(Icons.bookmark_border),
+                          onPressed: onSave,
                         ),
                       ],
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.bookmark_border),
-                    onPressed: onSave,
-                  ),
-                ],
-              ),
-              const Divider(),
-              Text(
-                location,
-                style: const TextStyle(
-                  fontSize: 16,
+                    const Divider(),
+                    Text(
+                      location,
+                      style: TextStyle(
+                        fontSize: constraints.maxWidth > 350 ? 16 : 14,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        ChipWidget(items: items),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Chip(
-                    label: Text(jobType),
-                  ),
-                  const SizedBox(width: 8),
-                  Chip(
-                    label: Text(workType),
-                  ),
-                ],
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
