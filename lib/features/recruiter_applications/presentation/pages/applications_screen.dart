@@ -4,6 +4,7 @@ import 'package:cv_frontend/features/recruiter_applications/data/models/job_offe
 import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/job_offer_bloc/job_offer_bloc.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/pages/widgets/selection_sheep.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/pages/widgets/vacancies_card.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/pages/widgets/vacancies_card_skeleton.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
 import 'package:cv_frontend/global/common_widget/big_button.dart';
 import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
@@ -12,7 +13,6 @@ import 'package:cv_frontend/global/utils/emploments_type_data.dart';
 import 'package:cv_frontend/global/utils/location_type_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 class ApplicationScreen extends StatefulWidget {
   const ApplicationScreen({super.key});
@@ -24,7 +24,6 @@ class ApplicationScreen extends StatefulWidget {
 class _ApplicationScreenState extends State<ApplicationScreen> {
   late TextEditingController _searchController;
   late JobOffersModel jobOffersModel;
-  List<String> selectOptions = ['All vacancies', 'Active', 'Inactive'];
   final ScrollController _scrollController = ScrollController();
   int _currentPage = 1;
   bool _isLoading = true;
@@ -33,6 +32,7 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
   String _searchQuery = '';
   int _selectedFilterIndex = 0;
   int totalPages = 1;
+  List<String> selectOptions = ['All vacancies', 'Active', 'Inactive'];
 
   @override
   void initState() {
@@ -41,8 +41,8 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
     _fetchJobOffers();
 
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-              _scrollController.position.maxScrollExtent &&
+      if (_scrollController.position.pixels >=
+              _scrollController.position.maxScrollExtent * 0.9 &&
           !_isLoadingMore &&
           _currentPage < totalPages) {
         _fetchMoreJobOffers();
@@ -111,7 +111,7 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
               titleText: "Applications",
               rightIcon: Icons.add,
               rightIconColor: primaryColor,
-              logo: const AssetImage("assets/icons/application_icon.webp"),
+              logo: const AssetImage("assets/images/logo.webp"),
               rightIconOnPressed: () {
                 goToJobOfferScreen(context);
               },
@@ -152,23 +152,12 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
                     const SizedBox(height: 20),
                     Expanded(
                       child: _isLoading
-                          ? Skeletonizer(
-                              enabled: true,
-                              child: ListView.builder(
-                                controller: _scrollController,
-                                itemCount: 5,
-                                itemBuilder: (context, index) {
-                                  return Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 10),
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[300],
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  );
-                                },
-                              ),
+                          ? ListView.builder(
+                              controller: _scrollController,
+                              itemCount: 5,
+                              itemBuilder: (context, index) {
+                                return const VacanciesCardSkeleton();
+                              },
                             )
                           : _jobOffers.isEmpty
                               ? Center(
@@ -177,25 +166,30 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        Image.asset(
-                                          'assets/images/empty_state.png',
-                                          width: 200,
-                                          height: 200,
+                                        Icon(
+                                          Icons.info_outline,
+                                          size: 100,
+                                          color: Colors.grey[400],
                                         ),
-                                        const SizedBox(height: 60),
+                                        const SizedBox(height: 20),
                                         Text(
-                                          'Empty',
+                                          "No applications found.",
                                           style: TextStyle(
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.bold,
-                                              color: primaryColor),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.grey[500],
+                                          ),
+                                          textAlign: TextAlign.center,
                                         ),
                                         const SizedBox(height: 10),
-                                        const Text(
+                                        Text(
                                           'Create a job vacancy for your company and start\n'
                                           'find new high quality employee.',
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(fontSize: 16),
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey[600],
+                                          ),
                                         ),
                                         const SizedBox(height: 20),
                                         BigButton(
@@ -209,25 +203,11 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
                                 )
                               : ListView.builder(
                                   controller: _scrollController,
-                                  itemCount: _jobOffers.length + 1,
+                                  itemCount: _jobOffers.length +
+                                      (_isLoadingMore ? 1 : 0),
                                   itemBuilder: (context, index) {
                                     if (index == _jobOffers.length) {
-                                      return _isLoadingMore
-                                          ? Skeletonizer(
-                                              enabled: true,
-                                              child: Container(
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 10),
-                                                height: 100,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.grey[300],
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                              ),
-                                            )
-                                          : const SizedBox();
+                                      return const VacanciesCardSkeleton();
                                     }
                                     final jobOffer = _jobOffers[index];
                                     List<String> jobDetails = [

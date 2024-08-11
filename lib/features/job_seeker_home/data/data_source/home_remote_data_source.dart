@@ -9,16 +9,18 @@ abstract class HomeRemoteDataSource {
 }
 
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
-
-    final https.Client client;
+  final https.Client client;
 
   HomeRemoteDataSourceImpl({required this.client});
 
   @override
   Future<JobCardModel> getRecentJobs(GetRecentJobsParams params) async {
     try {
+      final queryParameters = {
+        'page': params.page.toString(),
+      };
       final response = await https.get(
-        Uri.http(url, recentJobOffer),
+        Uri.http(url, recentJobOffer, queryParameters),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer $token",
@@ -36,5 +38,4 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
       throw ServerException();
     }
   }
-  
 }

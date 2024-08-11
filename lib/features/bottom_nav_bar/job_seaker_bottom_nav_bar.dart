@@ -1,9 +1,11 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/core/services/home_screen_route.dart';
 import 'package:cv_frontend/core/services/profil_screen_route.dart';
-import 'package:cv_frontend/features/job_seeker_home/presentation/pages/job_seeker_home_screen.dart';
-import 'package:cv_frontend/features/recruiter_applications/presentation/pages/job_offer_setup_screen.dart';
+import 'package:cv_frontend/features/saved_jobs/presentation/bloc/saved_jobs_bloc.dart';
+import 'package:cv_frontend/features/saved_jobs/presentation/pages/saved_jobs_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cv_frontend/injection_container.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -17,10 +19,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   final List<Widget> _pages = [
     homeScreenProvider(),
+    BlocProvider(
+      create: (context) => sl<SavedJobsBloc>(),
+      child: const SavedJobScreen(),
+    ),
     homeScreenProvider(),
     homeScreenProvider(),
-    homeScreenProvider(),
-    profilScreenProvider(null)
+    profilScreenProvider(null),
   ];
 
   void _onTabTapped(int index) {

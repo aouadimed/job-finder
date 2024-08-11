@@ -73,7 +73,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                     return GeneralAppBar(
                       rightIconColor: primaryColor,
                       rightIcon:
-                          isSaved ? Icons.bookmark : Icons.bookmark_border,
+                          isSaved ?  Icons.bookmark : Icons.bookmark_border,
                       rightIconOnPressed: () {
                         if (isSaved) {
                           context.read<SavedJobBloc>().add(

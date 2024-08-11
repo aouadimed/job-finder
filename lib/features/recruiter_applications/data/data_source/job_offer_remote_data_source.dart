@@ -51,7 +51,7 @@ class JobOfferRemoteDataSourceImpl implements JobOfferRemoteDataSource {
     try {
       final queryParameters = {
         'page': pageParams.page.toString(),
-        'limit': '10', // You can adjust the limit as needed
+        'limit': '10', 
         if (pageParams.searchQuery != null) 'search': pageParams.searchQuery,
         if (pageParams.filterIndex != null) 'filter': pageParams.filterIndex.toString(),
       };

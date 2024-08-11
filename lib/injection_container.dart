@@ -109,6 +109,11 @@ import 'package:cv_frontend/features/recruiter_applications/domain/usecases/job_
 import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/company_bloc/company_bloc.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/job_category_bloc/job_category_bloc.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/job_offer_bloc/job_offer_bloc.dart';
+import 'package:cv_frontend/features/saved_jobs/data/data_source/saved_jobs_remote_data_source.dart';
+import 'package:cv_frontend/features/saved_jobs/data/reposiory/saved_jobs_repository.dart';
+import 'package:cv_frontend/features/saved_jobs/domain/repository/saved_job_repository.dart';
+import 'package:cv_frontend/features/saved_jobs/domain/usecases/get_saved_jobs_use_case.dart';
+import 'package:cv_frontend/features/saved_jobs/presentation/bloc/saved_jobs_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -612,6 +617,29 @@ Future<void> initializeDependencies() async {
 // Data Sources
   sl.registerLazySingleton<SavedJobRemoteDataSource>(
     () => SavedJobRemoteDataSourceImpl(
+      client: sl(),
+    ),
+  );
+/* ----------------------------------------------------- */
+/*
+ * saved jobs screen
+ */
+/* ----------------------------------------------------- */
+//bloc
+  sl.registerFactory(() => SavedJobsBloc(getSavedJobsUsecase: sl(), removeSavedJobUseCase: sl()));
+//use cases
+  sl.registerLazySingleton(
+      () => GetSavedJobsUsecase(savedJobsRepository: sl()));
+//repositories
+  sl.registerLazySingleton<SavedJobsRepository>(
+    () => SavedJobsRepositoryImpl(
+      networkInfo: sl(),
+      savedJobsRemoteDataSource: sl(),
+    ),
+  );
+// Data Sources
+  sl.registerLazySingleton<SavedJobsRemoteDataSource>(
+    () => SavedJobsRemoteDataSourceImpl(
       client: sl(),
     ),
   );

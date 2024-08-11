@@ -1,4 +1,5 @@
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/widget/chip_widget.dart';
+import 'package:cv_frontend/global/common_widget/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:cv_frontend/core/constants/appcolors.dart';
 
@@ -11,6 +12,7 @@ class JobCard extends StatelessWidget {
   final List<String> items;
   final VoidCallback onTap;
   final bool isSaved;
+  final bool? isLoading;
 
   const JobCard({
     Key? key,
@@ -22,6 +24,7 @@ class JobCard extends StatelessWidget {
     required this.items,
     required this.onTap,
     required this.isSaved,
+    this.isLoading = false,
   }) : super(key: key);
 
   @override
@@ -90,12 +93,14 @@ class JobCard extends StatelessWidget {
                             ],
                           ),
                         ),
-                        IconButton(
-                          icon: isSaved
-                              ? Icon(Icons.bookmark, color: primaryColor)
-                              : const Icon(Icons.bookmark_border),
-                          onPressed: onSave,
-                        ),
+                        isLoading!
+                            ? const LoadingWidget()
+                            : IconButton(
+                                icon: isSaved
+                                    ? Icon(Icons.bookmark, color: primaryColor)
+                                    : const Icon(Icons.bookmark_border),
+                                onPressed: onSave,
+                              ),
                       ],
                     ),
                     const Divider(),

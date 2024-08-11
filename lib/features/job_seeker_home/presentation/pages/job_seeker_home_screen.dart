@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   double _savedScrollPosition = 0.0;
 
   List<CategorySelectionModel> categorySelectionModel = [];
-  List<JobOffer> jobCardModel = [];
+  List<JobOffer> jobCardModel = [];  // List to hold the job offers
   String? _selectedCategoryId;
 
   int _currentPage = 1;
@@ -86,29 +86,31 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
     setState(() {
-      _selectedCategoryId = '';
+      _selectedCategoryId = null;
     });
     _scrollController.jumpTo(_savedScrollPosition);
-    _categoryScrollController
-        .jumpTo(0.0); // Reset category scroll position to 0
+    _categoryScrollController.jumpTo(0.0); // Reset category scroll position to 0
   }
 
   void _fetchJobOffers() {
     setState(() {
       _isLoading = true;
+      _currentPage = 1;
+      jobCardModel.clear(); // Clear the list before fetching new data
     });
-    BlocProvider.of<HomeBloc>(context)
-        .add(GetRecentJobOffer(page: _currentPage));
+
+    BlocProvider.of<HomeBloc>(context).add(GetRecentJobOffer(page: _currentPage));
   }
 
   void _fetchMoreJobOffers() {
-    setState(() {
-      _isLoadingMore = true;
-      _currentPage++;
-    });
+    if (_currentPage < totalPages && !_isLoadingMore) {
+      setState(() {
+        _isLoadingMore = true;
+        _currentPage++;
+      });
 
-    BlocProvider.of<HomeBloc>(context)
-        .add(GetRecentJobOffer(page: _currentPage));
+      BlocProvider.of<HomeBloc>(context).add(GetRecentJobOffer(page: _currentPage));
+    }
   }
 
   @override
@@ -132,18 +134,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           controller: _searchController,
                           readOnly: true,
                           hint: "Search",
-                          suffixIcon:
-                              const Icon(Icons.menu, color: Colors.grey),
-                          prefixIcon:
-                              const Icon(Icons.search, color: Colors.grey),
+                          suffixIcon: const Icon(Icons.menu, color: Colors.grey),
+                          prefixIcon: const Icon(Icons.search, color: Colors.grey),
                           textInputType: TextInputType.text,
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => BlocProvider(
-                                  create: (context) => sl<CategoryBloc>()
-                                    ..add(GetCategoryEvent()),
+                                  create: (context) => sl<CategoryBloc>()..add(GetCategoryEvent()),
                                   child: const SearchScreen(
                                     autofocus: true,
                                     iconColor: Colors.grey,
@@ -195,8 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             jobTitle: 'UI/UX Designer',
                             location: 'California, United States',
                             items: const ['Full Time', 'hybrid'],
-                            companyLogoUrl:
-                                'https://logo.clearbit.com/google.com',
+                            companyLogoUrl: 'https://logo.clearbit.com/google.com',
                             onSave: () {
                               print('Job saved');
                               // Implement your save logic here
@@ -212,8 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             jobTitle: 'UI/UX Designer',
                             location: 'California, United States',
                             items: ['Full Time', 'hybrid'],
-                            companyLogoUrl:
-                                'https://logo.clearbit.com/google.com',
+                            companyLogoUrl: 'https://logo.clearbit.com/google.com',
                             onSave: () {
                               print('Job saved');
                               // Implement your save logic here
@@ -236,60 +233,56 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   color: Colors.white,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Expanded(
-                            child: Text(
-                              "Recent Jobs",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                "Recent Jobs",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
-                          ),
-                          InkWell(
-                            onTap: () => {},
-                            child: Text(
-                              "See All",
-                              style: TextStyle(
-                                color: primaryColor,
-                                fontSize: 16,
-                                decoration: TextDecoration.none,
-                                fontWeight: FontWeight.w600,
+                            InkWell(
+                              onTap: () => {},
+                              child: Text(
+                                "See All",
+                                style: TextStyle(
+                                  color: primaryColor,
+                                  fontSize: 16,
+                                  decoration: TextDecoration.none,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      BlocListener<CategoryBloc, CategoryState>(
-                        listener: (context, state) {
-                          if (state is CategoryLoading) {
-                            const ChipWidgetCategorySelectionSkeleton();
-                          } else if (state is CategoryFailure) {
-                            showSnackBar(
-                                context: context, message: state.message);
-                          } else if (state is JobCategorySuccess) {
-                            setState(() {
-                              categorySelectionModel =
-                                  state.categorySelectionModel;
-                            });
-                          }
-                        },
-                        child: BlocBuilder<CategoryBloc, CategoryState>(
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        BlocConsumer<CategoryBloc, CategoryState>(
+                          listener: (context, state) {
+                            if (state is CategoryFailure) {
+                              showSnackBar(context: context, message: state.message);
+                            }
+                          },
                           builder: (context, state) {
+                            if (state is CategoryLoading) {
+                              return const ChipWidgetCategorySelectionSkeleton();
+                            } else if (state is JobCategorySuccess) {
+                              categorySelectionModel = state.categorySelectionModel;
+                            }
+
                             return Hero(
                               tag: 'category-${_selectedCategoryId ?? 'none'}',
                               child: SingleChildScrollView(
                                 controller: _categoryScrollController,
                                 scrollDirection: Axis.horizontal,
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15),
+                                  padding: const EdgeInsets.symmetric(horizontal: 15),
                                   child: Material(
                                     type: MaterialType.transparency,
                                     child: ChipWidgetCategorySelection(
@@ -307,112 +300,112 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             );
                           },
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-            BlocListener<HomeBloc, HomeState>(
+            BlocConsumer<HomeBloc, HomeState>(
               listener: (context, state) {
                 if (state is HomeFailure) {
                   showSnackBar(context: context, message: state.message);
                 } else if (state is GetJobOfferSuccess) {
                   setState(() {
-                    jobCardModel.addAll(state.jobCardModel.jobOffers!);
+                    // Add only new job offers that aren't already in the list
+                    final newJobOffers = state.jobCardModel.jobOffers!;
+                    for (var offer in newJobOffers) {
+                      if (!jobCardModel.any((existingOffer) => existingOffer.id == offer.id)) {
+                        jobCardModel.add(offer);
+                      }
+                    }
                     totalPages = state.jobCardModel.totalPages!;
                     _isLoading = false;
                     _isLoadingMore = false;
                   });
                 }
               },
-              child: BlocBuilder<HomeBloc, HomeState>(
-                builder: (context, state) {
-                  if (_isLoading && _currentPage == 1) {
-                    return const SliverToBoxAdapter(
-                      child: Center(child: JobCardSkeleton()),
-                    );
-                  } else if (jobCardModel.isNotEmpty) {
-                    return SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          if (index == jobCardModel.length - 1 &&
-                              _isLoadingMore) {
-                            return const Center(child: JobCardSkeleton());
-                          }
-                          final jobOffer = jobCardModel[index];
-                          List<String> items = [
-                            jobOffer.employmentTypeIndex != null
-                                ? employmentTypes[jobOffer.employmentTypeIndex!]
-                                : 'Unknown Employment Type',
-                            jobOffer.locationTypeIndex != null
-                                ? locationTypes[jobOffer.locationTypeIndex!]
-                                : 'Unknown Location Type',
-                          ];
+              builder: (context, state) {
+                if (_isLoading && _currentPage == 1) {
+                  return const SliverToBoxAdapter(
+                    child: Center(child: JobCardSkeleton()),
+                  );
+                } else if (jobCardModel.isNotEmpty) {
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        if (index == jobCardModel.length - 1 && _isLoadingMore) {
+                          return const Center(child: JobCardSkeleton());
+                        }
+                        final jobOffer = jobCardModel[index];
+                        List<String> items = [
+                          jobOffer.employmentTypeIndex != null
+                              ? employmentTypes[jobOffer.employmentTypeIndex!]
+                              : 'Unknown Employment Type',
+                          jobOffer.locationTypeIndex != null
+                              ? locationTypes[jobOffer.locationTypeIndex!]
+                              : 'Unknown Location Type',
+                        ];
 
-return BlocProvider(
-  create: (context) => sl<SavedJobBloc>()
-    ..add(CheckSavedJobEvent(id: jobOffer.id!)),
-  child: BlocListener<SavedJobBloc, SavedJobState>(
-    listener: (context, state) {
-      if (state is SavedJobFailure) {
-        showSnackBar(context: context, message: state.message);
-      }
-    },
-    child: BlocBuilder<SavedJobBloc, SavedJobState>(
-      builder: (context, state) {
-        bool isSaved = false;
-        if (state is SavedJobCheckSuccess) {
-          isSaved = state.isSaved;
-        } else if (state is SavedJobSaveSuccess) {
-          print(state.isSaved);
-          isSaved = state.isSaved;
-        }
+                        return BlocProvider(
+                          create: (context) => sl<SavedJobBloc>()
+                            ..add(CheckSavedJobEvent(id: jobOffer.id!)),
+                          child: BlocConsumer<SavedJobBloc, SavedJobState>(
+                            listener: (context, state) {
+                              if (state is SavedJobFailure) {
+                                showSnackBar(context: context, message: state.message);
+                              }
+                            },
+                            builder: (context, state) {
+                              bool isSaved = false;
+                              if (state is SavedJobCheckSuccess) {
+                                isSaved = state.isSaved;
+                              } else if (state is SavedJobSaveSuccess) {
+                                isSaved = state.isSaved;
+                              }
 
-        return JobCard(
-          companyName: jobOffer.companyName!,
-          jobTitle: jobOffer.subcategoryName!,
-          location: jobOffer.companyCountry!,
-          items: items,
-          companyLogoUrl: jobOffer.logoName!,
-          onSave: () {
-            if (isSaved) {
-              context.read<SavedJobBloc>().add(RemoveSavedJobEvent(id: jobOffer.id!));
-            } else {
-              context.read<SavedJobBloc>().add(SaveJobOfferEvent(id: jobOffer.id!));
-            }
-          },
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => BlocProvider(
-                  create: (context) => sl<JobDetailBloc>()
-                    ..add(GetJobDetailEvent(id: jobOffer.id!)),
-                  child: const JobDetailsScreen(),
-                ),
-              ),
-            );
-          },
-          isSaved: isSaved,
-        );
-      },
-    ),
-  ),
-);
-
-                        },
-                        childCount: jobCardModel.length,
-                      ),
-                    );
-                  } else {
-                    return const SliverToBoxAdapter(
-                      child: Center(child: Text('No job offers available.')),
-                    );
-                  }
-                },
-              ),
+                              return JobCard(
+                                companyName: jobOffer.companyName!,
+                                jobTitle: jobOffer.subcategoryName!,
+                                location: jobOffer.companyCountry!,
+                                items: items,
+                                companyLogoUrl: jobOffer.logoName!,
+                                onSave: () {
+                                  if (isSaved) {
+                                    context.read<SavedJobBloc>().add(RemoveSavedJobEvent(id: jobOffer.id!));
+                                  } else {
+                                    context.read<SavedJobBloc>().add(SaveJobOfferEvent(id: jobOffer.id!));
+                                  }
+                                },
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BlocProvider(
+                                        create: (context) => sl<JobDetailBloc>()
+                                          ..add(GetJobDetailEvent(id: jobOffer.id!)),
+                                        child: const JobDetailsScreen(),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                isSaved: isSaved,
+                                isLoading: state is SavedJobLoading,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      childCount: jobCardModel.length,
+                    ),
+                  );
+                } else {
+                  return const SliverToBoxAdapter(
+                    child: Center(child: Text('No job offers available.')),
+                  );
+                }
+              },
             ),
           ],
         ),

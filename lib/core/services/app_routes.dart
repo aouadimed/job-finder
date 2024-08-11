@@ -8,7 +8,6 @@ import 'package:cv_frontend/features/authentication/presentation/pages/login_scr
 import 'package:cv_frontend/features/authentication/presentation/pages/register_screen.dart';
 import 'package:cv_frontend/features/bottom_nav_bar/job_seaker_bottom_nav_bar.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/pages/forgot_password.dart';
-import 'package:cv_frontend/features/job_seeker_home/presentation/pages/job_seeker_home_screen.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/apply_with_cv_screen.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/job_details_screen.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/company_bloc/company_bloc.dart';
@@ -33,6 +32,8 @@ import 'package:cv_frontend/features/profil/presentation/pages/simple_profil_scr
 import 'package:cv_frontend/features/profil/presentation/pages/skills_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/summary_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/work_experience_screen.dart';
+import 'package:cv_frontend/features/saved_jobs/presentation/bloc/saved_jobs_bloc.dart';
+import 'package:cv_frontend/features/saved_jobs/presentation/pages/saved_jobs_screen.dart';
 import 'package:cv_frontend/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -61,6 +62,7 @@ const String jobDetailsPage = '/jobDetailsPage';
 const String applyWithCvScreen = '/applyWithCvScreen';
 const String companyProfilScreen = '/companyProfilScreen';
 const String applicationsScreen = '/applicationsScreen';
+const String savedJobScreen = '/savedJobScreen';
 
 Route<dynamic> controller(RouteSettings settings) {
   switch (settings.name) {
@@ -99,6 +101,13 @@ Route<dynamic> controller(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (context) => const JobDetailsScreen(),
       );
+    case savedJobScreen:
+      return MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (context) => sl<SavedJobsBloc>()..add(const GetSavedJobsEvent()),
+          child: const SavedJobScreen(),
+        ),
+      );
     case contactInfo:
       return MaterialPageRoute(
         builder: (context) => BlocProvider(
@@ -116,7 +125,8 @@ Route<dynamic> controller(RouteSettings settings) {
     case applicationsScreen:
       return MaterialPageRoute(
         builder: (context) => BlocProvider(
-          create: (context) => sl<JobOfferBloc>()..add(const GetJobOffersEvent()),
+          create: (context) =>
+              sl<JobOfferBloc>()..add(const GetJobOffersEvent()),
           child: const ApplicationScreen(),
         ),
       );
