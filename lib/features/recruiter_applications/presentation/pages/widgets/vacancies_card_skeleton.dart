@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class VacanciesCardSkeleton extends StatelessWidget {
-  const VacanciesCardSkeleton({Key? key}) : super(key: key);
+  final bool? showCount;
+  const VacanciesCardSkeleton({Key? key, this.showCount = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +36,20 @@ class VacanciesCardSkeleton extends StatelessWidget {
                               height: 18,
                               color: Colors.grey.shade300,
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 10),
                             Container(
                               width: constraints.maxWidth * 0.3,
                               height: 16,
                               color: Colors.grey.shade300,
                             ),
+                            if (showCount == true) ...[
+                              const SizedBox(height: 10),
+                              Container(
+                                width: constraints.maxWidth * 0.3,
+                                height: 16,
+                                color: Colors.grey.shade300,
+                              )
+                            ]
                           ],
                         ),
                       ),

@@ -1,8 +1,11 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/core/services/app_routes.dart';
+import 'package:cv_frontend/features/job_details_and_apply/presentation/bloc/job_detail_bloc/job_detail_bloc.dart';
+import 'package:cv_frontend/features/recruiter_applicants/presentation/bloc/applicant_bloc/applicant_bloc.dart';
+import 'package:cv_frontend/features/recruiter_applicants/presentation/pages/recruiter_applicant_screen.dart';
 import 'package:cv_frontend/features/recruiter_applications/data/models/job_offer_model.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/job_offer_bloc/job_offer_bloc.dart';
-import 'package:cv_frontend/features/recruiter_applications/presentation/pages/widgets/selection_sheep.dart';
+import 'package:cv_frontend/features/recruiter_applications/presentation/pages/widgets/selection_sheet.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/pages/widgets/vacancies_card.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/pages/widgets/vacancies_card_skeleton.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
@@ -11,6 +14,7 @@ import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
 import 'package:cv_frontend/global/common_widget/text_form_field.dart';
 import 'package:cv_frontend/global/utils/emploments_type_data.dart';
 import 'package:cv_frontend/global/utils/location_type_data.dart';
+import 'package:cv_frontend/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -156,7 +160,9 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
                               controller: _scrollController,
                               itemCount: 5,
                               itemBuilder: (context, index) {
-                                return const VacanciesCardSkeleton();
+                                return const VacanciesCardSkeleton(
+                                  showCount: true,
+                                );
                               },
                             )
                           : _jobOffers.isEmpty
@@ -207,7 +213,9 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
                                       (_isLoadingMore ? 1 : 0),
                                   itemBuilder: (context, index) {
                                     if (index == _jobOffers.length) {
-                                      return const VacanciesCardSkeleton();
+                                      return const VacanciesCardSkeleton(
+                                        showCount: true,
+                                      );
                                     }
                                     final jobOffer = _jobOffers[index];
                                     List<String> jobDetails = [
@@ -225,6 +233,39 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
                                       jobTitle: jobOffer.subcategoryName!,
                                       jobDetails: jobDetails,
                                       isActive: jobOffer.active!,
+                                      applicantsCount: jobOffer.applicantCount!,
+                                      onTap: () {
+                                        if (jobOffer.applicantCount != 0) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  BlocProvider(
+                                                create: (context) =>
+                                                    sl<ApplicantBloc>()
+                                                      ..add(GetApplicantsEvent(
+                                                          id: jobOffer.id!)),
+                                                child: RecruiterApplicantScreen(
+                                                  jobOfferId: jobOffer.id!,
+                                                ),
+                                              ),
+                                            ),
+                                          ).then(
+                                            (_) {
+                                              if (context.mounted) {
+                                                /* BlocProvider.of<ApplicantBloc>(
+                                                      context)
+                                                  .add(
+                                                      const GetApplicantsEvent());*/
+                                              }
+                                            },
+                                          );
+                                        } else {
+                                          showSnackBar(
+                                              context: context,
+                                              message: "No applicants found");
+                                        }
+                                      },
                                     );
                                   },
                                 ),

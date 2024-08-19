@@ -24,6 +24,7 @@ class SavedJobScreen extends StatefulWidget {
 class _SavedJobScreenState extends State<SavedJobScreen> {
   late ScrollController _scrollController;
   late TextEditingController _searchController;
+  late final GlobalKey<AnimatedListState> _listKey;
   int _currentPage = 1;
   bool _isLoading = true;
   bool _isLoadingMore = false;
@@ -37,6 +38,7 @@ class _SavedJobScreenState extends State<SavedJobScreen> {
     super.initState();
     _scrollController = ScrollController();
     _searchController = TextEditingController();
+    _listKey = GlobalKey<AnimatedListState>();
     _fetchSavedJobs();
 
     _scrollController.addListener(() {
@@ -53,7 +55,16 @@ class _SavedJobScreenState extends State<SavedJobScreen> {
     setState(() {
       _isLoading = true;
       if (_currentPage == 1) {
-        _savedJobs.clear(); // Clear the list when fetching new results
+        for (var i = _savedJobs.length - 1; i >= 0; i--) {
+          _listKey.currentState?.removeItem(
+            i,
+            (context, animation) => FadeTransition(
+              opacity: animation,
+              child: const JobCardSkeleton(showIcon: true),
+            ),
+          );
+        }
+        _savedJobs.clear();
       }
     });
     context
@@ -86,6 +97,41 @@ class _SavedJobScreenState extends State<SavedJobScreen> {
     });
   }
 
+  void _removeJob(int index) {
+    if (index < 0 || index >= _savedJobs.length)
+      return; // Ensure index is valid
+    final removedJob = _savedJobs[index];
+    _savedJobs.removeAt(index);
+    _listKey.currentState?.removeItem(
+      index,
+      (context, animation) => FadeTransition(
+        opacity: animation,
+        child: JobCard(
+          companyName: removedJob.companyName!,
+          jobTitle: removedJob.subcategoryName!,
+          location: removedJob.companyCountry!,
+          items: [
+            removedJob.employmentTypeIndex != null
+                ? employmentTypes[removedJob.employmentTypeIndex!]
+                : 'Unknown Employment Type',
+            removedJob.locationTypeIndex != null
+                ? locationTypes[removedJob.locationTypeIndex!]
+                : 'Unknown Location Type',
+          ],
+          companyLogoUrl: removedJob.logoName!,
+          isSaved: true,
+          onSave: () {},
+          onTap: () {},
+        ),
+      ),
+      duration: const Duration(milliseconds: 500),
+    );
+
+    if (_savedJobs.isEmpty) {
+      setState(() {});
+    }
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -109,13 +155,19 @@ class _SavedJobScreenState extends State<SavedJobScreen> {
             _isLoading = false;
             _isLoadingMore = false;
             totalPages = state.savedJobsModel.totalPages!;
-            if (_currentPage == 1 &&
-                state.savedJobsModel.savedJobs!.isEmpty) {
+            if (_currentPage == 1 && state.savedJobsModel.savedJobs!.isEmpty) {
               _savedJobs.clear();
             } else if (_currentPage == 1) {
               _savedJobs = state.savedJobsModel.savedJobs!;
+              for (var i = 0; i < _savedJobs.length; i++) {
+                _listKey.currentState?.insertItem(i);
+              }
             } else {
+              final startIndex = _savedJobs.length;
               _savedJobs.addAll(state.savedJobsModel.savedJobs!);
+              for (var i = startIndex; i < _savedJobs.length; i++) {
+                _listKey.currentState?.insertItem(i);
+              }
             }
           });
         }
@@ -135,12 +187,10 @@ class _SavedJobScreenState extends State<SavedJobScreen> {
                     child: InputField(
                       controller: _searchController,
                       hint: "Search Saved Jobs",
-                      prefixIcon:
-                          const Icon(Icons.search, color: Colors.grey),
+                      prefixIcon: const Icon(Icons.search, color: Colors.grey),
                       suffixIcon: _searchController.text.isNotEmpty
                           ? IconButton(
-                              icon:
-                                  const Icon(Icons.clear, color: Colors.grey),
+                              icon: const Icon(Icons.clear, color: Colors.grey),
                               onPressed: () {
                                 _searchController.clear();
                                 _handleSearch('');
@@ -156,7 +206,7 @@ class _SavedJobScreenState extends State<SavedJobScreen> {
                             controller: _scrollController,
                             itemCount: 5,
                             itemBuilder: (context, index) {
-                              return const JobCardSkeleton();
+                              return const JobCardSkeleton(showIcon: true);
                             },
                           )
                         : _savedJobs.isEmpty
@@ -166,8 +216,7 @@ class _SavedJobScreenState extends State<SavedJobScreen> {
                                     horizontal: mediaQuery.size.width * 0.1,
                                   ),
                                   child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
@@ -199,15 +248,15 @@ class _SavedJobScreenState extends State<SavedJobScreen> {
                                   ),
                                 ),
                               )
-                            : ListView.builder(
+                            : AnimatedList(
+                                key: _listKey,
                                 controller: _scrollController,
-                                itemCount: _savedJobs.length +
-                                    (_isLoadingMore ? 1 : 0),
-                                itemBuilder: (context, index) {
-                                  if (index == _savedJobs.length) {
-                                    return const JobCardSkeleton();
+                                initialItemCount: _savedJobs.length,
+                                itemBuilder: (context, index, animation) {
+                                  if (index >= _savedJobs.length) {
+                                    return const SizedBox
+                                        .shrink(); // Prevent invalid index
                                   }
-
                                   final jobOffer = _savedJobs[index];
                                   List<String> items = [
                                     jobOffer.employmentTypeIndex != null
@@ -219,58 +268,64 @@ class _SavedJobScreenState extends State<SavedJobScreen> {
                                             jobOffer.locationTypeIndex!]
                                         : 'Unknown Location Type',
                                   ];
-                                  return JobCard(
-                                    companyName: jobOffer.companyName!,
-                                    jobTitle: jobOffer.subcategoryName!,
-                                    location: jobOffer.companyCountry!,
-                                    items: items,
-                                    companyLogoUrl: jobOffer.logoName!,
-                                    onSave: () async {
-                                      final savedJobsBloc =
-                                          BlocProvider.of<SavedJobsBloc>(
-                                              context);
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: JobCard(
+                                      companyName: jobOffer.companyName!,
+                                      jobTitle: jobOffer.subcategoryName!,
+                                      location: jobOffer.companyCountry!,
+                                      items: items,
+                                      companyLogoUrl: jobOffer.logoName!,
+                                      onSave: () async {
+                                        final savedJobsBloc =
+                                            BlocProvider.of<SavedJobsBloc>(
+                                                context);
 
-                                      showModalBottomSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return BlocProvider.value(
-                                            value: savedJobsBloc,
-                                            child: RemoveSavedJobBottomSheet(
-                                              jobOffer: jobOffer,
-                                              onConfirm: () {
-                                                savedJobsBloc
-                                                    .add(RemoveSavedJobsEvent(
-                                                  id: jobOffer.jobOfferId!,
-                                                ));
-
-                                                setState(() {
-                                                  _savedJobs.removeAt(index);
-                                                });
-
-                                                Navigator.pop(context);
-                                              },
-                                              item: items,
+                                        showModalBottomSheet(
+                                          context: context,
+                                          builder: (context) {
+                                            return BlocProvider.value(
+                                              value: savedJobsBloc,
+                                              child: RemoveSavedJobBottomSheet(
+                                                jobOffer: jobOffer,
+                                                onConfirm: () {
+                                                  savedJobsBloc.add(
+                                                    RemoveSavedJobsEvent(
+                                                        id: jobOffer
+                                                            .jobOfferId!),
+                                                  );
+                                                  _removeJob(index);
+                                                  Navigator.pop(context);
+                                                },
+                                                item: items,
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => BlocProvider(
+                                              create: (context) =>
+                                                  sl<JobDetailBloc>()
+                                                    ..add(GetJobDetailEvent(
+                                                        id: jobOffer
+                                                            .jobOfferId!)),
+                                              child: const JobDetailsScreen(),
                                             ),
-                                          );
-                                        },
-                                      );
-                                    },
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => BlocProvider(
-                                            create: (context) =>
-                                                sl<JobDetailBloc>()
-                                                  ..add(GetJobDetailEvent(
-                                                      id: jobOffer
-                                                          .jobOfferId!)),
-                                            child: const JobDetailsScreen(),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                    isSaved: true,
+                                        ).then(
+                                          (_) {
+                                            if (context.mounted) {
+                                              _fetchSavedJobs(); // Refresh the list on return
+                                            }
+                                          },
+                                        );
+                                      },
+                                      isSaved: true,
+                                    ),
                                   );
                                 },
                               ),

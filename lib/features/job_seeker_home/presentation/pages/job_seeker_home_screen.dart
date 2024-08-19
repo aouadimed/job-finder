@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   double _savedScrollPosition = 0.0;
 
   List<CategorySelectionModel> categorySelectionModel = [];
-  List<JobOffer> jobCardModel = [];  // List to hold the job offers
+  List<JobOffer> jobCardModel = []; // List to hold the job offers
   String? _selectedCategoryId;
 
   int _currentPage = 1;
@@ -89,7 +89,8 @@ class _HomeScreenState extends State<HomeScreen> {
       _selectedCategoryId = null;
     });
     _scrollController.jumpTo(_savedScrollPosition);
-    _categoryScrollController.jumpTo(0.0); // Reset category scroll position to 0
+    _categoryScrollController
+        .jumpTo(0.0); // Reset category scroll position to 0
   }
 
   void _fetchJobOffers() {
@@ -99,7 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
       jobCardModel.clear(); // Clear the list before fetching new data
     });
 
-    BlocProvider.of<HomeBloc>(context).add(GetRecentJobOffer(page: _currentPage));
+    BlocProvider.of<HomeBloc>(context)
+        .add(GetRecentJobOffer(page: _currentPage));
   }
 
   void _fetchMoreJobOffers() {
@@ -109,7 +111,8 @@ class _HomeScreenState extends State<HomeScreen> {
         _currentPage++;
       });
 
-      BlocProvider.of<HomeBloc>(context).add(GetRecentJobOffer(page: _currentPage));
+      BlocProvider.of<HomeBloc>(context)
+          .add(GetRecentJobOffer(page: _currentPage));
     }
   }
 
@@ -134,15 +137,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           controller: _searchController,
                           readOnly: true,
                           hint: "Search",
-                          suffixIcon: const Icon(Icons.menu, color: Colors.grey),
-                          prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                          suffixIcon:
+                              const Icon(Icons.menu, color: Colors.grey),
+                          prefixIcon:
+                              const Icon(Icons.search, color: Colors.grey),
                           textInputType: TextInputType.text,
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => BlocProvider(
-                                  create: (context) => sl<CategoryBloc>()..add(GetCategoryEvent()),
+                                  create: (context) => sl<CategoryBloc>()
+                                    ..add(GetCategoryEvent()),
                                   child: const SearchScreen(
                                     autofocus: true,
                                     iconColor: Colors.grey,
@@ -194,7 +200,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             jobTitle: 'UI/UX Designer',
                             location: 'California, United States',
                             items: const ['Full Time', 'hybrid'],
-                            companyLogoUrl: 'https://logo.clearbit.com/google.com',
+                            companyLogoUrl:
+                                'https://logo.clearbit.com/google.com',
                             onSave: () {
                               print('Job saved');
                               // Implement your save logic here
@@ -210,7 +217,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             jobTitle: 'UI/UX Designer',
                             location: 'California, United States',
                             items: ['Full Time', 'hybrid'],
-                            companyLogoUrl: 'https://logo.clearbit.com/google.com',
+                            companyLogoUrl:
+                                'https://logo.clearbit.com/google.com',
                             onSave: () {
                               print('Job saved');
                               // Implement your save logic here
@@ -266,14 +274,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         BlocConsumer<CategoryBloc, CategoryState>(
                           listener: (context, state) {
                             if (state is CategoryFailure) {
-                              showSnackBar(context: context, message: state.message);
+                              showSnackBar(
+                                  context: context, message: state.message);
                             }
                           },
                           builder: (context, state) {
                             if (state is CategoryLoading) {
                               return const ChipWidgetCategorySelectionSkeleton();
                             } else if (state is JobCategorySuccess) {
-                              categorySelectionModel = state.categorySelectionModel;
+                              categorySelectionModel =
+                                  state.categorySelectionModel;
                             }
 
                             return Hero(
@@ -282,7 +292,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 controller: _categoryScrollController,
                                 scrollDirection: Axis.horizontal,
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15),
                                   child: Material(
                                     type: MaterialType.transparency,
                                     child: ChipWidgetCategorySelection(
@@ -313,10 +324,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   showSnackBar(context: context, message: state.message);
                 } else if (state is GetJobOfferSuccess) {
                   setState(() {
-                    // Add only new job offers that aren't already in the list
                     final newJobOffers = state.jobCardModel.jobOffers!;
                     for (var offer in newJobOffers) {
-                      if (!jobCardModel.any((existingOffer) => existingOffer.id == offer.id)) {
+                      if (!jobCardModel.any(
+                          (existingOffer) => existingOffer.id == offer.id)) {
                         jobCardModel.add(offer);
                       }
                     }
@@ -335,7 +346,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   return SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
-                        if (index == jobCardModel.length - 1 && _isLoadingMore) {
+                        if (index == jobCardModel.length - 1 &&
+                            _isLoadingMore) {
                           return const Center(child: JobCardSkeleton());
                         }
                         final jobOffer = jobCardModel[index];
@@ -354,7 +366,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: BlocConsumer<SavedJobBloc, SavedJobState>(
                             listener: (context, state) {
                               if (state is SavedJobFailure) {
-                                showSnackBar(context: context, message: state.message);
+                                showSnackBar(
+                                    context: context, message: state.message);
                               }
                             },
                             builder: (context, state) {
@@ -373,9 +386,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 companyLogoUrl: jobOffer.logoName!,
                                 onSave: () {
                                   if (isSaved) {
-                                    context.read<SavedJobBloc>().add(RemoveSavedJobEvent(id: jobOffer.id!));
+                                    context.read<SavedJobBloc>().add(
+                                        RemoveSavedJobEvent(id: jobOffer.id!));
                                   } else {
-                                    context.read<SavedJobBloc>().add(SaveJobOfferEvent(id: jobOffer.id!));
+                                    context.read<SavedJobBloc>().add(
+                                        SaveJobOfferEvent(id: jobOffer.id!));
                                   }
                                 },
                                 onTap: () {
@@ -384,10 +399,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                     MaterialPageRoute(
                                       builder: (context) => BlocProvider(
                                         create: (context) => sl<JobDetailBloc>()
-                                          ..add(GetJobDetailEvent(id: jobOffer.id!)),
+                                          ..add(GetJobDetailEvent(
+                                              id: jobOffer.id!)),
                                         child: const JobDetailsScreen(),
                                       ),
                                     ),
+                                  ).then(
+                                    (_) {
+                                      if (context.mounted) {
+                                        BlocProvider.of<SavedJobBloc>(context)
+                                            .add(CheckSavedJobEvent(
+                                                id: jobOffer.id!));
+                                      }
+                                    },
                                   );
                                 },
                                 isSaved: isSaved,

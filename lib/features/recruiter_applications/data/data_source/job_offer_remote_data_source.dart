@@ -55,12 +55,7 @@ class JobOfferRemoteDataSourceImpl implements JobOfferRemoteDataSource {
         if (pageParams.searchQuery != null) 'search': pageParams.searchQuery,
         if (pageParams.filterIndex != null) 'filter': pageParams.filterIndex.toString(),
       };
-
-      print('Requesting job offers with parameters: $queryParameters');
-
       final uri = Uri.http(url, jobOfferData, queryParameters);
-      print('Request URL: $uri');
-
       final response = await client.get(
         uri,
         headers: {
@@ -68,20 +63,14 @@ class JobOfferRemoteDataSourceImpl implements JobOfferRemoteDataSource {
           "Authorization": "Bearer $token",
         },
       ).catchError((e) {
-        print('Error during HTTP request: $e');
         throw ServerException();
       });
-
-      print('Response status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
-
       if (response.statusCode == 200) {
         return jobOffersModelFromJson(response.body);
       } else {
         throw ServerException();
       }
     } catch (e) {
-      print('Error caught: $e');
       throw ServerException();
     }
   }

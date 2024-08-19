@@ -1,7 +1,7 @@
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/widget/chip_widget.dart';
-import 'package:cv_frontend/global/common_widget/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:cv_frontend/core/constants/appcolors.dart';
+import 'package:shimmer/shimmer.dart';
 
 class JobCard extends StatelessWidget {
   final String companyName;
@@ -94,7 +94,15 @@ class JobCard extends StatelessWidget {
                           ),
                         ),
                         isLoading!
-                            ? const LoadingWidget()
+                            ? Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Shimmer.fromColors(
+                                  baseColor: Colors.grey[300]!,
+                                  highlightColor: Colors.grey[100]!,
+                                  child: const Icon(Icons.bookmark_border,
+                                      color: Colors.grey),
+                                ),
+                              )
                             : IconButton(
                                 icon: isSaved
                                     ? Icon(Icons.bookmark, color: primaryColor)

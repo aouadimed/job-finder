@@ -6,16 +6,14 @@ import 'package:intl/intl.dart';
 
 class ApplyWithCVForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
-  final TextEditingController fullNameController;
-  final TextEditingController emailController;
   final TextEditingController motivationLetterController;
+  final Function(String? filePath) onFileSelected;
 
   const ApplyWithCVForm({
     super.key,
     required this.formKey,
-    required this.fullNameController,
-    required this.emailController,
     required this.motivationLetterController,
+    required this.onFileSelected,
   });
 
   @override
@@ -49,6 +47,7 @@ class _ApplyWithCVFormState extends State<ApplyWithCVForm> {
         fileName =
             'CV_${DateFormat('yyyyMMddHHmmss').format(DateTime.now())}.pdf';
         uploadError = false;
+        widget.onFileSelected(filePath);
       });
     } else {
       setState(() {
@@ -78,34 +77,6 @@ class _ApplyWithCVFormState extends State<ApplyWithCVForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CommanInputField(
-                controller: widget.fullNameController,
-                title: 'Full Name',
-                hint: "Full Name",
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your full name';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              CommanInputField(
-                controller: widget.emailController,
-                title: 'Email',
-                hint: "Email",
-                textInputType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                    return 'Please enter a valid email';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
               const Text(
                 'Upload CV/Resume',
                 style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16),

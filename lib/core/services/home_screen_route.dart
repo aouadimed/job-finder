@@ -11,7 +11,7 @@ MultiBlocProvider homeScreenProvider() {
         create: (context) => sl<CategoryBloc>()..add(GetCategoryEvent()),
       ),
       BlocProvider(
-        create: (context) => sl<HomeBloc>()..add(GetRecentJobOffer()),
+        create: (context) => sl<HomeBloc>()..add(const GetRecentJobOffer()),
       )
     ],
     child: const HomeScreen(),

@@ -19,7 +19,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> _onGetRecentJobOffer(
       GetRecentJobOffer event, Emitter<HomeState> emit) async {
     emit(HomeLoading());
-
     final result =
         await getRecentJobsUseCases.call(GetRecentJobsParams(page: event.page));
 

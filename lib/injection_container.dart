@@ -10,10 +10,15 @@ import 'package:cv_frontend/features/forgot_password/domain/usecases/change_pass
 import 'package:cv_frontend/features/forgot_password/domain/usecases/check_email_use_case.dart';
 import 'package:cv_frontend/features/forgot_password/domain/usecases/code_verification_use_case.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/bloc/forgot_password_bloc.dart';
+import 'package:cv_frontend/features/job_details_and_apply/data/data_source/job_apply_remote_data_source.dart';
 import 'package:cv_frontend/features/job_details_and_apply/data/data_source/job_details_remote_data_source.dart';
+import 'package:cv_frontend/features/job_details_and_apply/data/repository/job_apply_repository.dart';
 import 'package:cv_frontend/features/job_details_and_apply/data/repository/job_offer_detail_repository_impl.dart';
+import 'package:cv_frontend/features/job_details_and_apply/domain/repository/job_apply_repository.dart';
 import 'package:cv_frontend/features/job_details_and_apply/domain/repository/job_details_repository.dart';
-import 'package:cv_frontend/features/job_details_and_apply/domain/usecases/get_job_offer_detail.dart';
+import 'package:cv_frontend/features/job_details_and_apply/domain/usecases/get_job_offer_detail_use_case.dart';
+import 'package:cv_frontend/features/job_details_and_apply/domain/usecases/job_apply_use_case.dart';
+import 'package:cv_frontend/features/job_details_and_apply/presentation/bloc/job_apply_bloc/job_apply_bloc.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/bloc/job_detail_bloc/job_detail_bloc.dart';
 import 'package:cv_frontend/features/job_seeker_home/data/data_source/category_remote_data_source.dart';
 import 'package:cv_frontend/features/job_seeker_home/data/data_source/home_remote_data_source.dart';
@@ -35,6 +40,7 @@ import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/save_job_
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/contact_info_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/edcation_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/language_remote_data_source.dart';
+import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/organization_activity_datasource.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/profil_header_remote_date_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/project_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/skill_remote_data_source.dart';
@@ -43,6 +49,7 @@ import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/
 import 'package:cv_frontend/features/profil/data/repository/contact_info_repository_impl.dart';
 import 'package:cv_frontend/features/profil/data/repository/education_repository_impl.dart';
 import 'package:cv_frontend/features/profil/data/repository/language_repository_impl.dart';
+import 'package:cv_frontend/features/profil/data/repository/organization_activity_repository_impl.dart';
 import 'package:cv_frontend/features/profil/data/repository/profil_header_repository_impl.dart';
 import 'package:cv_frontend/features/profil/data/repository/project_repository_impl.dart';
 import 'package:cv_frontend/features/profil/data/repository/skill_repository_impl.dart';
@@ -51,6 +58,7 @@ import 'package:cv_frontend/features/profil/data/repository/work_experience_repo
 import 'package:cv_frontend/features/profil/domain/repository/contact_info_repository.dart';
 import 'package:cv_frontend/features/profil/domain/repository/education_repository.dart';
 import 'package:cv_frontend/features/profil/domain/repository/languages_repository.dart';
+import 'package:cv_frontend/features/profil/domain/repository/organization_activity_repository.dart';
 import 'package:cv_frontend/features/profil/domain/repository/profil_header_repository.dart';
 import 'package:cv_frontend/features/profil/domain/repository/project_repository.dart';
 import 'package:cv_frontend/features/profil/domain/repository/skill_repository.dart';
@@ -68,6 +76,7 @@ import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/g
 import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/get_single_language_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/update_language_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/create_language_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/organization_use_cases/organization_use_cases.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/profil_header_use_cases/get_profil_header_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/project_use_cases/create_project_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/project_use_cases/delete_project_use_case.dart';
@@ -87,28 +96,34 @@ import 'package:cv_frontend/features/profil/domain/usecases/work_experience_use_
 import 'package:cv_frontend/features/profil/presentation/bloc/contact_info_bloc/contact_info_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/education_bloc/education_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/languages_bloc/language_bloc.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/organization_bloc/organization_activity_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/profil_header_bloc/profil_header_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/project_bloc/project_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/skill_bloc/skill_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
-import 'package:cv_frontend/features/recruiter_applications/data/data_source/company_remote_data_source.dart';
+import 'package:cv_frontend/features/recruiter_applicants/data/data_source/applicatnts_remote_data_source.dart';
+import 'package:cv_frontend/features/recruiter_applicants/data/repository/applicant_repository.dart';
+import 'package:cv_frontend/features/recruiter_applicants/domain/repository/applicant_repository.dart';
+import 'package:cv_frontend/features/recruiter_applicants/domain/usecases/get_applicant_list_use_case.dart';
+import 'package:cv_frontend/features/recruiter_applicants/presentation/bloc/applicant_bloc/applicant_bloc.dart';
+import 'package:cv_frontend/features/recruiter_profil/data/data_source/company_remote_data_source.dart';
 import 'package:cv_frontend/features/recruiter_applications/data/data_source/job_category_remote_data_source.dart';
 import 'package:cv_frontend/features/recruiter_applications/data/data_source/job_offer_remote_data_source.dart';
-import 'package:cv_frontend/features/recruiter_applications/data/repository/company_repository_impl.dart';
+import 'package:cv_frontend/features/recruiter_profil/data/repository/company_repository_impl.dart';
 import 'package:cv_frontend/features/recruiter_applications/data/repository/job_category_repository_impl.dart';
 import 'package:cv_frontend/features/recruiter_applications/data/repository/job_offer_repository_impl.dart';
-import 'package:cv_frontend/features/recruiter_applications/domain/repository/company_repository.dart';
+import 'package:cv_frontend/features/recruiter_profil/domain/repository/company_repository.dart';
 import 'package:cv_frontend/features/recruiter_applications/domain/repository/job_category_repository.dart';
 import 'package:cv_frontend/features/recruiter_applications/domain/repository/job_offer_repository.dart';
-import 'package:cv_frontend/features/recruiter_applications/domain/usecases/company_use_cases/add_update_company_use_case.dart';
-import 'package:cv_frontend/features/recruiter_applications/domain/usecases/company_use_cases/get_company_use_case.dart';
 import 'package:cv_frontend/features/recruiter_applications/domain/usecases/job_category_use_cases/get_job_category_use_case.dart';
 import 'package:cv_frontend/features/recruiter_applications/domain/usecases/job_offer_use_cases/add_job_offer_use_cases.dart';
 import 'package:cv_frontend/features/recruiter_applications/domain/usecases/job_offer_use_cases/get_list_job_offer_use_cases.dart';
-import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/company_bloc/company_bloc.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/job_category_bloc/job_category_bloc.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/job_offer_bloc/job_offer_bloc.dart';
+import 'package:cv_frontend/features/recruiter_profil/domain/usecases/add_update_company_use_case.dart';
+import 'package:cv_frontend/features/recruiter_profil/domain/usecases/get_company_use_case.dart';
+import 'package:cv_frontend/features/recruiter_profil/presentation/bloc/company_bloc/company_bloc.dart';
 import 'package:cv_frontend/features/saved_jobs/data/data_source/saved_jobs_remote_data_source.dart';
 import 'package:cv_frontend/features/saved_jobs/data/reposiory/saved_jobs_repository.dart';
 import 'package:cv_frontend/features/saved_jobs/domain/repository/saved_job_repository.dart';
@@ -425,7 +440,7 @@ Future<void> initializeDependencies() async {
   );
 /* ----------------------------------------------------- */
 /*
- * profile/ContactInfo
+ * profile/profil header
  */
 /* ----------------------------------------------------- */
 //bloc
@@ -626,7 +641,8 @@ Future<void> initializeDependencies() async {
  */
 /* ----------------------------------------------------- */
 //bloc
-  sl.registerFactory(() => SavedJobsBloc(getSavedJobsUsecase: sl(), removeSavedJobUseCase: sl()));
+  sl.registerFactory(() =>
+      SavedJobsBloc(getSavedJobsUsecase: sl(), removeSavedJobUseCase: sl()));
 //use cases
   sl.registerLazySingleton(
       () => GetSavedJobsUsecase(savedJobsRepository: sl()));
@@ -640,6 +656,91 @@ Future<void> initializeDependencies() async {
 // Data Sources
   sl.registerLazySingleton<SavedJobsRemoteDataSource>(
     () => SavedJobsRemoteDataSourceImpl(
+      client: sl(),
+    ),
+  );
+/* ----------------------------------------------------- */
+/*
+ * OrganizationActivityBloc
+ */
+/* ----------------------------------------------------- */
+  // Bloc
+  sl.registerFactory(() => OrganizationActivityBloc(
+        createOrganizationActivityUseCase: sl(),
+        getSingleOrganizationActivityUseCase: sl(),
+        updateOrganizationActivityUseCase: sl(),
+        deleteOrganizationActivityUseCase: sl(),
+        getAllOrganizationActivitiesUseCase: sl(),
+      ));
+
+// Use Cases
+  sl.registerLazySingleton(
+      () => CreateOrganizationActivityUseCase(repository: sl()));
+  sl.registerLazySingleton(
+      () => GetSingleOrganizationActivityUseCase(repository: sl()));
+  sl.registerLazySingleton(
+      () => UpdateOrganizationActivityUseCase(repository: sl()));
+  sl.registerLazySingleton(
+      () => DeleteOrganizationActivityUseCase(repository: sl()));
+  sl.registerLazySingleton(
+      () => GetAllOrganizationActivitiesUseCase(repository: sl()));
+
+// Repositories
+  sl.registerLazySingleton<OrganizationActivityRepository>(
+    () =>
+        OrganizationActivityRepositoryImpl(dataSource: sl(), networkInfo: sl()),
+  );
+
+// Data Sources
+  sl.registerLazySingleton<OrganizationActivityDataSource>(
+    () => OrganizationActivityDataSourceImpl(
+      client: sl(),
+    ),
+  );
+  /* ----------------------------------------------------- */
+/*
+ * Job Apply
+ */
+/* ----------------------------------------------------- */
+  // Bloc
+  sl.registerFactory(() => JobApplyBloc(jobApplyUseCase: sl()));
+
+// Use Cases
+  sl.registerLazySingleton(() => JobApplyUseCase(jobApplyRepository: sl()));
+
+// Repositories
+  sl.registerLazySingleton<JobApplyRepository>(
+    () => JobApplyRepositoryImpl(
+        networkInfo: sl(), jobApplyRemoteDataSource: sl()),
+  );
+
+// Data Sources
+  sl.registerLazySingleton<JobApplyRemoteDataSource>(
+    () => JobApplyRemoteDataSourceImpl(
+      client: sl(),
+    ),
+  );
+/* ----------------------------------------------------- */
+/*
+ * Applicants
+ */
+/* ----------------------------------------------------- */
+  // Bloc
+  sl.registerFactory(() => ApplicantBloc(getApplicantsListUseCase: sl()));
+
+// Use Cases
+  sl.registerLazySingleton(
+      () => GetApplicantsListUseCase(applicantRepository: sl()));
+
+// Repositories
+  sl.registerLazySingleton<ApplicantRepository>(
+    () => ApplicantRepositoryImpl(
+        networkInfo: sl(), applicantRemoteDataSource: sl()),
+  );
+
+// Data Sources
+  sl.registerLazySingleton<ApplicantRemoteDataSource>(
+    () => ApplicantRemoteDataSourceImpl(
       client: sl(),
     ),
   );

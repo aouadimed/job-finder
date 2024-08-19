@@ -19,6 +19,7 @@ class InputField extends StatelessWidget {
   final int? maxLines;
   final Function()? onTap;
   final String? labelText;
+  final Color? hintColor;
   const InputField({
     Key? key,
     required this.controller,
@@ -37,7 +38,7 @@ class InputField extends StatelessWidget {
     this.inputFormatters,
     this.maxLines,
     this.onTap,
-    this.labelText,
+    this.labelText, this.hintColor,
   }) : super(key: key);
 
   @override
@@ -60,7 +61,7 @@ class InputField extends StatelessWidget {
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         hintText: hint,
-        hintStyle: TextStyle(color: Colors.grey[400]),
+        hintStyle: TextStyle(color: hintColor ?? Colors.grey[400]),
         filled: true,
         fillColor: Colors.grey[200],
         contentPadding: const EdgeInsets.symmetric(

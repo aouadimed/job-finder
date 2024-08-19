@@ -1,10 +1,10 @@
 import 'dart:io';
-import 'package:cv_frontend/features/recruiter_applications/data/models/company_model.dart';
-import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/company_bloc/company_bloc.dart';
+import 'package:cv_frontend/features/recruiter_profil/data/model/company_model.dart';
+import 'package:cv_frontend/features/recruiter_profil/presentation/bloc/company_bloc/company_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/common_widget/common_forms_screen.dart';
-import 'package:cv_frontend/features/recruiter_applications/presentation/pages/widgets/company_profil_form.dart';
+import 'package:cv_frontend/features/recruiter_profil/presentation/pages/widgets/company_profil_form.dart';
 import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
 import 'package:quickalert/quickalert.dart';
@@ -188,7 +188,7 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
                 });
               }
             },
-            title: 'Company Profile',
+            title: 'Profile',
             form: CompanyProfilForm(
               formKey: _formKey,
               companyNameController: _companyNameController,

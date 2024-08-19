@@ -3,13 +3,14 @@ import 'package:cv_frontend/core/services/app_routes.dart';
 import 'package:cv_frontend/core/services/profil_screen_route.dart';
 import 'package:cv_frontend/features/job_details_and_apply/data/models/job_offer_details.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/bloc/job_detail_bloc/job_detail_bloc.dart';
+import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/widget/app_bar_icon_skeleton.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/widget/apply_job_sheet.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/widget/chip_widget.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/widget/job_detail_header.dart';
+import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/widget/job_details_skeleton.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/save_job_bloc/save_job_bloc.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
 import 'package:cv_frontend/global/common_widget/big_button.dart';
-import 'package:cv_frontend/global/common_widget/loading_widget.dart';
 import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
 import 'package:cv_frontend/global/utils/emploments_type_data.dart';
 import 'package:cv_frontend/global/utils/functions.dart';
@@ -48,8 +49,6 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                     ? locationTypes[jobOfferDetailsModel!.locationTypeIndex]
                     : 'Unknown Location Type',
               ];
-
-              // Check if the job is already saved
               context.read<SavedJobBloc>().add(
                     CheckSavedJobEvent(id: jobOfferDetailsModel!.id),
                   );
@@ -64,34 +63,46 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                 child: BlocBuilder<SavedJobBloc, SavedJobState>(
                   builder: (context, savedState) {
                     bool isSaved = false;
+                    bool isLoading = true;
+
                     if (savedState is SavedJobCheckSuccess) {
+                      isLoading = false;
                       isSaved = savedState.isSaved;
                     } else if (savedState is SavedJobSaveSuccess) {
+                      isLoading = false;
                       isSaved = savedState.isSaved;
+                    } else if (savedState is SavedJobFailure) {
+                      isLoading = false;
+                      showSnackBar(
+                          context: context, message: savedState.message);
                     }
-
                     return GeneralAppBar(
                       rightIconColor: primaryColor,
-                      rightIcon:
-                          isSaved ?  Icons.bookmark : Icons.bookmark_border,
-                      rightIconOnPressed: () {
-                        if (isSaved) {
-                          context.read<SavedJobBloc>().add(
-                                RemoveSavedJobEvent(
-                                    id: jobOfferDetailsModel!.id),
-                              );
-                        } else {
-                          context.read<SavedJobBloc>().add(
-                                SaveJobOfferEvent(id: jobOfferDetailsModel!.id),
-                              );
-                        }
-                      },
+                      rightIconWidget: isLoading
+                          ? const GeneralAppBarIconSkeleton()
+                          : Icon(
+                              isSaved ? Icons.bookmark : Icons.bookmark_border,
+                              color: primaryColor,
+                            ),
+                      rightIconOnPressed: 
+                          
+                           () {
+                              if (isSaved) {
+                                context.read<SavedJobBloc>().add(
+                                    RemoveSavedJobEvent(
+                                        id: jobOfferDetailsModel!.id));
+                              } else {
+                                context.read<SavedJobBloc>().add(
+                                    SaveJobOfferEvent(
+                                        id: jobOfferDetailsModel!.id));
+                              }
+                            },
                     );
                   },
                 ),
               ),
               body: state is JobDetailLoading
-                  ? const Center(child: LoadingWidget())
+                  ? const Center(child: JobDetailsScreenSkeleton())
                   : jobOfferDetailsModel == null
                       ? const Center(child: Text('No job details available.'))
                       : SingleChildScrollView(

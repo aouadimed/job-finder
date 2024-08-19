@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:cv_frontend/features/recruiter_applications/presentation/pages/widgets/country_selection_sheet.dart';
+import 'package:cv_frontend/features/recruiter_profil/presentation/pages/widgets/country_selection_sheet.dart';
 import 'package:cv_frontend/global/utils/country_data.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';

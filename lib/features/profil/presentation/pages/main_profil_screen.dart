@@ -1,4 +1,6 @@
+import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/core/services/profil_screen_route.dart';
+import 'package:cv_frontend/features/job_details_and_apply/presentation/bloc/job_apply_bloc/job_apply_bloc.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/widget/apply_with_profil.dart';
 import 'package:cv_frontend/features/profil/data/models/contact_info_model.dart';
 import 'package:cv_frontend/features/profil/data/models/education_model.dart';
@@ -14,6 +16,8 @@ import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bl
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_safe_area.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/utils/navigation_util.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/utils/profil_bloc_listeners.dart';
+import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
+import 'package:cv_frontend/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
 import 'package:cv_frontend/global/common_widget/loading_widget.dart';
@@ -163,7 +167,35 @@ class _ProfilScreenState extends State<ProfilScreen> {
           ),
         ),
         bottomNavigationBar: isApplyForJob
-            ? ApplyWithProfil(jobOfferId: widget.arguments?.id ?? "")
+            ? BlocProvider(
+                create: (context) => sl<JobApplyBloc>(),
+                child: BlocConsumer<JobApplyBloc, JobApplyState>(
+                  listener: (context, state) {
+                    if (state is JobApplyFailure) {
+                      showSnackBar(context: context, message: state.message);
+                    } else if (state is JobApplySuccess) {
+                      showSnackBar(
+                        context: context,
+                        message: "Application submitted successfully!",
+                        backgroundColor: greenColor,
+                      );
+                      Navigator.of(context)
+                        ..pop()
+                        ..pop()
+                        ..pop();
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is JobApplyLoading) {
+                      return const LoadingWidget();
+                    } else if (state is JobApplySuccess) {
+                      return const SizedBox();
+                    }
+                    return ApplyWithProfil(
+                        jobOfferId: widget.arguments?.id ?? "");
+                  },
+                ),
+              )
             : null,
       ),
     );

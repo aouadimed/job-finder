@@ -1,9 +1,9 @@
 import 'package:cv_frontend/core/errors/exceptions.dart';
 import 'package:cv_frontend/core/errors/failures.dart';
 import 'package:cv_frontend/core/network/network_info.dart';
-import 'package:cv_frontend/features/recruiter_applications/data/data_source/company_remote_data_source.dart';
-import 'package:cv_frontend/features/recruiter_applications/data/models/company_model.dart';
-import 'package:cv_frontend/features/recruiter_applications/domain/repository/company_repository.dart';
+import 'package:cv_frontend/features/recruiter_profil/data/data_source/company_remote_data_source.dart';
+import 'package:cv_frontend/features/recruiter_profil/data/model/company_model.dart';
+import 'package:cv_frontend/features/recruiter_profil/domain/repository/company_repository.dart';
 import 'package:dartz/dartz.dart';
 
 class CompanyRepositoryImpl implements CompanyRepository {

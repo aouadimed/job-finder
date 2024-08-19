@@ -3,7 +3,8 @@ import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:shimmer/shimmer.dart';
 
 class JobCardSkeleton extends StatelessWidget {
-  const JobCardSkeleton({Key? key}) : super(key: key);
+  final bool showIcon;
+  const JobCardSkeleton({Key? key, this.showIcon = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -70,11 +71,12 @@ class JobCardSkeleton extends StatelessWidget {
                           ],
                         ),
                       ),
-                      Shimmer.fromColors(
+                    showIcon ? Shimmer.fromColors(
                         baseColor: Colors.grey[300]!,
                         highlightColor: Colors.grey[100]!,
-                        child: const Icon(Icons.bookmark_border, color: Colors.grey),
-                      ),
+                        child: const Icon(Icons.bookmark_border,
+                            color: Colors.grey),
+                      ) : const SizedBox(),
                     ],
                   ),
                   const Divider(),

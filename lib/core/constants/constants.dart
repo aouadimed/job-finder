@@ -1,7 +1,7 @@
-const String url = "10.0.2.2:5000";
+const String url = "192.168.1.13:5000";
 
 const String token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjVkZTExNTEwYzU4YjUzZGQ4ZTQ0YjciLCJpYXQiOjE3MjMzNzA3MDQsImV4cCI6MTcyMzQ1NzEwNH0.K7evdYaI2ggRYjAt1MCLbZ0dBBBlmcrfL-xsrHG603I';
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjVkZTExNTEwYzU4YjUzZGQ4ZTQ0YjciLCJpYXQiOjE3MjQwNzY4MTYsImV4cCI6MTcyNDE2MzIxNn0.bchkORMzThpcO7pacruEKf8NBk-HV0TPKUsQDmalIXU';
 //auth :
 const String loginBaseUrl = '/api/auth/login';
 const String registerBaseUrl = '/api/auth/register';
@@ -35,6 +35,12 @@ const String getAllLanguageUrl = '/api/language/languages';
 const String getSingleLanguageUrl = '/api/language/language';
 const String updateLanguageUrl = '/api/language/update';
 const String deleteLanguageUrl = '/api/language/delete';
+//organization :
+const String createOrganizationActivityUrl = '/api/organization_activity/create';
+const String getAllOrganizationActivitiesUrl = '/api/organization_activity/activities';
+const String getSingleOrganizationActivityUrl = '/api/organization_activity/activity';
+const String updateOrganizationActivityUrl = '/api/organization_activity/update';
+const String deleteOrganizationActivityUrl = '/api/organization_activity/delete';
 //Skills :
 const String skillsUrl = '/api/skill/skills';
 //Contact info :
@@ -51,4 +57,5 @@ const String jobcategoryData = '/api/job-category/job-category';
 const String recentJobOffer = '/api/job-offers/recent';
 //saved jobs 
 const String savedJob = '/api/saved/saved';
-
+//job apply
+const String jobApplyurl = "/api/JobApplication/JobApplication";

@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:cv_frontend/core/constants/constants.dart';
 import 'package:cv_frontend/core/errors/exceptions.dart';
-import 'package:cv_frontend/features/recruiter_applications/data/models/company_model.dart';
+import 'package:cv_frontend/features/recruiter_profil/data/model/company_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 

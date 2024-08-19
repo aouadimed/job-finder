@@ -8,12 +8,15 @@ import 'package:cv_frontend/features/authentication/presentation/pages/login_scr
 import 'package:cv_frontend/features/authentication/presentation/pages/register_screen.dart';
 import 'package:cv_frontend/features/bottom_nav_bar/job_seaker_bottom_nav_bar.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/pages/forgot_password.dart';
+import 'package:cv_frontend/features/job_details_and_apply/presentation/bloc/job_apply_bloc/job_apply_bloc.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/apply_with_cv_screen.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/job_details_screen.dart';
-import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/company_bloc/company_bloc.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/organization_bloc/organization_activity_bloc.dart';
+import 'package:cv_frontend/features/profil/presentation/pages/organization_activity_screen.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/job_offer_bloc/job_offer_bloc.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/pages/applications_screen.dart';
-import 'package:cv_frontend/features/recruiter_applications/presentation/pages/company_profil_section.dart';
+import 'package:cv_frontend/features/recruiter_profil/presentation/bloc/company_bloc/company_bloc.dart';
+import 'package:cv_frontend/features/recruiter_profil/presentation/pages/company_profil_section.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/pages/job_offer_setup_screen.dart';
 import 'package:cv_frontend/features/onboarding/presentation/on_boarding_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/contact_info_bloc/contact_info_bloc.dart';
@@ -63,6 +66,7 @@ const String applyWithCvScreen = '/applyWithCvScreen';
 const String companyProfilScreen = '/companyProfilScreen';
 const String applicationsScreen = '/applicationsScreen';
 const String savedJobScreen = '/savedJobScreen';
+const String organizationActivityScreen = "/organizationActivityScreen";
 
 Route<dynamic> controller(RouteSettings settings) {
   switch (settings.name) {
@@ -104,7 +108,8 @@ Route<dynamic> controller(RouteSettings settings) {
     case savedJobScreen:
       return MaterialPageRoute(
         builder: (context) => BlocProvider(
-          create: (context) => sl<SavedJobsBloc>()..add(const GetSavedJobsEvent()),
+          create: (context) =>
+              sl<SavedJobsBloc>()..add(const GetSavedJobsEvent()),
           child: const SavedJobScreen(),
         ),
       );
@@ -183,6 +188,32 @@ Route<dynamic> controller(RouteSettings settings) {
           ),
         ),
       );
+    case organizationActivityScreen:
+      final args = settings.arguments as OrganizationActivityScreenArguments?;
+      return MaterialPageRoute(
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) {
+                final bloc = sl<OrganizationActivityBloc>();
+                if (args != null && args.isUpdate) {
+                  bloc.add(GetSingleOrganizationActivityEvent(id: args.id));
+                }
+                return bloc;
+              },
+            ),
+            BlocProvider(
+              create: (context) => sl<OrganizationActivityBloc>()
+                ..add(GetAllOrganizationActivitiesEvent()),
+            ),
+          ],
+          child: OrganizationActivityScreen(
+            isUpdate: args?.isUpdate ?? false,
+            id: args?.id,
+          ),
+        ),
+      );
+
     case languagesScreen:
       final args = settings.arguments as LanguagesScreenArguments?;
       return MaterialPageRoute(
@@ -249,7 +280,11 @@ Route<dynamic> controller(RouteSettings settings) {
           builder: (context) => const FinishProfil(), settings: settings);
     case applyWithCvScreen:
       return MaterialPageRoute(
-          builder: (context) => ApplyWithCVScreen(), settings: settings);
+          builder: (context) => BlocProvider(
+                create: (context) => sl<JobApplyBloc>(),
+                child: const ApplyWithCVScreen(),
+              ),
+          settings: settings);
     default:
       return MaterialPageRoute(
         builder: (context) => Scaffold(
