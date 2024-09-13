@@ -1,4 +1,5 @@
 // profile_safe_area.dart
+import 'package:cv_frontend/global/common_widget/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_expanded_cards/profil_header.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/profil_expanded_cards/common_card.dart';
@@ -32,6 +33,7 @@ class ProfileSafeArea extends StatelessWidget {
   final GlobalKey projectKey;
   final GlobalKey summaryKey;
   final GlobalKey contactInfoKey;
+  final bool isLoading;
   final Function(String? section) setExpandedSection;
   final Function(BuildContext context) goToSimpleProfilScreen;
   final Function(BuildContext context) goToContactInfoScreen;
@@ -72,134 +74,142 @@ class ProfileSafeArea extends StatelessWidget {
     required this.goToProjectScreen,
     required this.goToLanguageScreen,
     required this.goToSkillScreen,
+    required this.isLoading,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: scrollController,
-      child: Column(
-        children: [
-          MainProfileHeader(
-            profileHeader: profileHeader,
-            onEdit: () => goToSimpleProfilScreen(context),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Divider(
-              thickness: 0.5,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10),
+    return (isLoading == true)
+        ? LoadingWidget()
+        : SingleChildScrollView(
+            controller: scrollController,
             child: Column(
               children: [
-                const SizedBox(height: 10),
-                ContactInformationCard(
-                  iconOnPressed: () => goToContactInfoScreen(context),
-                  isExpanded: expandedSection == 'contactInfo',
-                  onExpansionChanged: (bool value) {
-                    setExpandedSection(value ? 'contactInfo' : null);
-                    if (value) {
-                      scrollToSection(
-                          context, scrollController, contactInfoKey);
-                    }
-                  },
-                  sectionKey: contactInfoKey,
-                  contactInfo: contactInfo,
+                MainProfileHeader(
+                  profileHeader: profileHeader,
+                  onEdit: () => goToSimpleProfilScreen(context),
                 ),
-                const SizedBox(height: 20),
-                SummaryCard(
-                  iconOnPressed: () => goToSummaryScreen(context),
-                  summaryDescription: summaryDescription,
-                  isExpanded: expandedSection == 'summary',
-                  onExpansionChanged: (bool value) {
-                    setExpandedSection(value ? 'summary' : null);
-                    if (value) {
-                      scrollToSection(context, scrollController, summaryKey);
-                    }
-                  },
-                  sectionKey: summaryKey,
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Divider(
+                    thickness: 0.5,
+                  ),
                 ),
-                const SizedBox(height: 20),
-                WorkExperienceWidget(
-                  onAddPressed: () =>
-                      goToWorkExperienceScreen(context, false, ""),
-                  experiences: experiences,
-                  onEditPressed: (String value) =>
-                      goToWorkExperienceScreen(context, true, value),
-                  isExpanded: expandedSection == 'work_experience',
-                  onExpansionChanged: (bool value) {
-                    setExpandedSection(value ? 'work_experience' : null);
-                    if (value) {
-                      scrollToSection(
-                          context, scrollController, workExperienceKey);
-                    }
-                  },
-                  sectionKey: workExperienceKey,
-                ),
-                const SizedBox(height: 20),
-                EducationWidget(
-                  education: educations,
-                  onAddPressed: () => goToEducationScreen(context, false, ""),
-                  onEditPressed: (String value) =>
-                      goToEducationScreen(context, true, value),
-                  isExpanded: expandedSection == 'education',
-                  onExpansionChanged: (bool value) {
-                    setExpandedSection(value ? 'education' : null);
-                    if (value) {
-                      scrollToSection(context, scrollController, educationKey);
-                    }
-                  },
-                  sectionKey: educationKey,
-                ),
-                const SizedBox(height: 20),
-                ProjectCard(
-                  onAddPressed: () => goToProjectScreen(context, false, ""),
-                  project: projects,
-                  onEditPressed: (String value) =>
-                      goToProjectScreen(context, true, value),
-                  isExpanded: expandedSection == 'projects',
-                  onExpansionChanged: (bool value) {
-                    setExpandedSection(value ? 'projects' : null);
-                    if (value) {
-                      scrollToSection(context, scrollController, projectKey);
-                    }
-                  },
-                  sectionKey: projectKey,
-                ),
-                const SizedBox(height: 20),
-                Column(
-                  children: [
-                    LanguageCard(
-                      onAddPressed: () =>
-                          goToLanguageScreen(context, false, ""),
-                      language: languages,
-                      onEditPressed: (String value) =>
-                          goToLanguageScreen(context, true, value),
-                      isExpanded: expandedSection == 'languages',
-                      onExpansionChanged: (bool value) {
-                        setExpandedSection(value ? 'languages' : null);
-                        if (value) {
-                          scrollToSection(
-                              context, scrollController, languageKey);
-                        }
-                      },
-                      sectionKey: languageKey,
-                    ),
-                    const SizedBox(height: 20),
-                    CommonCard(
-                      onCardPressed: () => goToSkillScreen(context),
-                      headerTitle: "Skills",
-                      headerIcon: Icons.pie_chart_sharp,
-                    ),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      ContactInformationCard(
+                        iconOnPressed: () => goToContactInfoScreen(context),
+                        isExpanded: expandedSection == 'contactInfo',
+                        onExpansionChanged: (bool value) {
+                          setExpandedSection(value ? 'contactInfo' : null);
+                          if (value) {
+                            scrollToSection(
+                                context, scrollController, contactInfoKey);
+                          }
+                        },
+                        sectionKey: contactInfoKey,
+                        contactInfo: contactInfo,
+                      ),
+                      const SizedBox(height: 20),
+                      SummaryCard(
+                        iconOnPressed: () => goToSummaryScreen(context),
+                        summaryDescription: summaryDescription,
+                        isExpanded: expandedSection == 'summary',
+                        onExpansionChanged: (bool value) {
+                          setExpandedSection(value ? 'summary' : null);
+                          if (value) {
+                            scrollToSection(
+                                context, scrollController, summaryKey);
+                          }
+                        },
+                        sectionKey: summaryKey,
+                      ),
+                      const SizedBox(height: 20),
+                      WorkExperienceWidget(
+                        onAddPressed: () =>
+                            goToWorkExperienceScreen(context, false, ""),
+                        experiences: experiences,
+                        onEditPressed: (String value) =>
+                            goToWorkExperienceScreen(context, true, value),
+                        isExpanded: expandedSection == 'work_experience',
+                        onExpansionChanged: (bool value) {
+                          setExpandedSection(value ? 'work_experience' : null);
+                          if (value) {
+                            scrollToSection(
+                                context, scrollController, workExperienceKey);
+                          }
+                        },
+                        sectionKey: workExperienceKey,
+                      ),
+                      const SizedBox(height: 20),
+                      EducationWidget(
+                        education: educations,
+                        onAddPressed: () =>
+                            goToEducationScreen(context, false, ""),
+                        onEditPressed: (String value) =>
+                            goToEducationScreen(context, true, value),
+                        isExpanded: expandedSection == 'education',
+                        onExpansionChanged: (bool value) {
+                          setExpandedSection(value ? 'education' : null);
+                          if (value) {
+                            scrollToSection(
+                                context, scrollController, educationKey);
+                          }
+                        },
+                        sectionKey: educationKey,
+                      ),
+                      const SizedBox(height: 20),
+                      ProjectCard(
+                        onAddPressed: () =>
+                            goToProjectScreen(context, false, ""),
+                        project: projects,
+                        onEditPressed: (String value) =>
+                            goToProjectScreen(context, true, value),
+                        isExpanded: expandedSection == 'projects',
+                        onExpansionChanged: (bool value) {
+                          setExpandedSection(value ? 'projects' : null);
+                          if (value) {
+                            scrollToSection(
+                                context, scrollController, projectKey);
+                          }
+                        },
+                        sectionKey: projectKey,
+                      ),
+                      const SizedBox(height: 20),
+                      Column(
+                        children: [
+                          LanguageCard(
+                            onAddPressed: () =>
+                                goToLanguageScreen(context, false, ""),
+                            language: languages,
+                            onEditPressed: (String value) =>
+                                goToLanguageScreen(context, true, value),
+                            isExpanded: expandedSection == 'languages',
+                            onExpansionChanged: (bool value) {
+                              setExpandedSection(value ? 'languages' : null);
+                              if (value) {
+                                scrollToSection(
+                                    context, scrollController, languageKey);
+                              }
+                            },
+                            sectionKey: languageKey,
+                          ),
+                          const SizedBox(height: 20),
+                          CommonCard(
+                            onCardPressed: () => goToSkillScreen(context),
+                            headerTitle: "Skills",
+                            headerIcon: Icons.pie_chart_sharp,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 }

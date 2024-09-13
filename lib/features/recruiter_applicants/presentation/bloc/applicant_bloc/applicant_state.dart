@@ -14,11 +14,11 @@ class ApplicantLoading extends ApplicantState {}
 
 class ApplicantFailure extends ApplicantState {
   final String message;
-  final bool isIntentFailure;
+  final bool? isIntentFailure;
 
   const ApplicantFailure({
     required this.message,
-    required this.isIntentFailure,
+     this.isIntentFailure,
   });
 
   @override
@@ -33,3 +33,5 @@ class ApplicantSuccess extends ApplicantState {
   @override
   List<Object?> get props => [applicantModel];
 }
+
+class UpdateApplicantSuccess extends ApplicantState {}

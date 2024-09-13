@@ -29,7 +29,7 @@ class JobCategoryRemoteDataSourceImpl implements JobCategoryRemoteDataSource {
         uri,
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
         body: jsonEncode(body),
       )

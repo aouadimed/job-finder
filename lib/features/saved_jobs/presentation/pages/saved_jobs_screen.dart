@@ -193,6 +193,7 @@ class _SavedJobScreenState extends State<SavedJobScreen> {
                               icon: const Icon(Icons.clear, color: Colors.grey),
                               onPressed: () {
                                 _searchController.clear();
+                                FocusScope.of(context).unfocus();
                                 _handleSearch('');
                               },
                             )
@@ -319,7 +320,7 @@ class _SavedJobScreenState extends State<SavedJobScreen> {
                                         ).then(
                                           (_) {
                                             if (context.mounted) {
-                                              _fetchSavedJobs(); // Refresh the list on return
+                                              _fetchSavedJobs();
                                             }
                                           },
                                         );

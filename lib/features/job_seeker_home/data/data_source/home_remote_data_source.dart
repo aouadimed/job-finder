@@ -23,7 +23,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
         Uri.http(url, recentJobOffer, queryParameters),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       ).catchError((e) {
         throw ServerException();

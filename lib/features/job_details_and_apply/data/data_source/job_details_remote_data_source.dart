@@ -19,7 +19,7 @@ class JobDetailsRemoteDataSourceImpl implements JobDetailsRemoteDataSource {
         Uri.http(url, "$jobOfferData/$id"),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       ).catchError((e) {
         throw ServerException();

@@ -20,7 +20,7 @@ class ProfilHeaderRemoteDataSourceImpl implements ProfilHeaderRemoteDataSource {
         Uri.http(url, profilHeaderUrl),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer ${TokenManager.token}"
         },
       ).catchError((e) {
         throw ServerException();

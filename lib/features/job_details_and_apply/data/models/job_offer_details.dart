@@ -1,6 +1,8 @@
 import 'dart:convert';
 
-JobOfferDetailsModel jobOfferDetailsModelFromJson(String str) => JobOfferDetailsModel.fromJson(json.decode(str));
+JobOfferDetailsModel jobOfferDetailsModelFromJson(String str) =>
+    JobOfferDetailsModel.fromJson(json.decode(str));
+
 class JobOfferDetailsModel {
   final String id;
   final String user;
@@ -17,7 +19,7 @@ class JobOfferDetailsModel {
   final String companyCountry;
   final String companyAbout;
   final String logoName;
-
+  final String applicationStatus;
   JobOfferDetailsModel({
     required this.id,
     required this.user,
@@ -34,6 +36,7 @@ class JobOfferDetailsModel {
     required this.companyCountry,
     required this.companyAbout,
     required this.logoName,
+    required this.applicationStatus,
   });
 
   factory JobOfferDetailsModel.fromJson(Map<String, dynamic> json) {
@@ -53,6 +56,7 @@ class JobOfferDetailsModel {
       companyCountry: json['companyCountry'],
       companyAbout: json['companyAbout'],
       logoName: json['logoName'],
+      applicationStatus: json['applicationStatus'],
     );
   }
 }

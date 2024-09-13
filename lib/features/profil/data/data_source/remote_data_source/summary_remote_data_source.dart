@@ -25,7 +25,7 @@ class SummaryRemoteDataSourceImpl implements SummaryRemoteDataSource {
           body: jsonEncode(requestBody),
           headers: {
             "Content-type": "application/json",
-            "Authorization": "Bearer $token"
+            "Authorization": "Bearer ${TokenManager.token}"
           }).catchError(
         (e) => throw ServerException(),
       ); 
@@ -46,7 +46,7 @@ class SummaryRemoteDataSourceImpl implements SummaryRemoteDataSource {
         Uri.http(url, getSummaryBaseUrl),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer ${TokenManager.token}"
         },
       ).catchError((e) {
         throw ServerException();

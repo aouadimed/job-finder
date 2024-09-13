@@ -24,7 +24,7 @@ class ContactInfoRemoteDataSourceImpl implements ContactInfoRemoteDataSource {
         Uri.http(url, contactInfoUrl),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer ${TokenManager.token}"
         },
       ).catchError((e) {
         throw ServerException();
@@ -53,7 +53,7 @@ class ContactInfoRemoteDataSourceImpl implements ContactInfoRemoteDataSource {
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       ).catchError((e) {
         throw ServerException();

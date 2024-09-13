@@ -25,7 +25,7 @@ class SkillRemoteDataSourceImpl implements SkillRemoteDataSource {
         Uri.http(url, skillsUrl),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
+          'Authorization': 'Bearer ${TokenManager.token}',
         },
         body: jsonEncode({"skill": params.name}),
       );
@@ -45,7 +45,7 @@ class SkillRemoteDataSourceImpl implements SkillRemoteDataSource {
         Uri.http(url,'$skillsUrl/${params.id}'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
+          'Authorization': 'Bearer ${TokenManager.token}',
         },
       );
 
@@ -64,7 +64,7 @@ class SkillRemoteDataSourceImpl implements SkillRemoteDataSource {
         Uri.http(url, skillsUrl),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
+          'Authorization': 'Bearer ${TokenManager.token}',
         },
       );
 

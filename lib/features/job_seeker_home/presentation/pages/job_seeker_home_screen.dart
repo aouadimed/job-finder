@@ -3,12 +3,16 @@ import 'package:cv_frontend/features/job_details_and_apply/presentation/bloc/job
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/job_details_screen.dart';
 import 'package:cv_frontend/features/job_seeker_home/data/models/categorie_selection_model.dart';
 import 'package:cv_frontend/features/job_seeker_home/data/models/job_card_model.dart';
+import 'package:cv_frontend/features/job_seeker_home/data/models/profil_percentage_model.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/home_bloc/home_bloc.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/profil_percentage_bloc/profil_percentage_bloc.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/save_job_bloc/save_job_bloc.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/pages/searsh_screen.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/pages/widgets/category_selecion.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/pages/widgets/category_selection_skeleton.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/pages/widgets/job_card_skeleton.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/pages/widgets/persentage_profil.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/pages/widgets/persentage_profil_skeleton.dart';
 import 'package:cv_frontend/global/utils/emploments_type_data.dart';
 import 'package:cv_frontend/global/utils/location_type_data.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +23,7 @@ import 'package:cv_frontend/global/common_widget/app_bar.dart';
 import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
 import 'package:cv_frontend/global/common_widget/text_form_field.dart';
 import 'package:cv_frontend/injection_container.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -34,7 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
   double _savedScrollPosition = 0.0;
 
   List<CategorySelectionModel> categorySelectionModel = [];
-  List<JobOffer> jobCardModel = []; // List to hold the job offers
+  CompletionPercentage completionPercentage =
+      CompletionPercentage(completionPercentage: 100, errors: [], message: '');
+  List<JobOffer> jobCardModel = [];
   String? _selectedCategoryId;
 
   int _currentPage = 1;
@@ -89,15 +96,14 @@ class _HomeScreenState extends State<HomeScreen> {
       _selectedCategoryId = null;
     });
     _scrollController.jumpTo(_savedScrollPosition);
-    _categoryScrollController
-        .jumpTo(0.0); // Reset category scroll position to 0
+    _categoryScrollController.jumpTo(0.0);
   }
 
   void _fetchJobOffers() {
     setState(() {
       _isLoading = true;
       _currentPage = 1;
-      jobCardModel.clear(); // Clear the list before fetching new data
+      jobCardModel.clear();
     });
 
     BlocProvider.of<HomeBloc>(context)
@@ -119,7 +125,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const GeneralAppBar(),
+      appBar: const GeneralAppBar(
+        logo: AssetImage("assets/images/logo.webp"),
+        titleText: 'Job Finder',
+      ),
       body: SafeArea(
         child: CustomScrollView(
           controller: _scrollController,
@@ -160,6 +169,25 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
+                  ),
+                  BlocConsumer<ProfilPercentageBloc, ProfilPercentageState>(
+                    listener: (context, state) {
+                      if (state is ProfilPercentageFailure) {
+                        showSnackBar(context: context, message: state.message);
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is ProfilPercentageLoading) {
+                        return const ProfileCompletionSkeleton();
+                      } else if (state is ProfilPercentageSuccess) {
+                        completionPercentage = state.completionPercentage;
+                      }
+
+                      return ProfileCompletionWidget(
+                        completionPercentage:
+                            completionPercentage.completionPercentage,
+                      );
+                    },
                   ),
                   Padding(
                     padding: const EdgeInsets.all(12),

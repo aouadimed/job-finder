@@ -22,7 +22,7 @@ class SavedJobRemoteDataSourceImpl implements SavedJobRemoteDataSource {
         Uri.http(url, "$savedJob/$id"),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       ).catchError((e) {
         throw ServerException();
@@ -49,7 +49,7 @@ class SavedJobRemoteDataSourceImpl implements SavedJobRemoteDataSource {
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       ).catchError((e) {
         throw ServerException();
@@ -72,7 +72,7 @@ class SavedJobRemoteDataSourceImpl implements SavedJobRemoteDataSource {
         Uri.http(url, "$savedJob/$id"),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       ).catchError((e) {
         throw ServerException();

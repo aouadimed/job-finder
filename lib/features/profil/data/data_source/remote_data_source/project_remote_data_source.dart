@@ -63,7 +63,7 @@ class ProjectDataSourceImpl extends ProjectDataSource {
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer ${TokenManager.token}"
         },
       ).catchError((e) => throw ServerException());
       if (response.statusCode == 201) {
@@ -83,7 +83,7 @@ class ProjectDataSourceImpl extends ProjectDataSource {
         Uri.http(url, getAllProjectUrl),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer ${TokenManager.token}"
         },
       ).catchError((e) {
         throw ServerException();
@@ -105,7 +105,7 @@ class ProjectDataSourceImpl extends ProjectDataSource {
         Uri.http(url, '$getSingleProjectUrl/$id'),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer ${TokenManager.token}"
         },
       ).catchError((e) {
         throw ServerException();
@@ -146,7 +146,7 @@ class ProjectDataSourceImpl extends ProjectDataSource {
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer ${TokenManager.token}"
         },
       ).catchError((e) {
         throw ServerException();
@@ -169,7 +169,7 @@ print(response.body);
         Uri.http(url, '$deleteProjectUrl/$id'),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer ${TokenManager.token}"
         },
       ).catchError((e) {
         throw ServerException();

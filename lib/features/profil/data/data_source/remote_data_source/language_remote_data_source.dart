@@ -32,7 +32,7 @@ class LanguageDataSourceImpl implements LanguageDataSource {
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       ).catchError((e) {
         throw ServerException();
@@ -60,7 +60,7 @@ class LanguageDataSourceImpl implements LanguageDataSource {
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       ).catchError((e) {
         throw ServerException();
@@ -83,7 +83,7 @@ class LanguageDataSourceImpl implements LanguageDataSource {
         Uri.http(url, '$deleteLanguageUrl/$id'),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       ).catchError((e) {
         throw ServerException();
@@ -107,7 +107,7 @@ class LanguageDataSourceImpl implements LanguageDataSource {
         Uri.http(url, '$getSingleLanguageUrl/$id'),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       ).catchError((e) {
         throw ServerException();
@@ -130,7 +130,7 @@ class LanguageDataSourceImpl implements LanguageDataSource {
         Uri.http(url, getAllLanguageUrl),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       ).catchError((e) {
         throw ServerException();

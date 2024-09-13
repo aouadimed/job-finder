@@ -10,6 +10,7 @@ class CommonFormsScreen extends StatelessWidget {
   final void Function()? onDelete;
   final bool isLoading;
   final bool isUpdate;
+  final ImageProvider? logo;
 
   const CommonFormsScreen({
     Key? key,
@@ -19,6 +20,7 @@ class CommonFormsScreen extends StatelessWidget {
     this.onDelete,
     this.isLoading = false,
     this.isUpdate = false,
+    this.logo,
   }) : super(key: key);
 
   @override
@@ -29,6 +31,7 @@ class CommonFormsScreen extends StatelessWidget {
         rightIcon: isUpdate ? Icons.delete_outline : null,
         rightIconColor: redColor,
         rightIconOnPressed: isUpdate ? onDelete : null,
+        logo: logo,
       ),
       body: SafeArea(
         child: isLoading
@@ -44,7 +47,7 @@ class CommonFormsScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         const Divider(),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 5),
                         BigButton(
                           text: 'Save',
                           onPressed: onSave,

@@ -20,7 +20,24 @@ class MainProfileHeader extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 35,
-            backgroundImage: NetworkImage(profileHeader.profilImg),
+            backgroundImage: profileHeader.profilImg != "undefined"
+                ? NetworkImage(profileHeader.profilImg)
+                : null,
+            backgroundColor: profileHeader.profilImg == "undefined"
+                ? primaryColor.withOpacity(0.8)
+                : Colors.transparent,
+            child: profileHeader.profilImg == "undefined"
+                ? Center(
+                    child: Text(
+                      "${profileHeader.firstName[0].toUpperCase()}  ${profileHeader.lastName[0].toUpperCase()}",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  )
+                : null,
           ),
           const SizedBox(width: 16),
           Expanded(

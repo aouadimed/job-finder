@@ -19,7 +19,7 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
         Uri.http(url, jobcategoryData),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       ).catchError((e) {
         throw ServerException();

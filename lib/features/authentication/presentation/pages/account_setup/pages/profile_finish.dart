@@ -149,7 +149,7 @@ class _FinishProfilState extends State<FinishProfil> {
     String selectedRole = (selectedroleindex == 0)
         ? "user"
         : (selectedroleindex == 1)
-            ? "admin"
+            ? "recruiter"
             : "unknown";
 
     if (_formKey.currentState!.validate()) {

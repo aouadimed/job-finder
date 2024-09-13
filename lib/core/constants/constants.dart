@@ -1,7 +1,57 @@
-const String url = "192.168.1.13:5000";
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
-const String token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjVkZTExNTEwYzU4YjUzZGQ4ZTQ0YjciLCJpYXQiOjE3MjQwNzY4MTYsImV4cCI6MTcyNDE2MzIxNn0.bchkORMzThpcO7pacruEKf8NBk-HV0TPKUsQDmalIXU';
+const String url = "192.168.97.151:5000";
+
+class TokenManager {
+  static String? _token;
+  static String? _role;
+
+  static Future<void> initialize() async {
+    final prefs = await SharedPreferences.getInstance();
+    _token = prefs.getString('user_token');
+    _role = prefs.getString('user_role');
+  }
+
+  static Future<void> clearToken() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.remove('user_token');
+    await prefs.remove('user_role');
+  }
+
+  static String? get role => _role;
+
+  static String? get token {
+    if (_token == null || isTokenExpired()) {
+      return null;
+    }
+    return _token;
+  }
+
+  static bool isTokenExpired() {
+    if (_token == null) return true;
+
+    try {
+      final parts = _token!.split('.');
+      if (parts.length != 3) {
+        return true;
+      }
+
+      final payload = jsonDecode(
+          utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))));
+
+      final exp = payload['exp'];
+      if (exp == null) return true;
+
+      final expiryDate = DateTime.fromMillisecondsSinceEpoch(exp * 1000);
+      return expiryDate.isBefore(DateTime.now());
+    } catch (e) {
+      return true;
+    }
+  }
+}
+
 //auth :
 const String loginBaseUrl = '/api/auth/login';
 const String registerBaseUrl = '/api/auth/register';
@@ -36,11 +86,16 @@ const String getSingleLanguageUrl = '/api/language/language';
 const String updateLanguageUrl = '/api/language/update';
 const String deleteLanguageUrl = '/api/language/delete';
 //organization :
-const String createOrganizationActivityUrl = '/api/organization_activity/create';
-const String getAllOrganizationActivitiesUrl = '/api/organization_activity/activities';
-const String getSingleOrganizationActivityUrl = '/api/organization_activity/activity';
-const String updateOrganizationActivityUrl = '/api/organization_activity/update';
-const String deleteOrganizationActivityUrl = '/api/organization_activity/delete';
+const String createOrganizationActivityUrl =
+    '/api/organization_activity/create';
+const String getAllOrganizationActivitiesUrl =
+    '/api/organization_activity/activities';
+const String getSingleOrganizationActivityUrl =
+    '/api/organization_activity/activity';
+const String updateOrganizationActivityUrl =
+    '/api/organization_activity/update';
+const String deleteOrganizationActivityUrl =
+    '/api/organization_activity/delete';
 //Skills :
 const String skillsUrl = '/api/skill/skills';
 //Contact info :
@@ -55,7 +110,11 @@ const String jobOfferData = '/api/job-offers/job-offers';
 const String jobcategoryData = '/api/job-category/job-category';
 //recent job offer
 const String recentJobOffer = '/api/job-offers/recent';
-//saved jobs 
+//saved jobs
 const String savedJob = '/api/saved/saved';
 //job apply
 const String jobApplyurl = "/api/JobApplication/JobApplication";
+//messaging
+const String messaging = "/api/chat/chat";
+//profil percentage
+const String profilPercentage = "/api/profil/CVCompletion";

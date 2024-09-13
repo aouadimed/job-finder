@@ -1,6 +1,10 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/core/services/home_screen_route.dart';
 import 'package:cv_frontend/core/services/profil_screen_route.dart';
+import 'package:cv_frontend/features/job_seeker_applications/presentation/bloc/seeker_application_bloc.dart';
+import 'package:cv_frontend/features/job_seeker_applications/presentation/pages/job_seeker_applications_screen.dart';
+import 'package:cv_frontend/features/messaging/presentation/bloc/messaging_bloc.dart';
+import 'package:cv_frontend/features/messaging/presentation/pages/chats_screen.dart';
 import 'package:cv_frontend/features/saved_jobs/presentation/bloc/saved_jobs_bloc.dart';
 import 'package:cv_frontend/features/saved_jobs/presentation/pages/saved_jobs_screen.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +27,14 @@ class _BottomNavBarState extends State<BottomNavBar> {
       create: (context) => sl<SavedJobsBloc>(),
       child: const SavedJobScreen(),
     ),
-    homeScreenProvider(),
-    homeScreenProvider(),
+    BlocProvider(
+      create: (context) => sl<SeekerApplicationBloc>(),
+      child: const JobSeekerApplications(),
+    ),
+    BlocProvider(
+      create: (context) => sl<MessagingBloc>(),
+      child: const ChatsScreen(),
+    ),
     profilScreenProvider(null),
   ];
 

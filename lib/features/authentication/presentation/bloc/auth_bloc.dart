@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cv_frontend/core/errors/failures.dart';
 import 'package:cv_frontend/core/errors/functions.dart';
+import 'package:cv_frontend/features/authentication/data/models/user_model.dart';
 import 'package:cv_frontend/features/authentication/domain/usecases/login_user_use_case.dart';
 import 'package:cv_frontend/features/authentication/domain/usecases/sign_up_user_use_case.dart';
 import 'package:equatable/equatable.dart';
@@ -39,7 +40,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           message: mapFailureToMessage(failure),
         ),
       ),
-      (success) => emit(LoginSuccess()),
+      (userModel) => emit(LoginSuccess(userModel: userModel)),
     );
   }
 

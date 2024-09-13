@@ -8,6 +8,8 @@ class GeneralAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? rightIconOnPressed;
   final Color? rightIconColor;
   final List<Widget>? actions;
+  final bool? closeicon;
+  final bool? haveReturn;
   const GeneralAppBar({
     Key? key,
     this.titleText,
@@ -17,6 +19,8 @@ class GeneralAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.rightIconOnPressed,
     this.rightIconColor,
     this.actions,
+    this.closeicon = false,
+    this.haveReturn = true,
   }) : super(key: key);
 
   @override
@@ -27,20 +31,7 @@ class GeneralAppBar extends StatelessWidget implements PreferredSizeWidget {
       scrolledUnderElevation: 0,
       forceMaterialTransparency: true,
       elevation: 0,
-      leading: logo != null
-          ? Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                child: Image(image: logo!),
-              ),
-            )
-          : IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
+      leading: _buildLeadingIcon(context),
       title: Text(
         titleText ?? '',
         style: const TextStyle(
@@ -69,6 +60,30 @@ class GeneralAppBar extends StatelessWidget implements PreferredSizeWidget {
                 )
             ],
     );
+  }
+
+  Widget _buildLeadingIcon(BuildContext context) {
+    if (logo != null) {
+      return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10.0),
+          child: Image(image: logo!),
+        ),
+      );
+    } else if (haveReturn == true) {
+      return IconButton(
+        icon: Icon(
+          closeicon == true ? Icons.close : Icons.arrow_back,
+          color: Colors.black,
+        ),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      );
+    } else {
+      return Container();
+    }
   }
 
   @override

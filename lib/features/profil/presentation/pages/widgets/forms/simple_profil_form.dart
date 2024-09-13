@@ -158,7 +158,7 @@ class _SimpleProfileFormState extends State<SimpleProfileForm> {
                               height: 150.0,
                             ),
                           )
-                        : (_imageUrl != null
+                        : (_imageUrl != null && _imageUrl !="undefined"
                             ? ClipOval(
                                 child: Image.network(
                                   _imageUrl!,

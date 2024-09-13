@@ -69,7 +69,7 @@ class EducationDataSourceImpl implements EducationDataSource {
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       ).catchError((e) {
         throw ServerException();
@@ -92,7 +92,7 @@ class EducationDataSourceImpl implements EducationDataSource {
         Uri.http(url, getAllEducationUrl),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       ).catchError((e) {
         throw ServerException();
@@ -115,7 +115,7 @@ class EducationDataSourceImpl implements EducationDataSource {
         Uri.http(url, '$getSingleEducationUrl/$id'),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       ).catchError((e) {
         throw ServerException();
@@ -159,7 +159,7 @@ class EducationDataSourceImpl implements EducationDataSource {
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       ).catchError((e) {
         throw ServerException();
@@ -182,7 +182,7 @@ class EducationDataSourceImpl implements EducationDataSource {
         Uri.http(url, '$deleteEducationUrl/$id'),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       ).catchError((e) {
         throw ServerException();

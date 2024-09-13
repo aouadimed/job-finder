@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:cv_frontend/core/constants/constants.dart';
 import 'package:cv_frontend/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:cv_frontend/injection_container.dart';
@@ -10,11 +10,20 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
   await initializeDependencies();
-  runApp(const MyApp());
+  await TokenManager.initialize();
+  print("role ${TokenManager.role}");
+ final initialRoute = TokenManager.token != null && !TokenManager.isTokenExpired()
+    ? (TokenManager.role == 'recruiter' ? route.recruiterNavBar : route.navBar)
+    : route.loginScreen;
+
+
+  runApp(MyApp(initialRoute: initialRoute));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String initialRoute;
+
+  const MyApp({super.key, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +37,7 @@ class MyApp extends StatelessWidget {
         title: 'Job Finder',
         theme: theme(),
         onGenerateRoute: route.controller,
-        initialRoute: route.applicationsScreen
+        initialRoute: initialRoute,
       ),
     );
   }

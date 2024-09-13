@@ -71,7 +71,7 @@ class WorkExperienceDataSourceImpl extends WorkExperienceDataSource {
           body: jsonEncode(requestBody),
           headers: {
             "Content-type": "application/json",
-            "Authorization": "Bearer $token"
+            "Authorization": "Bearer ${TokenManager.token}"
           }).catchError(
         (e) => throw ServerException(),
       );
@@ -92,7 +92,7 @@ class WorkExperienceDataSourceImpl extends WorkExperienceDataSource {
         Uri.http(url, getAllWorkExperienceUrl),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer ${TokenManager.token}"
         },
       ).catchError((e) {
         throw ServerException();
@@ -115,7 +115,7 @@ class WorkExperienceDataSourceImpl extends WorkExperienceDataSource {
         Uri.http(url, '$getSingleWorkExperienceUrl/$id'),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer ${TokenManager.token}"
         },
       ).catchError((e) {
         throw ServerException();
@@ -160,7 +160,7 @@ class WorkExperienceDataSourceImpl extends WorkExperienceDataSource {
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer ${TokenManager.token}"
         },
       ).catchError((e) {
         throw ServerException();
@@ -183,7 +183,7 @@ class WorkExperienceDataSourceImpl extends WorkExperienceDataSource {
         Uri.http(url, '$deleteWorkExperienceUrl/$id'),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer ${TokenManager.token}"
         },
       ).catchError((e) {
         throw ServerException();

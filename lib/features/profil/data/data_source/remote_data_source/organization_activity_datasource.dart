@@ -62,7 +62,7 @@ class OrganizationActivityDataSourceImpl
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer ${TokenManager.token}"
         },
       ).catchError((e) => throw ServerException());
 
@@ -84,7 +84,7 @@ class OrganizationActivityDataSourceImpl
         Uri.http(url, getAllOrganizationActivitiesUrl),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer ${TokenManager.token}"
         },
       ).catchError((e) {
         throw ServerException();
@@ -108,7 +108,7 @@ class OrganizationActivityDataSourceImpl
         Uri.http(url, '$getSingleOrganizationActivityUrl/$id'),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer ${TokenManager.token}"
         },
       ).catchError((e) {
         throw ServerException();
@@ -149,7 +149,7 @@ class OrganizationActivityDataSourceImpl
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer ${TokenManager.token}"
         },
       ).catchError((e) {
         throw ServerException();
@@ -172,7 +172,7 @@ class OrganizationActivityDataSourceImpl
         Uri.http(url, '$deleteOrganizationActivityUrl/$id'),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer ${TokenManager.token}"
         },
       ).catchError((e) {
         throw ServerException();

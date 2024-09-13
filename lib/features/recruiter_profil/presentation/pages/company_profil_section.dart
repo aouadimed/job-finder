@@ -80,7 +80,8 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
       _websiteController.text = _initialWebsite ?? '';
       _countryController.text = _initialCountry ?? '';
       for (var i = 0; i < _addressControllers.length; i++) {
-        _addressControllers[i].text = _initialAddresses.length > i ? _initialAddresses[i] : '';
+        _addressControllers[i].text =
+            _initialAddresses.length > i ? _initialAddresses[i] : '';
       }
     });
   }
@@ -121,7 +122,9 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
         _aboutCompanyController.text != _initialAboutCompany ||
         _websiteController.text != _initialWebsite ||
         _countryController.text != _initialCountry ||
-        _addressControllers.any((controller) => controller.text.isNotEmpty && !_initialAddresses.contains(controller.text));
+        _addressControllers.any((controller) =>
+            controller.text.isNotEmpty &&
+            !_initialAddresses.contains(controller.text));
   }
 
   @override
@@ -141,7 +144,8 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
           _initialAboutCompany = company.aboutCompany;
           _initialWebsite = company.website;
           _initialCountry = company.country;
-          _initialAddresses = company.addresses!.map((e) => e.address!).toList();
+          _initialAddresses =
+              company.addresses!.map((e) => e.address!).toList();
 
           _companyNameController.text = company.companyName ?? '';
           _aboutCompanyController.text = company.aboutCompany ?? '';
@@ -161,6 +165,7 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
       child: BlocBuilder<CompanyBloc, CompanyState>(
         builder: (context, state) {
           return CommonFormsScreen(
+            logo: const AssetImage("assets/images/logo.webp"),
             isLoading: state is CompanyLoading,
             onSave: () {
               if (_selectedLogoFile == null && _selectedLogoUrl == null) {

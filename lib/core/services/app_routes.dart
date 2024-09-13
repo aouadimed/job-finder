@@ -7,6 +7,7 @@ import 'package:cv_frontend/features/authentication/presentation/pages/account_s
 import 'package:cv_frontend/features/authentication/presentation/pages/login_screen.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/register_screen.dart';
 import 'package:cv_frontend/features/bottom_nav_bar/job_seaker_bottom_nav_bar.dart';
+import 'package:cv_frontend/features/bottom_nav_bar/recruiter_bottom_nav_bar.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/pages/forgot_password.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/bloc/job_apply_bloc/job_apply_bloc.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/apply_with_cv_screen.dart';
@@ -67,12 +68,17 @@ const String companyProfilScreen = '/companyProfilScreen';
 const String applicationsScreen = '/applicationsScreen';
 const String savedJobScreen = '/savedJobScreen';
 const String organizationActivityScreen = "/organizationActivityScreen";
+const String recruiterNavBar = '/recruiterNavBar';
 
 Route<dynamic> controller(RouteSettings settings) {
   switch (settings.name) {
     case navBar:
       return MaterialPageRoute(
         builder: (context) => const BottomNavBar(),
+      );
+    case recruiterNavBar:
+      return MaterialPageRoute(
+        builder: (context) => const RecruiterBottomNavBar(),
       );
     case boardingScreen:
       return MaterialPageRoute(

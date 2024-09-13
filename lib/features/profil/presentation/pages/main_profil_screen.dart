@@ -1,7 +1,10 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
+import 'package:cv_frontend/core/constants/constants.dart';
+import 'package:cv_frontend/core/services/app_routes.dart';
 import 'package:cv_frontend/core/services/profil_screen_route.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/bloc/job_apply_bloc/job_apply_bloc.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/widget/apply_with_profil.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/profil_percentage_bloc/profil_percentage_bloc.dart';
 import 'package:cv_frontend/features/profil/data/models/contact_info_model.dart';
 import 'package:cv_frontend/features/profil/data/models/education_model.dart';
 import 'package:cv_frontend/features/profil/data/models/language_model.dart';
@@ -22,6 +25,8 @@ import 'package:flutter/material.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
 import 'package:cv_frontend/global/common_widget/loading_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class ProfilScreen extends StatefulWidget {
   final ProfilScreenArguments? arguments;
@@ -40,7 +45,7 @@ class _ProfilScreenState extends State<ProfilScreen> {
   List<LanguageModel> languages = [];
   ContactInfoModel contactInfo = ContactInfoModel();
   ProfilHeaderModel profileHeader = ProfilHeaderModel();
-
+  bool isLoading = true;
   String? expandedSection;
   GlobalKey educationKey = GlobalKey();
   GlobalKey workExperienceKey = GlobalKey();
@@ -102,10 +107,26 @@ class _ProfilScreenState extends State<ProfilScreen> {
             ? const GeneralAppBar(
                 titleText: "Apply Job",
               )
-            : const GeneralAppBar(
+            : GeneralAppBar(
                 titleText: "Profile",
-                logo: AssetImage('assets/images/logo.webp'),
-                rightIcon: Icons.settings_outlined,
+                logo: const AssetImage('assets/images/logo.webp'),
+                rightIcon: Icons.logout_sharp,
+                rightIconColor: primaryColor,
+                rightIconOnPressed: () => {
+                  QuickAlert.show(
+                    context: context,
+                    headerBackgroundColor: primaryColor,
+                    type: QuickAlertType.confirm,
+                    title: 'Logout',
+                    text: 'Are you sure you want to logout?',
+                    confirmBtnText: 'Logout',
+                    cancelBtnText: 'Cancel',
+                    onConfirmBtnTap: () {
+                      TokenManager.clearToken();
+                      Navigator.pushReplacementNamed(context, loginScreen);
+                    },
+                  )
+                },
               ),
         body: SafeArea(
           child: BlocBuilder<SummaryBloc, SummaryState>(
@@ -118,43 +139,45 @@ class _ProfilScreenState extends State<ProfilScreen> {
                         builder: (context, projectState) {
                           return BlocBuilder<LanguageBloc, LanguageState>(
                             builder: (context, languageState) {
-                              if (summaryState is SummaryLoading ||
+                              if (summaryState is SummaryLoading &&
                                   workExperienceState
-                                      is WorkExperienceLoading ||
-                                  educationState is EducationLoading ||
-                                  projectState is ProjectLoading ||
+                                      is WorkExperienceLoading &&
+                                  educationState is EducationLoading &&
+                                  projectState is ProjectLoading &&
                                   languageState is LanguageLoading) {
-                                return const LoadingWidget();
+                                // return const LoadingWidget();
+                                isLoading = true;
                               } else {
-                                return ProfileSafeArea(
-                                  scrollController: _scrollController,
-                                  profileHeader: profileHeader,
-                                  contactInfo: contactInfo,
-                                  summaryDescription: summaryDescription,
-                                  experiences: experiences,
-                                  educations: educations,
-                                  projects: projects,
-                                  languages: languages,
-                                  expandedSection: expandedSection,
-                                  educationKey: educationKey,
-                                  workExperienceKey: workExperienceKey,
-                                  languageKey: languageKey,
-                                  projectKey: projectKey,
-                                  summaryKey: summaryKey,
-                                  contactInfoKey: contactInfoKey,
-                                  setExpandedSection: setExpandedSection,
-                                  goToSimpleProfilScreen:
-                                      goToSimpleProfilScreen,
-                                  goToContactInfoScreen: goToContactInfoScreen,
-                                  goToSummaryScreen: goToSummaryScreen,
-                                  goToWorkExperienceScreen:
-                                      goToWorkExperienceScreen,
-                                  goToEducationScreen: goToEducationScreen,
-                                  goToProjectScreen: goToProjectScreen,
-                                  goToLanguageScreen: goToLanguageScreen,
-                                  goToSkillScreen: goToSkillScreen,
-                                );
+                                isLoading = false;
                               }
+                              return ProfileSafeArea(
+                                isLoading: isLoading,
+                                scrollController: _scrollController,
+                                profileHeader: profileHeader,
+                                contactInfo: contactInfo,
+                                summaryDescription: summaryDescription,
+                                experiences: experiences,
+                                educations: educations,
+                                projects: projects,
+                                languages: languages,
+                                expandedSection: expandedSection,
+                                educationKey: educationKey,
+                                workExperienceKey: workExperienceKey,
+                                languageKey: languageKey,
+                                projectKey: projectKey,
+                                summaryKey: summaryKey,
+                                contactInfoKey: contactInfoKey,
+                                setExpandedSection: setExpandedSection,
+                                goToSimpleProfilScreen: goToSimpleProfilScreen,
+                                goToContactInfoScreen: goToContactInfoScreen,
+                                goToSummaryScreen: goToSummaryScreen,
+                                goToWorkExperienceScreen:
+                                    goToWorkExperienceScreen,
+                                goToEducationScreen: goToEducationScreen,
+                                goToProjectScreen: goToProjectScreen,
+                                goToLanguageScreen: goToLanguageScreen,
+                                goToSkillScreen: goToSkillScreen,
+                              );
                             },
                           );
                         },
@@ -167,8 +190,16 @@ class _ProfilScreenState extends State<ProfilScreen> {
           ),
         ),
         bottomNavigationBar: isApplyForJob
-            ? BlocProvider(
-                create: (context) => sl<JobApplyBloc>(),
+            ? MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (context) => sl<JobApplyBloc>(),
+                  ),
+                  BlocProvider(
+                    create: (context) => sl<ProfilPercentageBloc>()
+                      ..add(GetProfilPercentageEvent()),
+                  ),
+                ],
                 child: BlocConsumer<JobApplyBloc, JobApplyState>(
                   listener: (context, state) {
                     if (state is JobApplyFailure) {

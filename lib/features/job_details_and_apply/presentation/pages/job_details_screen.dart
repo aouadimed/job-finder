@@ -84,19 +84,15 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                               isSaved ? Icons.bookmark : Icons.bookmark_border,
                               color: primaryColor,
                             ),
-                      rightIconOnPressed: 
-                          
-                           () {
-                              if (isSaved) {
-                                context.read<SavedJobBloc>().add(
-                                    RemoveSavedJobEvent(
-                                        id: jobOfferDetailsModel!.id));
-                              } else {
-                                context.read<SavedJobBloc>().add(
-                                    SaveJobOfferEvent(
-                                        id: jobOfferDetailsModel!.id));
-                              }
-                            },
+                      rightIconOnPressed: () {
+                        if (isSaved) {
+                          context.read<SavedJobBloc>().add(RemoveSavedJobEvent(
+                              id: jobOfferDetailsModel!.id));
+                        } else {
+                          context.read<SavedJobBloc>().add(
+                              SaveJobOfferEvent(id: jobOfferDetailsModel!.id));
+                        }
+                      },
                     );
                   },
                 ),
@@ -170,26 +166,38 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                             ),
                           ),
                         ),
-              bottomNavigationBar: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: BigButton(
-                  onPressed: () async {
-                    await showModalBottomSheet<Map<String, int>>(
-                      elevation: 0,
-                      context: context,
-                      builder: (context) => JobApplySheet(
-                        onSelectWithCv: () {
-                          goToApplyWithCvScreen(context);
-                        },
-                        onSelectWithProfil: () {
-                          goToProfilScreen(context);
-                        },
+              bottomNavigationBar: state is JobDetailLoading
+                  ? null
+                  : Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: BigButton(
+                        color: jobOfferDetailsModel?.applicationStatus !=
+                                "Not Applied"
+                            ? greyColor
+                            : primaryColor,
+                        onPressed: jobOfferDetailsModel?.applicationStatus !=
+                                "Not Applied"
+                            ? null
+                            : () async {
+                                await showModalBottomSheet<Map<String, int>>(
+                                  elevation: 0,
+                                  context: context,
+                                  builder: (context) => JobApplySheet(
+                                    onSelectWithCv: () {
+                                      goToApplyWithCvScreen(context);
+                                    },
+                                    onSelectWithProfil: () {
+                                      goToProfilScreen(context);
+                                    },
+                                  ),
+                                );
+                              },
+                        text: jobOfferDetailsModel?.applicationStatus !=
+                                "Not Applied"
+                            ? jobOfferDetailsModel?.applicationStatus
+                            : 'Apply',
                       ),
-                    );
-                  },
-                  text: 'Apply',
-                ),
-              ),
+                    ),
             );
           },
         ),

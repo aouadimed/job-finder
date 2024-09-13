@@ -38,7 +38,7 @@ class CompanyRemoteDataSourceImpl implements CompanyRemoteDataSource {
               filename: path.basename(logoFile.path)),
         );
       }
-      request.headers['Authorization'] = 'Bearer $token';
+      request.headers['Authorization'] = 'Bearer ${TokenManager.token}';
       var response = await request.send();
       if (response.statusCode != 200 && response.statusCode != 201) {
         throw ServerException();
@@ -55,7 +55,7 @@ class CompanyRemoteDataSourceImpl implements CompanyRemoteDataSource {
         Uri.http(url, companyData),
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       );
 

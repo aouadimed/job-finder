@@ -20,23 +20,40 @@ import 'package:cv_frontend/features/job_details_and_apply/domain/usecases/get_j
 import 'package:cv_frontend/features/job_details_and_apply/domain/usecases/job_apply_use_case.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/bloc/job_apply_bloc/job_apply_bloc.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/bloc/job_detail_bloc/job_detail_bloc.dart';
+import 'package:cv_frontend/features/job_seeker_applications/data/datasource/seeker_application_remote_data_source.dart';
+import 'package:cv_frontend/features/job_seeker_applications/data/repository/seeker_application_repositoy.dart';
+import 'package:cv_frontend/features/job_seeker_applications/domain/repository/seeker_application_repository.dart';
+import 'package:cv_frontend/features/job_seeker_applications/domain/usecases/seeker_application_usecase.dart';
+import 'package:cv_frontend/features/job_seeker_applications/presentation/bloc/seeker_application_bloc.dart';
 import 'package:cv_frontend/features/job_seeker_home/data/data_source/category_remote_data_source.dart';
 import 'package:cv_frontend/features/job_seeker_home/data/data_source/home_remote_data_source.dart';
+import 'package:cv_frontend/features/job_seeker_home/data/data_source/profil_perentage_data_remote_data_source.dart';
 import 'package:cv_frontend/features/job_seeker_home/data/data_source/save_job_remote_data_source.dart';
 import 'package:cv_frontend/features/job_seeker_home/data/repository/category_repository_impl.dart';
 import 'package:cv_frontend/features/job_seeker_home/data/repository/home_repository_impl.dart';
+import 'package:cv_frontend/features/job_seeker_home/data/repository/profil_percentage_repository_impl.dart';
 import 'package:cv_frontend/features/job_seeker_home/data/repository/save_job_repository.dart';
 import 'package:cv_frontend/features/job_seeker_home/domain/repository/category_repository.dart';
 import 'package:cv_frontend/features/job_seeker_home/domain/repository/home_repository.dart';
+import 'package:cv_frontend/features/job_seeker_home/domain/repository/profil_percentage_repository.dart';
 import 'package:cv_frontend/features/job_seeker_home/domain/repository/save_job_repository.dart';
 import 'package:cv_frontend/features/job_seeker_home/domain/usecases/check_saved_job_use_case.dart';
 import 'package:cv_frontend/features/job_seeker_home/domain/usecases/get_categorys_use_case.dart';
+import 'package:cv_frontend/features/job_seeker_home/domain/usecases/get_profil_percentage.dart';
 import 'package:cv_frontend/features/job_seeker_home/domain/usecases/get_recent_jobs_use_case.dart';
 import 'package:cv_frontend/features/job_seeker_home/domain/usecases/remove_saved_job_case.dart';
 import 'package:cv_frontend/features/job_seeker_home/domain/usecases/save_job_offer_use_case.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/category_bloc/category_bloc.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/home_bloc/home_bloc.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/profil_percentage_bloc/profil_percentage_bloc.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/save_job_bloc/save_job_bloc.dart';
+import 'package:cv_frontend/features/messaging/data/data_source/messaging_remote_data_source.dart';
+import 'package:cv_frontend/features/messaging/data/repository/messaging_repository_impl.dart';
+import 'package:cv_frontend/features/messaging/domain/repository/messaging_repository.dart';
+import 'package:cv_frontend/features/messaging/domain/usecases/get_chat_messages_use_case.dart';
+import 'package:cv_frontend/features/messaging/domain/usecases/get_chats_use_case.dart';
+import 'package:cv_frontend/features/messaging/domain/usecases/send_message_usecase.dart';
+import 'package:cv_frontend/features/messaging/presentation/bloc/messaging_bloc.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/contact_info_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/edcation_remote_data_source.dart';
 import 'package:cv_frontend/features/profil/data/data_source/remote_data_source/language_remote_data_source.dart';
@@ -106,7 +123,9 @@ import 'package:cv_frontend/features/recruiter_applicants/data/data_source/appli
 import 'package:cv_frontend/features/recruiter_applicants/data/repository/applicant_repository.dart';
 import 'package:cv_frontend/features/recruiter_applicants/domain/repository/applicant_repository.dart';
 import 'package:cv_frontend/features/recruiter_applicants/domain/usecases/get_applicant_list_use_case.dart';
+import 'package:cv_frontend/features/recruiter_applicants/domain/usecases/update_applicant_status_use_case.dart';
 import 'package:cv_frontend/features/recruiter_applicants/presentation/bloc/applicant_bloc/applicant_bloc.dart';
+import 'package:cv_frontend/features/recruiter_applicants/presentation/pages/utils/pdf_service.dart';
 import 'package:cv_frontend/features/recruiter_profil/data/data_source/company_remote_data_source.dart';
 import 'package:cv_frontend/features/recruiter_applications/data/data_source/job_category_remote_data_source.dart';
 import 'package:cv_frontend/features/recruiter_applications/data/data_source/job_offer_remote_data_source.dart';
@@ -726,11 +745,16 @@ Future<void> initializeDependencies() async {
  */
 /* ----------------------------------------------------- */
   // Bloc
-  sl.registerFactory(() => ApplicantBloc(getApplicantsListUseCase: sl()));
-
+  sl.registerFactory(() => ApplicantBloc(
+      getApplicantsListUseCase: sl(),
+      pdfService: sl(),
+      updateApplicantUseCase: sl()));
+  sl.registerLazySingleton(() => PdfService());
 // Use Cases
   sl.registerLazySingleton(
       () => GetApplicantsListUseCase(applicantRepository: sl()));
+  sl.registerLazySingleton(
+      () => UpdateApplicantUseCase(applicantRepository: sl()));
 
 // Repositories
   sl.registerLazySingleton<ApplicantRepository>(
@@ -741,6 +765,88 @@ Future<void> initializeDependencies() async {
 // Data Sources
   sl.registerLazySingleton<ApplicantRemoteDataSource>(
     () => ApplicantRemoteDataSourceImpl(
+      client: sl(),
+    ),
+  );
+
+  /* ----------------------------------------------------- */
+/*
+ * Seeker Applications
+ */
+/* ----------------------------------------------------- */
+  // Bloc
+  sl.registerFactory(
+      () => SeekerApplicationBloc(getSeekerApplicationsUsecase: sl()));
+// Use Cases
+  sl.registerLazySingleton(
+      () => GetSeekerApplcaitionsUsecase(seekerAplicationRepository: sl()));
+
+// Repositories
+  sl.registerLazySingleton<SeekerAplicationRepository>(
+    () => SeekerAplicationRepositoryImpl(
+      networkInfo: sl(),
+      seekerApplicationRemoteDataSource: sl(),
+    ),
+  );
+
+// Data Sources
+  sl.registerLazySingleton<SeekerApplicationRemoteDataSource>(
+    () => SeekerApplicationRemoteDataSourceImpl(
+      client: sl(),
+    ),
+  );
+  /* ----------------------------------------------------- */
+/*
+ * messaging
+ */
+/* ----------------------------------------------------- */
+  // Bloc
+  sl.registerFactory(() => MessagingBloc(
+      sendMessageUsecase: sl(),
+      getChatsUseCase: sl(),
+      getMessagesChatUseCase: sl()));
+// Use Cases
+  sl.registerLazySingleton(() => SendMessageUsecase(messagingRepository: sl()));
+  sl.registerLazySingleton(() => GetChatsUseCase(messagingRepository: sl()));
+  sl.registerLazySingleton(
+      () => GetMessagesChatUseCase(messagingRepository: sl()));
+// Repositories
+  sl.registerLazySingleton<MessagingRepository>(
+    () => MessagingRepositoryImpl(
+      networkInfo: sl(),
+      sendMessageRemoteDataSource: sl(),
+    ),
+  );
+
+// Data Sources
+  sl.registerLazySingleton<SendMessageRemoteDataSource>(
+    () => SendMessageRemoteDataSourceImpl(
+      client: sl(),
+    ),
+  );
+
+  /* ----------------------------------------------------- */
+/*
+ * profil percentage
+ */
+/* ----------------------------------------------------- */
+  // Bloc
+  sl.registerFactory(() => ProfilPercentageBloc(profilPercentageUseCase: sl()));
+// Use Cases
+  sl.registerLazySingleton(
+      () => ProfilPercentageUseCase(profilPercentageRepository: sl()));
+
+// Repositories
+  sl.registerLazySingleton<ProfilPercentageRepository>(
+    () => ProfilPercentageRepositoryImpl(
+      networkInfo: sl(),
+      profilPercentageRemoteDataSource: sl(),
+    ),
+  );
+
+// Data Sources
+  sl.registerLazySingleton<ProfilPercentageRemoteDataSource>(
+    () => ProfilPercentageRemoteDataSourceImpl(
       client: sl(),
     ),
   );

@@ -32,7 +32,7 @@ class JobOfferRemoteDataSourceImpl implements JobOfferRemoteDataSource {
         Uri.http(url, jobOfferData),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
+          'Authorization': 'Bearer ${TokenManager.token}',
         },
         body: body,
       );
@@ -60,7 +60,7 @@ class JobOfferRemoteDataSourceImpl implements JobOfferRemoteDataSource {
         uri,
         headers: {
           "Content-type": "application/json",
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer ${TokenManager.token}",
         },
       ).catchError((e) {
         throw ServerException();

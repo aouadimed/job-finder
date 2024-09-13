@@ -4,51 +4,70 @@ ApplicantModel applicantModelFromJson(String str) => ApplicantModel.fromJson(jso
 
 
 class ApplicantModel {
-    int? totalApplicants;
-    int? totalPages;
-    int? currentPage;
-    List<Application>? application;
+  int? totalApplicants;
+  int? totalPages;
+  int? currentPage;
+  List<Application>? application;
 
-    ApplicantModel({
-        this.totalApplicants,
-        this.totalPages,
-        this.currentPage,
-        this.application,
-    });
+  ApplicantModel({
+    this.totalApplicants,
+    this.totalPages,
+    this.currentPage,
+    this.application,
+  });
 
-    factory ApplicantModel.fromJson(Map<String, dynamic> json) => ApplicantModel(
+  factory ApplicantModel.fromJson(Map<String, dynamic> json) => ApplicantModel(
         totalApplicants: json["totalApplicants"],
         totalPages: json["totalPages"],
         currentPage: json["currentPage"],
-        application: List<Application>.from(json["application"].map((x) => Application.fromJson(x))),
-    );
+        application: json["application"] != null
+            ? List<Application>.from(
+                json["application"].map((x) => Application.fromJson(x)))
+            : [],
+      );
 
+  ApplicantModel copyWith({
+    int? totalApplicants,
+    int? totalPages,
+    int? currentPage,
+    List<Application>? application,
+  }) {
+    return ApplicantModel(
+      totalApplicants: totalApplicants ?? this.totalApplicants,
+      totalPages: totalPages ?? this.totalPages,
+      currentPage: currentPage ?? this.currentPage,
+      application: application ?? this.application,
+    );
+  }
 }
 
+
 class Application {
-    String? id;
-    User? user;
-    String? job;
-    bool? useProfile;
-    String? cvUpload;
-    String? status;
-    DateTime? createdAt;
-    DateTime? updatedAt;
-    String? motivationLetter;
+  String? id;
+  User? user;
+  String? job;
+  bool? useProfile;
+  String? cvUpload;
+  String? status;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  String? motivationLetter;
+  String? pdfPath;
 
-    Application({
-        this.id,
-        this.user,
-        this.job,
-        this.useProfile,
-        this.cvUpload,
-        this.status,
-        this.createdAt,
-        this.updatedAt,
-        this.motivationLetter,
-    });
+  Application({
+    this.id,
+    this.user,
+    this.job,
+    this.useProfile,
+    this.cvUpload,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+    this.motivationLetter,
+    this.pdfPath,
+  });
 
-    factory Application.fromJson(Map<String, dynamic> json) => Application(
+  factory Application.fromJson(Map<String, dynamic> json) => Application(
         id: json["_id"],
         user: User.fromJson(json["user"]),
         job: json["job"],
@@ -57,10 +76,34 @@ class Application {
         status: json["status"],
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
-        motivationLetter: (json["motivationLetter"] != null) ? json["motivationLetter"]: null,
-    );
+        motivationLetter: json["motivationLetter"],
+      );
 
-  
+  Application copyWith({
+    String? id,
+    User? user,
+    String? job,
+    bool? useProfile,
+    String? cvUpload,
+    String? status,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? motivationLetter,
+    String? pdfPath,
+  }) {
+    return Application(
+      id: id ?? this.id,
+      user: user ?? this.user,
+      job: job ?? this.job,
+      useProfile: useProfile ?? this.useProfile,
+      cvUpload: cvUpload ?? this.cvUpload,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      motivationLetter: motivationLetter ?? this.motivationLetter,
+      pdfPath: pdfPath ?? this.pdfPath,
+    );
+  }
 }
 
 class User {

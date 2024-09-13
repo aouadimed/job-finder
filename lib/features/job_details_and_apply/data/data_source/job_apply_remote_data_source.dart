@@ -19,7 +19,7 @@ class JobApplyRemoteDataSourceImpl implements JobApplyRemoteDataSource {
       'Content-Type': params.userProfile == false
           ? 'multipart/form-data'
           : 'application/json',
-      'Authorization': 'Bearer $token',
+      'Authorization': 'Bearer ${TokenManager.token}',
     };
 
     if (params.userProfile == false) {

@@ -78,8 +78,6 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                               selectedSubcategoryId = subcategoryId;
                               widget.onCategorySelected(
                                   categoryId, subcategoryId);
-                              print(
-                                  "categoryId $categoryId , subcategoryId $subcategoryId");
                             });
                           },
                           selectedCategoryId: selectedCategoryId,
