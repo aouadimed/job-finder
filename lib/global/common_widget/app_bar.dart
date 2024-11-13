@@ -10,6 +10,7 @@ class GeneralAppBar extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget>? actions;
   final bool? closeicon;
   final bool? haveReturn;
+  final Widget? leading;
   const GeneralAppBar({
     Key? key,
     this.titleText,
@@ -20,7 +21,7 @@ class GeneralAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.rightIconColor,
     this.actions,
     this.closeicon = false,
-    this.haveReturn = true,
+    this.haveReturn = true, this.leading,
   }) : super(key: key);
 
   @override
@@ -31,7 +32,7 @@ class GeneralAppBar extends StatelessWidget implements PreferredSizeWidget {
       scrolledUnderElevation: 0,
       forceMaterialTransparency: true,
       elevation: 0,
-      leading: _buildLeadingIcon(context),
+      leading: leading ?? _buildLeadingIcon(context),
       title: Text(
         titleText ?? '',
         style: const TextStyle(

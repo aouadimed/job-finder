@@ -70,6 +70,7 @@ dependencies:
   socket_io_client: ^2.0.3+1
   dart_jsonwebtoken: ^2.14.0
   percent_indicator: ^4.2.3
+  url_launcher: ^6.2.4
 
 
 

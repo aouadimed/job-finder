@@ -1,3 +1,5 @@
+import 'package:cv_frontend/core/constants/appcolors.dart';
+import 'package:cv_frontend/features/recruiter_applicants/presentation/pages/swiped_applicants_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
@@ -26,6 +28,7 @@ class _RecruiterApplicantScreenState extends State<RecruiterApplicantScreen> {
   final List<Application> _lastRemovedApplicants = [];
   int _swipeCount = 0;
   int? _totalPages;
+  final List<Application> _pendingApplicants = [];
 
   @override
   void initState() {
@@ -50,12 +53,20 @@ class _RecruiterApplicantScreenState extends State<RecruiterApplicantScreen> {
 
   void _swipeLeft() {
     if (_applicants.isNotEmpty) {
+      final applicant = _applicants.first;
+      _pendingApplicants.removeWhere(
+          (pendingApplicant) => pendingApplicant.id == applicant.id);
+
       _swiperController.swipe(CardSwiperDirection.left);
     }
   }
 
   void _swipeRight() {
     if (_applicants.isNotEmpty) {
+      final applicant = _applicants.first;
+      if (!_pendingApplicants.any((existing) => existing.id == applicant.id)) {
+        _pendingApplicants.add(applicant);
+      }
       _swiperController.swipe(CardSwiperDirection.right);
     }
   }
@@ -99,8 +110,18 @@ class _RecruiterApplicantScreenState extends State<RecruiterApplicantScreen> {
                       child: _applicants.isEmpty && state is ApplicantLoading
                           ? const Center(child: CircularProgressIndicator())
                           : _applicants.isEmpty
-                              ? const Center(
-                                  child: Text("No more applicants found."))
+                              ? SwipedApplicantsView(
+                                  pendingApplicants: _pendingApplicants,
+                                  onSelectApplicant: (String value) {},
+                                  onSelectApplicants: (Set<String> value) {
+                                    for (String id in value) {
+                                      context.read<ApplicantBloc>().add(
+                                          SendMessageToApplicantEvent(id: id));
+                                    }
+                                    _pendingApplicants.clear();
+                                    Navigator.pop(context);
+                                  },
+                                )
                               : CardSwiper(
                                   isDisabled: false,
                                   isLoop: false,
@@ -122,6 +143,7 @@ class _RecruiterApplicantScreenState extends State<RecruiterApplicantScreen> {
                                       resumeUrl: applicant.pdfPath ?? "",
                                       motivationLetter:
                                           applicant.motivationLetter ?? "",
+                                      profileDetails: applicant.profileDetails,
                                     );
                                   },
                                   onSwipe:
@@ -136,6 +158,10 @@ class _RecruiterApplicantScreenState extends State<RecruiterApplicantScreen> {
                                               status: 'rejected',
                                             ),
                                           );
+                                      _pendingApplicants.removeWhere(
+                                          (pendingApplicant) =>
+                                              pendingApplicant.id ==
+                                              applicant.id);
                                     } else if (direction ==
                                         CardSwiperDirection.right) {
                                       context.read<ApplicantBloc>().add(
@@ -144,6 +170,10 @@ class _RecruiterApplicantScreenState extends State<RecruiterApplicantScreen> {
                                               status: 'pending',
                                             ),
                                           );
+                                      if (!_pendingApplicants
+                                          .contains(applicant)) {
+                                        _pendingApplicants.add(applicant);
+                                      }
                                     }
                                     _swipeCount++;
                                     _lastRemovedApplicants.add(applicant);
@@ -175,8 +205,7 @@ class _RecruiterApplicantScreenState extends State<RecruiterApplicantScreen> {
                             ),
                           if (_lastRemovedApplicants.isNotEmpty)
                             IconButton(
-                              icon:
-                                  const Icon(Icons.refresh, color: Colors.blue),
+                              icon: Icon(Icons.refresh, color: primaryColor),
                               onPressed: _lastRemovedApplicants.isNotEmpty
                                   ? _reloadLastCard
                                   : null,

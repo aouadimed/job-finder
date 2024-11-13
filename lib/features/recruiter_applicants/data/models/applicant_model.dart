@@ -1,7 +1,9 @@
 import 'dart:convert';
 
-ApplicantModel applicantModelFromJson(String str) => ApplicantModel.fromJson(json.decode(str));
+import 'package:cv_frontend/features/recruiter_applicants/data/models/profil_details.dart';
 
+ApplicantModel applicantModelFromJson(String str) =>
+    ApplicantModel.fromJson(json.decode(str));
 
 class ApplicantModel {
   int? totalApplicants;
@@ -20,9 +22,9 @@ class ApplicantModel {
         totalApplicants: json["totalApplicants"],
         totalPages: json["totalPages"],
         currentPage: json["currentPage"],
-        application: json["application"] != null
+        application: json["applications"] != null
             ? List<Application>.from(
-                json["application"].map((x) => Application.fromJson(x)))
+                json["applications"].map((x) => Application.fromJson(x)))
             : [],
       );
 
@@ -41,7 +43,6 @@ class ApplicantModel {
   }
 }
 
-
 class Application {
   String? id;
   User? user;
@@ -53,37 +54,44 @@ class Application {
   DateTime? updatedAt;
   String? motivationLetter;
   String? pdfPath;
+  ProfileDetails? profileDetails;
 
-  Application({
-    this.id,
-    this.user,
-    this.job,
-    this.useProfile,
-    this.cvUpload,
-    this.status,
-    this.createdAt,
-    this.updatedAt,
-    this.motivationLetter,
-    this.pdfPath,
-  });
+  Application(
+      {this.id,
+      this.user,
+      this.job,
+      this.useProfile,
+      this.cvUpload,
+      this.status,
+      this.createdAt,
+      this.updatedAt,
+      this.motivationLetter,
+      this.pdfPath,
+      this.profileDetails});
 
-  factory Application.fromJson(Map<String, dynamic> json) => Application(
-        id: json["_id"],
-        user: User.fromJson(json["user"]),
-        job: json["job"],
-        useProfile: json["useProfile"],
-        cvUpload: json["cvUpload"],
-        status: json["status"],
-        createdAt: DateTime.parse(json["createdAt"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
-        motivationLetter: json["motivationLetter"],
-      );
+  factory Application.fromJson(Map<String, dynamic> json) {
+    return Application(
+      id: json["_id"],
+      user: json["user"] != null ? User.fromJson(json["user"]) : null,
+      job: json["job"],
+      useProfile: json["useProfile"] ?? false,
+      cvUpload: json["cvUpload"],
+      status: json["status"],
+      createdAt: DateTime.tryParse(json["createdAt"] ?? ""),
+      updatedAt: DateTime.tryParse(json["updatedAt"] ?? ""),
+      motivationLetter: json["motivationLetter"],
+      profileDetails: json["profileDetails"] != null
+          ? ProfileDetails.fromJson(json["profileDetails"])
+          : null,
+    );
+  }
 
   Application copyWith({
     String? id,
     User? user,
     String? job,
     bool? useProfile,
+    ProfileDetails? profileDetails,
     String? cvUpload,
     String? status,
     DateTime? createdAt,
@@ -92,44 +100,44 @@ class Application {
     String? pdfPath,
   }) {
     return Application(
-      id: id ?? this.id,
-      user: user ?? this.user,
-      job: job ?? this.job,
-      useProfile: useProfile ?? this.useProfile,
-      cvUpload: cvUpload ?? this.cvUpload,
-      status: status ?? this.status,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      motivationLetter: motivationLetter ?? this.motivationLetter,
-      pdfPath: pdfPath ?? this.pdfPath,
-    );
+        id: id ?? this.id,
+        user: user ?? this.user,
+        job: job ?? this.job,
+        useProfile: useProfile ?? this.useProfile,
+        cvUpload: cvUpload ?? this.cvUpload,
+        status: status ?? this.status,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        motivationLetter: motivationLetter ?? this.motivationLetter,
+        pdfPath: pdfPath ?? this.pdfPath,
+        profileDetails: profileDetails ?? this.profileDetails);
   }
 }
 
 class User {
-    String? id;
-    String? firstName;
-    String? lastName;
-    String? profileImg;
+  String? id;
+  String? firstName;
+  String? lastName;
+  String? profileImg;
 
-    User({
-        this.id,
-        this.firstName,
-        this.lastName,
-        this.profileImg,
-    });
+  User({
+    this.id,
+    this.firstName,
+    this.lastName,
+    this.profileImg,
+  });
 
-    factory User.fromJson(Map<String, dynamic> json) => User(
+  factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["_id"],
         firstName: json["firstName"],
         lastName: json["lastName"],
-        profileImg: json["profileImg"],
-    );
+        profileImg: json["profileImg"] ?? "null"  ,
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "_id": id,
         "firstName": firstName,
         "lastName": lastName,
         "profileImg": profileImg,
-    };
+      };
 }

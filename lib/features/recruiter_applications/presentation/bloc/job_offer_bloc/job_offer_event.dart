@@ -3,7 +3,7 @@ part of 'job_offer_bloc.dart';
 @immutable
 abstract class JobOfferEvent extends Equatable {
   const JobOfferEvent();
-  
+
   @override
   List<Object?> get props => [];
 }
@@ -52,4 +52,13 @@ class GetJobOffersEvent extends JobOfferEvent {
 
   @override
   List<Object?> get props => [page, searchQuery, filterIndex];
+}
+
+class ToggleStatusEvent extends JobOfferEvent {
+  final String id;
+
+  const ToggleStatusEvent({required this.id});
+
+  @override
+  List<Object?> get props => [id];
 }

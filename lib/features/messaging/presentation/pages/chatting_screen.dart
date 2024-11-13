@@ -280,10 +280,6 @@ class _ChattingScreenState extends State<ChattingScreen> {
               ),
             ),
           ),
-          IconButton(
-            icon: const Icon(Feather.paperclip),
-            onPressed: () {},
-          ),
         ],
       ),
     );

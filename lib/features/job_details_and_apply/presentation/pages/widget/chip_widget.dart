@@ -3,16 +3,17 @@ import 'package:cv_frontend/core/constants/appcolors.dart';
 
 class ChipWidget extends StatelessWidget {
   final List<String> items;
-
+  final WrapAlignment? alignment;
   const ChipWidget({
     Key? key,
-    required this.items,
+    required this.items, this.alignment,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
       spacing: 8.0,
+      alignment: alignment ?? WrapAlignment.start,
       runSpacing: 4.0,
       children: items.map((item) {
         return Chip(

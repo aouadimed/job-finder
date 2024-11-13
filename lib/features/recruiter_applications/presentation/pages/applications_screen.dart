@@ -26,7 +26,6 @@ class ApplicationScreen extends StatefulWidget {
 
 class _ApplicationScreenState extends State<ApplicationScreen> {
   late TextEditingController _searchController;
-  late JobOffersModel jobOffersModel;
   final ScrollController _scrollController = ScrollController();
   int _currentPage = 1;
   bool _isLoading = true;
@@ -42,20 +41,45 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
     super.initState();
     _searchController = TextEditingController();
     _fetchJobOffers();
+    _scrollController.addListener(_handleScroll);
 
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-              _scrollController.position.maxScrollExtent * 0.9 &&
-          !_isLoadingMore &&
-          _currentPage < totalPages) {
-        _fetchMoreJobOffers();
-      }
+    // Add a listener to refresh data when this screen regains focus
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ModalRoute.of(context)!.addScopedWillPopCallback(() async {
+        _refreshJobOffers();
+        return true;
+      });
     });
+  }
+
+  void _handleScroll() {
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent * 0.9 &&
+        !_isLoadingMore &&
+        _currentPage < totalPages) {
+      _fetchMoreJobOffers();
+    }
+  }
+
+  // Force refresh job offers when returning to this screen
+  void _refreshJobOffers() {
+    setState(() {
+      _isLoading = true;
+      _jobOffers.clear();
+      _currentPage = 1;
+    });
+    BlocProvider.of<JobOfferBloc>(context).add(GetJobOffersEvent(
+      page: _currentPage,
+      searchQuery: _searchQuery,
+      filterIndex: _selectedFilterIndex,
+    ));
   }
 
   void _fetchJobOffers() {
     setState(() {
       _isLoading = true;
+      _currentPage =
+          1; // Reset page only for a fresh load (e.g., on search or filter change)
     });
     BlocProvider.of<JobOfferBloc>(context).add(GetJobOffersEvent(
       page: _currentPage,
@@ -80,6 +104,8 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.removeListener(
+        _handleScroll); // Remove listener to prevent duplication
     _scrollController.dispose();
     super.dispose();
   }
@@ -99,12 +125,18 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
             _isLoading = false;
             _isLoadingMore = false;
             totalPages = state.jobOffersModel.totalPages!;
+
+            // Only add unique job offers to avoid duplicates
             if (_currentPage == 1) {
               _jobOffers = state.jobOffersModel.jobOffers!;
             } else {
-              _jobOffers.addAll(state.jobOffersModel.jobOffers!);
+              final newJobOffers = state.jobOffersModel.jobOffers!;
+              _jobOffers.addAll(newJobOffers.where((newJob) => !_jobOffers
+                  .any((existingJob) => existingJob.id == newJob.id)));
             }
           });
+        } else if (state is JobOfferSuccess) {
+          setState(() {});
         }
       },
       child: BlocBuilder<JobOfferBloc, JobOfferState>(
@@ -148,8 +180,7 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
                       selectOptions: selectOptions,
                       onSelected: (selectedIndex) {
                         _selectedFilterIndex = selectedIndex;
-                        _currentPage = 1;
-                        _fetchJobOffers();
+                        _fetchJobOffers(); // Reload offers on filter change
                       },
                     ),
                     const SizedBox(height: 20),
@@ -189,7 +220,7 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
                                         const SizedBox(height: 10),
                                         Text(
                                           'Create a job vacancy for your company and start\n'
-                                          'find new high quality employee.',
+                                          'finding new high-quality employees.',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             fontSize: 16,
@@ -198,10 +229,11 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
                                         ),
                                         const SizedBox(height: 20),
                                         BigButton(
-                                            text: 'Create Vacancies Now',
-                                            onPressed: () {
-                                              goToJobOfferScreen(context);
-                                            }),
+                                          text: 'Create Vacancies Now',
+                                          onPressed: () {
+                                            goToJobOfferScreen(context);
+                                          },
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -233,6 +265,16 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
                                       jobDetails: jobDetails,
                                       isActive: jobOffer.active!,
                                       applicantsCount: jobOffer.applicantCount!,
+                                      onToggleStatus: () {
+                                        BlocProvider.of<JobOfferBloc>(context)
+                                            .add(ToggleStatusEvent(
+                                                id: jobOffer.id!));
+                                        if (jobOffer.active == true) {
+                                          jobOffer.active = false;
+                                        } else {
+                                          jobOffer.active = true;
+                                        }
+                                      },
                                       onTap: () {
                                         if (jobOffer.applicantCount != 0) {
                                           Navigator.push(
@@ -249,20 +291,10 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
                                                 ),
                                               ),
                                             ),
-                                          ).then(
-                                            (_) {
-                                              if (context.mounted) {
-                                                BlocProvider.of<JobOfferBloc>(
-                                                        context)
-                                                    .add(GetJobOffersEvent(
-                                                  page: _currentPage,
-                                                  searchQuery: _searchQuery,
-                                                  filterIndex:
-                                                      _selectedFilterIndex,
-                                                ));
-                                              }
-                                            },
-                                          );
+                                          ).then((_) {
+                                            // Refresh data on return
+                                            _refreshJobOffers();
+                                          });
                                         } else {
                                           showSnackBar(
                                               context: context,
@@ -285,17 +317,12 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
 
   void _handleSearch(String value) {
     _searchQuery = value.toLowerCase().trim();
-    _currentPage = 1;
     _fetchJobOffers();
   }
 
   void goToJobOfferScreen(BuildContext context) async {
-    await Navigator.pushNamed(context, jobOfferSetup).then(
-      (_) {
-        if (context.mounted) {
-          BlocProvider.of<JobOfferBloc>(context).add(const GetJobOffersEvent());
-        }
-      },
-    );
+    await Navigator.pushNamed(context, jobOfferSetup).then((_) {
+      _refreshJobOffers();
+    });
   }
 }

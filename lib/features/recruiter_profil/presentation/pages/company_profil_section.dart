@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:cv_frontend/core/constants/constants.dart';
+import 'package:cv_frontend/core/services/app_routes.dart';
 import 'package:cv_frontend/features/recruiter_profil/data/model/company_model.dart';
 import 'package:cv_frontend/features/recruiter_profil/presentation/bloc/company_bloc/company_bloc.dart';
 import 'package:flutter/material.dart';
@@ -193,7 +195,24 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
                 });
               }
             },
-            title: 'Profile',
+            title: 'Comapny Profile',
+            rightIcon: Icons.logout_sharp,
+            rightIconColor: primaryColor,
+            rightIconOnPressed: () => {
+              QuickAlert.show(
+                context: context,
+                headerBackgroundColor: primaryColor,
+                type: QuickAlertType.confirm,
+                title: 'Logout',
+                text: 'Are you sure you want to logout?',
+                confirmBtnText: 'Logout',
+                cancelBtnText: 'Cancel',
+                onConfirmBtnTap: () {
+                  TokenManager.clearToken();
+                  Navigator.pushReplacementNamed(context, loginScreen);
+                },
+              )
+            },
             form: CompanyProfilForm(
               formKey: _formKey,
               companyNameController: _companyNameController,

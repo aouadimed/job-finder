@@ -1,3 +1,5 @@
+import 'package:cv_frontend/features/recruiter_applicants/data/models/profil_details.dart';
+import 'package:cv_frontend/features/recruiter_applicants/presentation/pages/widgets/applicant_profil.dart';
 import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
@@ -5,6 +7,7 @@ import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
 
 class ApplicantViewerCard extends StatefulWidget {
+  final ProfileDetails? profileDetails;
   final String name;
   final String profileImageUrl;
   final String resumeUrl;
@@ -20,6 +23,7 @@ class ApplicantViewerCard extends StatefulWidget {
     required this.motivationLetter,
     this.onSeeDetailsPressed,
     this.hasProfile = true,
+    required this.profileDetails,
   }) : super(key: key);
 
   @override
@@ -133,8 +137,8 @@ class _ApplicantViewerCardState extends State<ApplicantViewerCard>
 
     return Card(
       key: widget.key,
-      color: lightprimaryColor,
-      elevation: 5.0,
+      color: widget.hasProfile ? whiteColor : lightprimaryColor,
+      elevation: widget.hasProfile ? 1.0 : 5.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),
@@ -226,10 +230,11 @@ class _ApplicantViewerCardState extends State<ApplicantViewerCard>
               padding: const EdgeInsets.all(10),
               child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundImage: NetworkImage(widget.profileImageUrl),
-                  ),
+                  if (widget.profileImageUrl != "null")
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundImage: NetworkImage(widget.profileImageUrl),
+                    ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
@@ -255,17 +260,10 @@ class _ApplicantViewerCardState extends State<ApplicantViewerCard>
               ),
             ),
           ] else
-            const Expanded(
-              child: Center(
-                child: Text(
-                  "Profile",
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey),
-                ),
-              ),
-            ),
+            Expanded(
+                child: ApplicantProfil(
+              profileDetails: widget.profileDetails!,
+            )),
         ],
       ),
     );

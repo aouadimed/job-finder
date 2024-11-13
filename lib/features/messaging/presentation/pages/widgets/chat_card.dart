@@ -70,6 +70,7 @@ class ChatCard extends StatelessWidget {
                         color: Colors.grey[600],
                       ),
                       overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
                   ],
                 ),

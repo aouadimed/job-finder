@@ -8,6 +8,7 @@ class VacanciesCard extends StatelessWidget {
   final bool isActive;
   final int? applicantsCount;
   final VoidCallback? onTap;
+  final VoidCallback? onToggleStatus; // Callback for toggling status
 
   const VacanciesCard({
     Key? key,
@@ -17,6 +18,7 @@ class VacanciesCard extends StatelessWidget {
     required this.isActive,
     this.applicantsCount,
     this.onTap,
+    this.onToggleStatus, // Add this parameter for the toggle action
   }) : super(key: key);
 
   @override
@@ -45,62 +47,61 @@ class VacanciesCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                jobTitle,
-                                style: TextStyle(
-                                  fontSize: titleFontSize * textScaleFactor,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                categoryName,
-                                style: TextStyle(
-                                  fontSize: categoryFontSize * textScaleFactor,
-                                ),
-                              ),
-                              if (applicantsCount != null) ...[
-                                const SizedBox(height: 8),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(Icons.people, size: 16),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '$applicantsCount applicants',
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                  ],
-                                ),
-                              ]
-                            ],
+                          child: Text(
+                            jobTitle,
+                            style: TextStyle(
+                              fontSize: titleFontSize * textScaleFactor,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 4.0),
-                          decoration: BoxDecoration(
-                            color: isActive
-                                ? Colors.green.shade100
-                                : Colors.red.shade100,
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          child: Text(
-                            isActive ? 'Active' : 'Inactive',
-                            style: TextStyle(
-                              color: isActive ? Colors.green : Colors.red,
-                              fontWeight: FontWeight.w500,
+                        GestureDetector(
+                          onTap: onToggleStatus, // Trigger toggle action on tap
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 4.0),
+                            decoration: BoxDecoration(
+                              color: isActive
+                                  ? Colors.green.shade100
+                                  : Colors.red.shade100,
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            child: Text(
+                              isActive ? 'Active' : 'Inactive',
+                              style: TextStyle(
+                                color: isActive ? Colors.green : Colors.red,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
                         ),
                       ],
                     ),
+                    const SizedBox(height: 8),
+                    Text(
+                      categoryName,
+                      style: TextStyle(
+                        fontSize: categoryFontSize * textScaleFactor,
+                      ),
+                    ),
+                    if (applicantsCount != null) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.people, size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            '$applicantsCount applicants waiting to be reviewed',
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ],
                     const SizedBox(height: 8),
                     ChipWidget(items: jobDetails),
                   ],

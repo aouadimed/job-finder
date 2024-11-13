@@ -27,3 +27,13 @@ class UpdateApplicantStatusEvent extends ApplicantEvent {
   @override
   List<Object?> get props => [id, status];
 }
+
+
+class SendMessageToApplicantEvent extends ApplicantEvent {
+  final String id;
+
+  const SendMessageToApplicantEvent({required this.id});
+
+  @override
+  List<Object?> get props => [id];
+}

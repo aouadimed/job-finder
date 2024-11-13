@@ -91,7 +91,6 @@ class _CompanyProfilFormState extends State<CompanyProfilForm> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              // Logo Section
               Stack(
                 alignment: Alignment.center,
                 children: [

@@ -80,7 +80,7 @@ class ProfileSafeArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return (isLoading == true)
-        ? LoadingWidget()
+        ? const LoadingWidget()
         : SingleChildScrollView(
             controller: scrollController,
             child: Column(

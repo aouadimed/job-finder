@@ -24,7 +24,7 @@ class _RecruiterBottomNavBarState extends State<RecruiterBottomNavBar> {
   final List<Widget> _pages = [
     homeScreenProvider(),
     BlocProvider(
-      create: (context) => sl<JobOfferBloc>()..add(const GetJobOffersEvent()),
+      create: (context) => sl<JobOfferBloc>(),
       child: const ApplicationScreen(),
     ),
     BlocProvider(

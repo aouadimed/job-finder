@@ -12,6 +12,7 @@ import 'package:cv_frontend/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cv_frontend/core/services/app_routes.dart' as route;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -52,7 +53,13 @@ class _LoginScreenState extends State<LoginScreen> {
             await _saveRoleDetails(state.userModel.user!.role!);
             await TokenManager.initialize();
             if (context.mounted) {
-              goToHome(context);
+              final newInitialRoute = TokenManager.role == 'recruiter'
+                  ? route.recruiterNavBar
+                  : route.navBar;
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                newInitialRoute,
+                (route) => false,
+              );
             }
           }
         },

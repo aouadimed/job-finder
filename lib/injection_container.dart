@@ -123,9 +123,11 @@ import 'package:cv_frontend/features/recruiter_applicants/data/data_source/appli
 import 'package:cv_frontend/features/recruiter_applicants/data/repository/applicant_repository.dart';
 import 'package:cv_frontend/features/recruiter_applicants/domain/repository/applicant_repository.dart';
 import 'package:cv_frontend/features/recruiter_applicants/domain/usecases/get_applicant_list_use_case.dart';
+import 'package:cv_frontend/features/recruiter_applicants/domain/usecases/send_msg_applicant_use_case.dart';
 import 'package:cv_frontend/features/recruiter_applicants/domain/usecases/update_applicant_status_use_case.dart';
 import 'package:cv_frontend/features/recruiter_applicants/presentation/bloc/applicant_bloc/applicant_bloc.dart';
 import 'package:cv_frontend/features/recruiter_applicants/presentation/pages/utils/pdf_service.dart';
+import 'package:cv_frontend/features/recruiter_applications/domain/usecases/job_offer_use_cases/toggle_status_use_case.dart';
 import 'package:cv_frontend/features/recruiter_profil/data/data_source/company_remote_data_source.dart';
 import 'package:cv_frontend/features/recruiter_applications/data/data_source/job_category_remote_data_source.dart';
 import 'package:cv_frontend/features/recruiter_applications/data/data_source/job_offer_remote_data_source.dart';
@@ -513,13 +515,15 @@ Future<void> initializeDependencies() async {
  */
 /* ----------------------------------------------------- */
 //bloc
-  sl.registerFactory(
-      () => JobOfferBloc(addJobOfferUseCase: sl(), getJobOffersUseCase: sl()));
+  sl.registerFactory(() => JobOfferBloc(
+      addJobOfferUseCase: sl(),
+      getJobOffersUseCase: sl(),
+      toggleStatusUseCase: sl()));
 //use cases
   sl.registerLazySingleton(() => AddJobOfferUseCase(jobOfferRepository: sl()));
   sl.registerLazySingleton(
       () => GetListJobOfferUseCase(jobOfferRepository: sl()));
-
+  sl.registerLazySingleton(() => ToggleStatusUseCase(jobOfferRepository: sl()));
 //repositories
   sl.registerLazySingleton<JobOfferRepository>(
     () => JobOfferRepositoryImpl(
@@ -748,14 +752,16 @@ Future<void> initializeDependencies() async {
   sl.registerFactory(() => ApplicantBloc(
       getApplicantsListUseCase: sl(),
       pdfService: sl(),
-      updateApplicantUseCase: sl()));
+      updateApplicantUseCase: sl(),
+      sendMessageToApplicantUseCase: sl()));
   sl.registerLazySingleton(() => PdfService());
 // Use Cases
   sl.registerLazySingleton(
       () => GetApplicantsListUseCase(applicantRepository: sl()));
   sl.registerLazySingleton(
       () => UpdateApplicantUseCase(applicantRepository: sl()));
-
+  sl.registerLazySingleton(
+      () => SendMessageToApplicantUseCase(applicantRepository: sl()));
 // Repositories
   sl.registerLazySingleton<ApplicantRepository>(
     () => ApplicantRepositoryImpl(

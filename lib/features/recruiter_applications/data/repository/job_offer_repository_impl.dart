@@ -5,6 +5,7 @@ import 'package:cv_frontend/features/recruiter_applications/data/models/job_offe
 import 'package:cv_frontend/features/recruiter_applications/domain/repository/job_offer_repository.dart';
 import 'package:cv_frontend/features/recruiter_applications/domain/usecases/job_offer_use_cases/add_job_offer_use_cases.dart';
 import 'package:cv_frontend/features/recruiter_applications/domain/usecases/job_offer_use_cases/get_list_job_offer_use_cases.dart';
+import 'package:cv_frontend/features/recruiter_applications/domain/usecases/job_offer_use_cases/toggle_status_use_case.dart';
 import 'package:dartz/dartz.dart';
 
 class JobOfferRepositoryImpl implements JobOfferRepository {
@@ -37,6 +38,20 @@ class JobOfferRepositoryImpl implements JobOfferRepository {
       final joboffer =
           await jobOfferRemoteDataSource.getJobOfferList(pageParams);
       return Right(joboffer);
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> toggleStatusUseCase(
+      ToggleStatusPararms pararms) async {
+    if (await networkInfo.isConnected == false) {
+      return Left(ConnexionFailure());
+    }
+    try {
+      await jobOfferRemoteDataSource.toggleStatusUseCase(pararms);
+      return const Right(null);
     } catch (e) {
       return Left(ServerFailure());
     }

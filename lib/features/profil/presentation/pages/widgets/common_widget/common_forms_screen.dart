@@ -11,6 +11,9 @@ class CommonFormsScreen extends StatelessWidget {
   final bool isLoading;
   final bool isUpdate;
   final ImageProvider? logo;
+  final IconData? rightIcon;
+  final VoidCallback? rightIconOnPressed;
+  final Color? rightIconColor;
 
   const CommonFormsScreen({
     Key? key,
@@ -20,7 +23,7 @@ class CommonFormsScreen extends StatelessWidget {
     this.onDelete,
     this.isLoading = false,
     this.isUpdate = false,
-    this.logo,
+    this.logo, this.rightIcon, this.rightIconOnPressed, this.rightIconColor,
   }) : super(key: key);
 
   @override
@@ -28,9 +31,9 @@ class CommonFormsScreen extends StatelessWidget {
     return Scaffold(
       appBar: GeneralAppBar(
         titleText: title,
-        rightIcon: isUpdate ? Icons.delete_outline : null,
-        rightIconColor: redColor,
-        rightIconOnPressed: isUpdate ? onDelete : null,
+        rightIcon: rightIcon ?? (isUpdate ? Icons.delete_outline : null),
+        rightIconColor: rightIconColor ?? redColor,
+        rightIconOnPressed:rightIconOnPressed ?? (isUpdate ? onDelete : null) ,
         logo: logo,
       ),
       body: SafeArea(

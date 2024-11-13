@@ -11,7 +11,7 @@ Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
   await initializeDependencies();
   await TokenManager.initialize();
-  print("role ${TokenManager.role}");
+    print("role ${TokenManager.role}");
  final initialRoute = TokenManager.token != null && !TokenManager.isTokenExpired()
     ? (TokenManager.role == 'recruiter' ? route.recruiterNavBar : route.navBar)
     : route.loginScreen;

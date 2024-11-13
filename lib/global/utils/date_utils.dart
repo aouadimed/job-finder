@@ -55,3 +55,41 @@ String getDuration({
       return 'now';
     }
   }
+
+
+
+String getDurationAsString({
+  required String startDate,
+  required String? endDate,
+}) {
+  // Parse the input date strings to DateTime objects
+  final DateTime start = DateFormat('yyyy-MM-dd').parse(startDate);
+  final DateTime end = endDate != null ? DateFormat('yyyy-MM-dd').parse(endDate) : DateTime.now();
+
+  int durationYears = end.year - start.year;
+  int durationMonths = end.month - start.month;
+
+  if (durationMonths < 0) {
+    durationYears -= 1;
+    durationMonths += 12;
+  }
+
+  if (durationYears == 0 && durationMonths == 0) {
+    durationMonths = 1;
+  }
+
+  final String yearsText = durationYears > 0
+      ? '$durationYears year${durationYears > 1 ? 's' : ''} '
+      : '';
+  final String monthsText = durationMonths > 0
+      ? '$durationMonths month${durationMonths > 1 ? 's' : ''}'
+      : '';
+
+  final String duration = '$yearsText$monthsText'.trim();
+
+  final DateFormat formatter = DateFormat('MMMM yyyy');
+  final String startDateFormatted = formatter.format(start);
+  final String endDateFormatted = endDate == null ? 'Present' : formatter.format(end);
+
+  return '$startDateFormatted - $endDateFormatted ($duration)';
+}
