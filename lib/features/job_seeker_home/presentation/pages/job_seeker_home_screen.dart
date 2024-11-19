@@ -7,6 +7,7 @@ import 'package:cv_frontend/features/job_seeker_home/data/models/profil_percenta
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/home_bloc/home_bloc.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/profil_percentage_bloc/profil_percentage_bloc.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/save_job_bloc/save_job_bloc.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/pages/filter_page.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/pages/searsh_screen.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/pages/widgets/category_selecion.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/pages/widgets/category_selection_skeleton.dart';
@@ -146,8 +147,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           controller: _searchController,
                           readOnly: true,
                           hint: "Search",
-                          suffixIcon:
-                              const Icon(Icons.menu, color: Colors.grey),
+                          suffixIcon: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => 
+                                   FilterScreen(),
+                                ),
+                              );
+                            },
+                            child: const Icon(Icons.menu, color: Colors.grey),
+                          ),
                           prefixIcon:
                               const Icon(Icons.search, color: Colors.grey),
                           textInputType: TextInputType.text,

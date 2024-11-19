@@ -136,7 +136,7 @@ class _ApplyWithCVFormState extends State<ApplyWithCVForm> {
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child:
-                      Text(errorMessage, style: TextStyle(color: Colors.red)),
+                      Text(errorMessage, style: const TextStyle(color: Colors.red)),
                 ),
               const SizedBox(height: 16),
               CommanInputField(
