@@ -1,5 +1,7 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/core/services/app_routes.dart';
+import 'package:cv_frontend/features/job_details_and_apply/presentation/bloc/job_detail_bloc/job_detail_bloc.dart';
+import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/job_details_screen.dart';
 import 'package:cv_frontend/features/recruiter_applicants/presentation/bloc/applicant_bloc/applicant_bloc.dart';
 import 'package:cv_frontend/features/recruiter_applicants/presentation/pages/recruiter_applicant_screen.dart';
 import 'package:cv_frontend/features/recruiter_applications/data/models/job_offer_model.dart';
@@ -300,6 +302,19 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
                                               context: context,
                                               message: "No applicants found");
                                         }
+                                      }, godetails: () {  
+                                              Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => BlocProvider(
+                                              create: (context) =>
+                                                  sl<JobDetailBloc>()
+                                                    ..add(GetJobDetailEvent(
+                                                        id: jobOffer.id!)),
+                                              child: const JobDetailsScreen(isRecruiter: true,),
+                                            ),
+                                          ),
+                                        );
                                       },
                                     );
                                   },

@@ -4,9 +4,11 @@ import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/jo
 import 'package:cv_frontend/features/job_seeker_home/data/models/categorie_selection_model.dart';
 import 'package:cv_frontend/features/job_seeker_home/data/models/job_card_model.dart';
 import 'package:cv_frontend/features/job_seeker_home/data/models/profil_percentage_model.dart';
+import 'package:cv_frontend/features/job_seeker_home/domain/usecases/filter_job_offer_use_case.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/home_bloc/home_bloc.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/profil_percentage_bloc/profil_percentage_bloc.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/save_job_bloc/save_job_bloc.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/searsh_page_bloc/search_page_bloc.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/pages/filter_page.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/pages/searsh_screen.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/pages/widgets/category_selecion.dart';
@@ -24,7 +26,6 @@ import 'package:cv_frontend/global/common_widget/app_bar.dart';
 import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
 import 'package:cv_frontend/global/common_widget/text_form_field.dart';
 import 'package:cv_frontend/injection_container.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -84,11 +85,34 @@ class _HomeScreenState extends State<HomeScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => BlocProvider(
-          create: (context) => sl<CategoryBloc>()..add(GetCategoryEvent()),
+          create: (context) => sl<SearchPageBloc>()
+            ..add(FilterJobOfferEvent(
+              params: FilterJobOfferParams(
+                page: 1,
+                location: '',
+                workTypeIndexes: const [],
+                jobLevel: const [],
+                employmentTypeIndexes: const [],
+                experience: const [],
+                education: const [],
+                jobFunctionIds: [categoryId],
+                searchQuery: '',
+              ),
+            )),
           child: SearchScreen(
             autofocus: false,
             iconColor: primaryColor,
-            selectedCategoryId: categoryId,
+            params: FilterJobOfferParams(
+              page: 1,
+              location: '',
+              workTypeIndexes: const [],
+              jobLevel: const [],
+              employmentTypeIndexes: const [],
+              experience: const [],
+              education: const [],
+              jobFunctionIds: [categoryId!],
+              searchQuery: '',
+            ),
           ),
         ),
       ),
@@ -152,8 +176,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => 
-                                   FilterScreen(),
+                                  builder: (context) => BlocProvider(
+                                    create: (context) => sl<CategoryBloc>()
+                                      ..add(GetCategoryEvent()),
+                                    child: const FilterScreen(),
+                                  ),
                                 ),
                               );
                             },
@@ -167,11 +194,22 @@ class _HomeScreenState extends State<HomeScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => BlocProvider(
-                                  create: (context) => sl<CategoryBloc>()
-                                    ..add(GetCategoryEvent()),
+                                  create: (context) => sl<SearchPageBloc>(),
                                   child: const SearchScreen(
                                     autofocus: true,
                                     iconColor: Colors.grey,
+                                    forSearch: true,
+                                    params: FilterJobOfferParams(
+                                      page: 1,
+                                      location: '',
+                                      workTypeIndexes: [],
+                                      jobLevel: [],
+                                      employmentTypeIndexes: [],
+                                      experience: [],
+                                      education: [],
+                                      jobFunctionIds: [],
+                                      searchQuery: '',
+                                    ),
                                   ),
                                 ),
                               ),
@@ -200,75 +238,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Row(
-                      children: [
-                        const Expanded(
-                          child: Text(
-                            "Recommendation",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () => {},
-                          child: Text(
-                            "See All",
-                            style: TextStyle(
-                              color: primaryColor,
-                              fontSize: 16,
-                              decoration: TextDecoration.none,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 350,
-                          child: JobCard(
-                            companyName: 'Google LLC',
-                            jobTitle: 'UI/UX Designer',
-                            location: 'California, United States',
-                            items: const ['Full Time', 'hybrid'],
-                            companyLogoUrl:
-                                'https://logo.clearbit.com/google.com',
-                            onSave: () {
-                              print('Job saved');
-                              // Implement your save logic here
-                            },
-                            onTap: () {},
-                            isSaved: false,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 350,
-                          child: JobCard(
-                            companyName: 'Google LLC',
-                            jobTitle: 'UI/UX Designer',
-                            location: 'California, United States',
-                            items: ['Full Time', 'hybrid'],
-                            companyLogoUrl:
-                                'https://logo.clearbit.com/google.com',
-                            onSave: () {
-                              print('Job saved');
-                              // Implement your save logic here
-                            },
-                            onTap: () {},
-                            isSaved: true,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -296,7 +265,32 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             InkWell(
-                              onTap: () => {},
+                              onTap: () => {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => BlocProvider(
+                                      create: (context) => sl<SearchPageBloc>(),
+                                      child: const SearchScreen(
+                                        autofocus: false,
+                                        iconColor: Colors.grey,
+                                        forSearch: true,
+                                        params: FilterJobOfferParams(
+                                          page: 1,
+                                          location: '',
+                                          workTypeIndexes: [],
+                                          jobLevel: [],
+                                          employmentTypeIndexes: [],
+                                          experience: [],
+                                          education: [],
+                                          jobFunctionIds: [],
+                                          searchQuery: '',
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              },
                               child: Text(
                                 "See All",
                                 style: TextStyle(

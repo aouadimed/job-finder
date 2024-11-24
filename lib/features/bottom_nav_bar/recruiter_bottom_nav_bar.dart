@@ -1,10 +1,13 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/core/services/home_screen_route.dart';
 import 'package:cv_frontend/core/services/profil_screen_route.dart';
+import 'package:cv_frontend/features/recruiter_applicants/presentation/bloc/applicant_bloc/applicant_bloc.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/job_offer_bloc/job_offer_bloc.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/pages/applications_screen.dart';
 import 'package:cv_frontend/features/messaging/presentation/bloc/messaging_bloc.dart';
 import 'package:cv_frontend/features/messaging/presentation/pages/chats_screen.dart';
+import 'package:cv_frontend/features/recruiter_home/presentation/bloc/recruiter_home_bloc.dart';
+import 'package:cv_frontend/features/recruiter_home/presentation/pages/recruiter_home_screen.dart';
 import 'package:cv_frontend/features/recruiter_profil/presentation/bloc/company_bloc/company_bloc.dart';
 import 'package:cv_frontend/features/recruiter_profil/presentation/pages/company_profil_section.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +25,18 @@ class _RecruiterBottomNavBarState extends State<RecruiterBottomNavBar> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    homeScreenProvider(),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => sl<RecruiterHomeBloc>()
+            ..add(const FetchRecentApplicantsEvent(searchQuery: '')),
+        ),
+        BlocProvider(
+          create: (context) => sl<ApplicantBloc>(),
+        ),
+      ],
+      child: const RecruiterHomeScreen(),
+    ),
     BlocProvider(
       create: (context) => sl<JobOfferBloc>(),
       child: const ApplicationScreen(),

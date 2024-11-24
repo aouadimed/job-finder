@@ -1,15 +1,23 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
+import 'package:cv_frontend/features/job_seeker_home/domain/usecases/filter_job_offer_use_case.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/category_bloc/category_bloc.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/searsh_page_bloc/search_page_bloc.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/pages/searsh_screen.dart';
 import 'package:cv_frontend/global/common_widget/big_button.dart';
+import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
+import 'package:cv_frontend/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/utils/scroll_util.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/pages/widgets/filter_expanble_widget.dart';
 import 'package:cv_frontend/features/recruiter_profil/presentation/pages/widgets/country_selection_sheet.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
-import 'package:cv_frontend/global/common_widget/text_form_field.dart';
 import 'package:cv_frontend/global/utils/country_data.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FilterScreen extends StatefulWidget {
-  const FilterScreen({super.key});
+  final FilterJobOfferParams? params;
+
+  const FilterScreen({super.key, this.params});
 
   @override
   State<FilterScreen> createState() => _FilterScreenState();
@@ -35,6 +43,9 @@ class _FilterScreenState extends State<FilterScreen> {
     super.initState();
     _countryController = TextEditingController();
     _scrollController = ScrollController();
+    if (widget.params != null) {
+      _preselectFilters(widget.params!);
+    }
   }
 
   @override
@@ -44,7 +55,6 @@ class _FilterScreenState extends State<FilterScreen> {
     super.dispose();
   }
 
-  // Filter options
   final Map<String, bool> workType = {
     'On-site': false,
     'Hybrid': false,
@@ -79,11 +89,47 @@ class _FilterScreenState extends State<FilterScreen> {
     "Master's Degree": false,
     'PhD': false,
   };
-  final Map<String, bool> jobFunction = {
-    'IT and Software': false,
-    'Media and Creatives': false,
-    'Accounting and Finance': false,
-  };
+
+  Map<String, bool> jobFunction = {};
+  Map<String, String> jobFunctionIds = {};
+
+  void _preselectFilters(FilterJobOfferParams params) {
+    // Preselect location
+    if (params.location.isNotEmpty) {
+      _countryController.text = params.location;
+    }
+
+    // Preselect work types
+    for (int index in params.workTypeIndexes) {
+      workType[workType.keys.toList()[index]] = true;
+    }
+
+    // Preselect job levels
+    for (String level in params.jobLevel) {
+      if (jobLevel.containsKey(level)) {
+        jobLevel[level] = true;
+      }
+    }
+
+    // Preselect employment types
+    for (int index in params.employmentTypeIndexes) {
+      employmentType[employmentType.keys.toList()[index]] = true;
+    }
+
+    // Preselect experience
+    for (String exp in params.experience) {
+      if (experience.containsKey(exp)) {
+        experience[exp] = true;
+      }
+    }
+
+    // Preselect education levels
+    for (String edu in params.education) {
+      if (education.containsKey(edu)) {
+        education[edu] = true;
+      }
+    }
+  }
 
   void resetFilters() {
     setState(() {
@@ -98,18 +144,77 @@ class _FilterScreenState extends State<FilterScreen> {
   }
 
   void applyFilters() {
-    final filters = {
-      'location': _countryController.text,
-      'workType': workType,
-      'jobLevel': jobLevel,
-      'employmentType': employmentType,
-      'experience': experience,
-      'education': education,
-      'jobFunction': jobFunction,
-    };
+    final selectedJobFunctionIds = jobFunction.entries
+        .where((entry) => entry.value)
+        .map((entry) => jobFunctionIds[entry.key])
+        .whereType<String>()
+        .toList();
 
-    print('Applied Filters: $filters');
-    Navigator.pop(context);
+    final selectedWorkTypeIndexes = workType.entries
+        .where((entry) => entry.value)
+        .map((entry) => workType.keys.toList().indexOf(entry.key))
+        .toList();
+
+    final selectedEmploymentTypeIndexes = employmentType.entries
+        .where((entry) => entry.value)
+        .map((entry) => employmentType.keys.toList().indexOf(entry.key))
+        .toList();
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (context) => sl<SearchPageBloc>()
+            ..add(FilterJobOfferEvent(
+              params: FilterJobOfferParams(
+                page: 1,
+                location: _countryController.text,
+                workTypeIndexes: selectedWorkTypeIndexes,
+                jobLevel: jobLevel.entries
+                    .where((entry) => entry.value)
+                    .map((entry) => entry.key)
+                    .toList(),
+                employmentTypeIndexes: selectedEmploymentTypeIndexes,
+                experience: experience.entries
+                    .where((entry) => entry.value)
+                    .map((entry) => entry.key)
+                    .toList(),
+                education: education.entries
+                    .where((entry) => entry.value)
+                    .map((entry) => entry.key)
+                    .toList(),
+                jobFunctionIds: selectedJobFunctionIds,
+                searchQuery: '',
+              ),
+            )),
+          child: SearchScreen(
+            autofocus: false,
+            iconColor: primaryColor,
+            params: FilterJobOfferParams(
+              page: 1,
+              location: _countryController.text,
+              workTypeIndexes: selectedWorkTypeIndexes,
+              jobLevel: jobLevel.entries
+                  .where((entry) => entry.value)
+                  .map((entry) => entry.key)
+                  .toList(),
+              employmentTypeIndexes: selectedEmploymentTypeIndexes,
+              experience: experience.entries
+                  .where((entry) => entry.value)
+                  .map((entry) => entry.key)
+                  .toList(),
+              education: education.entries
+                  .where((entry) => entry.value)
+                  .map((entry) => entry.key)
+                  .toList(),
+              jobFunctionIds: selectedJobFunctionIds,
+              searchQuery: '',
+            ),
+            fromFilterScreen: true,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -272,26 +377,71 @@ class _FilterScreenState extends State<FilterScreen> {
                 },
                 key: educationKey,
               ),
-              FilterExpandableWidget(
-                title: 'Job Function',
-                icon: Icons.settings,
-                options: jobFunction,
-                onChanged: (key) {
-                  setState(() {
-                    jobFunction[key] = !jobFunction[key]!;
-                  });
+              BlocConsumer<CategoryBloc, CategoryState>(
+                listener: (context, state) {
+                  if (state is CategoryFailure) {
+                    showSnackBar(context: context, message: state.message);
+                  }
                 },
-                isExpanded: expandedSection == 'jobFunction',
-                onExpansionChanged: (expanded) {
-                  setState(() {
-                    expandedSection = expanded ? 'jobFunction' : null;
-                    if (expanded) {
-                      scrollToSection(
-                          context, _scrollController, jobFunctionKey);
+                builder: (context, state) {
+                  if (state is CategoryLoading) {
+                    return const CircularProgressIndicator();
+                  } else if (state is JobCategorySuccess) {
+                    if (jobFunction.isEmpty) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        setState(() {
+                          jobFunctionIds = {
+                            for (var job in state.categorySelectionModel)
+                              job.categoryName!: job.categoryId!
+                          };
+                          jobFunction = {
+                            for (var job in state.categorySelectionModel)
+                              job.categoryName!: false
+                          };
+                        });
+                      });
+                      if (widget.params?.jobFunctionIds != null) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          setState(() {
+                            for (String id in widget.params!.jobFunctionIds) {
+                              final name = jobFunctionIds.entries
+                                  .firstWhere((entry) => entry.value == id,
+                                      orElse: () => const MapEntry('', ''))
+                                  .key;
+                              if (name.isNotEmpty) {
+                                jobFunction[name] = true;
+                              }
+                            }
+                          });
+                        });
+                      }
                     }
-                  });
+
+                    return FilterExpandableWidget(
+                      title: 'Job Function',
+                      icon: Icons.settings,
+                      options: jobFunction,
+                      onChanged: (key) {
+                        setState(() {
+                          jobFunction[key] = !jobFunction[key]!;
+                        });
+                      },
+                      isExpanded: expandedSection == 'jobFunction',
+                      onExpansionChanged: (expanded) {
+                        setState(() {
+                          expandedSection = expanded ? 'jobFunction' : null;
+                          if (expanded) {
+                            scrollToSection(
+                                context, _scrollController, jobFunctionKey);
+                          }
+                        });
+                      },
+                      key: jobFunctionKey,
+                    );
+                  }
+                  return const SizedBox
+                      .shrink(); // Return empty widget if no state matches
                 },
-                key: jobFunctionKey,
               ),
             ],
           ),
@@ -306,6 +456,7 @@ class _FilterScreenState extends State<FilterScreen> {
               child: BigButton(
                 onPressed: resetFilters,
                 text: 'Reset',
+                textColor: primaryColor,
                 color: lightprimaryColor,
               ),
             ),

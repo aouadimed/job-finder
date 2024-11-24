@@ -1,9 +1,9 @@
+import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/features/recruiter_applicants/data/models/profil_details.dart';
 import 'package:cv_frontend/features/recruiter_applicants/presentation/pages/widgets/applicant_profil.dart';
 import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
 
 class ApplicantInfoDialog extends StatefulWidget {
@@ -13,6 +13,9 @@ class ApplicantInfoDialog extends StatefulWidget {
   final String resumeUrl;
   final String motivationLetter;
   final bool hasProfile;
+  final Function()? swipeLeft;
+  final Function()? swipeRight;
+  final bool? recruiterHome;
 
   const ApplicantInfoDialog({
     Key? key,
@@ -22,6 +25,9 @@ class ApplicantInfoDialog extends StatefulWidget {
     required this.motivationLetter,
     this.hasProfile = true,
     required this.profileDetails,
+    this.swipeLeft,
+    this.swipeRight,
+    this.recruiterHome = false,
   }) : super(key: key);
 
   @override
@@ -32,7 +38,6 @@ class _ApplicantInfoDialogState extends State<ApplicantInfoDialog> {
   int _totalPages = 0;
   int _currentPage = 0;
   PDFViewController? _pdfController;
-  bool _isFullScreenOpened = false;
 
   void _navigateToPage(int page) async {
     if (page >= 0 && page < _totalPages) {
@@ -55,6 +60,29 @@ class _ApplicantInfoDialogState extends State<ApplicantInfoDialog> {
         body: widget.hasProfile
             ? ApplicantProfil(profileDetails: widget.profileDetails!)
             : _buildResumeView(),
+        bottomNavigationBar: (widget.recruiterHome == true)
+            ? Container(
+                color: lightprimaryColor,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Colors.red),
+                      onPressed: widget.swipeLeft,
+                      iconSize: 40,
+                    ),
+                    const SizedBox(
+                      width: 40,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.check, color: Colors.green),
+                      onPressed: widget.swipeRight,
+                      iconSize: 40,
+                    )
+                  ],
+                ),
+              )
+            : null,
       ),
     );
   }
@@ -116,19 +144,4 @@ class _ApplicantInfoDialogState extends State<ApplicantInfoDialog> {
       ],
     );
   }
-
-
 }
-
-// To show this dialog from another widget:
-// showDialog(
-//   context: context,
-//   builder: (context) => ApplicantInfoDialog(
-//     name: applicant.name,
-//     profileImageUrl: applicant.profileImageUrl,
-//     resumeUrl: applicant.resumeUrl,
-//     motivationLetter: applicant.motivationLetter,
-//     hasProfile: applicant.hasProfile,
-//     profileDetails: applicant.profileDetails,
-//   ),
-// );

@@ -95,16 +95,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontWeight: FontWeight.w400),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 25),
-                        child: ThirdPartyLogin(),
-                      ),
-                      CreateOrHaveAccountSection(
-                        onTap: () {
-                          goToRegister(context);
-                        },
-                        question: "Don't have an account?",
-                        action: "Sign up",
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 25),
+                        child: CreateOrHaveAccountSection(
+                          onTap: () {
+                            goToRegister(context);
+                          },
+                          question: "Don't have an account?",
+                          action: "Sign up",
+                        ),
                       ),
                     ],
                   ),

@@ -20,26 +20,14 @@ class _ApplicantProfilState extends State<ApplicantProfil> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(16.0),
-      child: Scrollbar(
-        interactive: true,
-        thumbVisibility: true,
-        controller: _scrollController,
-        thickness: 10,
-        radius: const Radius.circular(5),
+    return Scrollbar(
+      interactive: true,
+      thumbVisibility: true,
+      controller: _scrollController,
+      thickness: 10,
+      radius: const Radius.circular(5),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
           controller: _scrollController,
           child: Column(
@@ -108,29 +96,13 @@ class _ApplicantProfilState extends State<ApplicantProfil> {
   }
 
   Widget _buildSectionContainer(String title, Widget content) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSectionTitle(title),
-          const SizedBox(height: 10),
-          content,
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle(title),
+        const SizedBox(height: 10),
+        content,
+      ],
     );
   }
 

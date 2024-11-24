@@ -62,7 +62,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   confirmPasswordController: _confirmPasswordController,
                 ),
               ),
-              const ThirdPartyLogin(),
               Padding(
                 padding: const EdgeInsets.only(bottom: 20),
                 child: CreateOrHaveAccountSection(
@@ -97,5 +96,4 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
     }
   }
-
 }

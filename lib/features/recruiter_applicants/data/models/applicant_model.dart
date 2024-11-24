@@ -131,7 +131,7 @@ class User {
         id: json["_id"],
         firstName: json["firstName"],
         lastName: json["lastName"],
-        profileImg: json["profileImg"] ?? "null"  ,
+        profileImg: json["profileImg"] ?? "null",
       );
 
   Map<String, dynamic> toJson() => {

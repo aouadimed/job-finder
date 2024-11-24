@@ -20,7 +20,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class JobDetailsScreen extends StatefulWidget {
-  const JobDetailsScreen({super.key});
+  final bool? isRecruiter;
+  const JobDetailsScreen({super.key, this.isRecruiter = false});
 
   @override
   State<JobDetailsScreen> createState() => _JobDetailsScreenState();
@@ -78,12 +79,16 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                     }
                     return GeneralAppBar(
                       rightIconColor: primaryColor,
-                      rightIconWidget: isLoading
-                          ? const GeneralAppBarIconSkeleton()
-                          : Icon(
-                              isSaved ? Icons.bookmark : Icons.bookmark_border,
-                              color: primaryColor,
-                            ),
+                      rightIconWidget: widget.isRecruiter == false
+                          ? isLoading
+                              ? const GeneralAppBarIconSkeleton()
+                              : Icon(
+                                  isSaved
+                                      ? Icons.bookmark
+                                      : Icons.bookmark_border,
+                                  color: primaryColor,
+                                )
+                          : null,
                       rightIconOnPressed: () {
                         if (isSaved) {
                           context.read<SavedJobBloc>().add(RemoveSavedJobEvent(
@@ -166,38 +171,42 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                             ),
                           ),
                         ),
-              bottomNavigationBar: state is JobDetailLoading
-                  ? null
-                  : Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: BigButton(
-                        color: jobOfferDetailsModel?.applicationStatus !=
-                                "Not Applied"
-                            ? greyColor
-                            : primaryColor,
-                        onPressed: jobOfferDetailsModel?.applicationStatus !=
-                                "Not Applied"
-                            ? null
-                            : () async {
-                                await showModalBottomSheet<Map<String, int>>(
-                                  elevation: 0,
-                                  context: context,
-                                  builder: (context) => JobApplySheet(
-                                    onSelectWithCv: () {
-                                      goToApplyWithCvScreen(context);
-                                    },
-                                    onSelectWithProfil: () {
-                                      goToProfilScreen(context);
-                                    },
-                                  ),
-                                );
-                              },
-                        text: jobOfferDetailsModel?.applicationStatus !=
-                                "Not Applied"
-                            ? jobOfferDetailsModel?.applicationStatus
-                            : 'Apply',
-                      ),
-                    ),
+              bottomNavigationBar: widget.isRecruiter == false
+                  ? state is JobDetailLoading
+                      ? null
+                      : Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: BigButton(
+                            color: jobOfferDetailsModel?.applicationStatus !=
+                                    "Not Applied"
+                                ? greyColor
+                                : primaryColor,
+                            onPressed:
+                                jobOfferDetailsModel?.applicationStatus !=
+                                        "Not Applied"
+                                    ? null
+                                    : () async {
+                                        await showModalBottomSheet<
+                                            Map<String, int>>(
+                                          elevation: 0,
+                                          context: context,
+                                          builder: (context) => JobApplySheet(
+                                            onSelectWithCv: () {
+                                              goToApplyWithCvScreen(context);
+                                            },
+                                            onSelectWithProfil: () {
+                                              goToProfilScreen(context);
+                                            },
+                                          ),
+                                        );
+                                      },
+                            text: jobOfferDetailsModel?.applicationStatus !=
+                                    "Not Applied"
+                                ? jobOfferDetailsModel?.applicationStatus
+                                : 'Apply',
+                          ),
+                        )
+                  : null,
             );
           },
         ),

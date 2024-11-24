@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-const String url = "192.168.1.11:5000";
+const String url = "192.168.1.14:5000";
 
 class TokenManager {
   static String? _token;
@@ -118,3 +118,7 @@ const String jobApplyurl = "/api/JobApplication/JobApplication";
 const String messaging = "/api/chat/chat";
 //profil percentage
 const String profilPercentage = "/api/profil/CVCompletion";
+//filter
+const String filterUri = "/api/filter/filter";
+
+const String getRecentApplicantUri = "/api/JobApplication/recent";

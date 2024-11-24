@@ -8,7 +8,8 @@ class VacanciesCard extends StatelessWidget {
   final bool isActive;
   final int? applicantsCount;
   final VoidCallback? onTap;
-  final VoidCallback? onToggleStatus; // Callback for toggling status
+  final VoidCallback? onToggleStatus; 
+  final Function() godetails;
 
   const VacanciesCard({
     Key? key,
@@ -18,7 +19,7 @@ class VacanciesCard extends StatelessWidget {
     required this.isActive,
     this.applicantsCount,
     this.onTap,
-    this.onToggleStatus, // Add this parameter for the toggle action
+    this.onToggleStatus, required this.godetails,
   }) : super(key: key);
 
   @override
@@ -53,13 +54,18 @@ class VacanciesCard extends StatelessWidget {
                           child: Text(
                             jobTitle,
                             style: TextStyle(
+                              overflow: TextOverflow.ellipsis,
                               fontSize: titleFontSize * textScaleFactor,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
+                        IconButton(
+                          icon: const Icon(Icons.arrow_forward_ios, size: 18),
+                          onPressed: godetails,
+                        ),
                         GestureDetector(
-                          onTap: onToggleStatus, // Trigger toggle action on tap
+                          onTap: onToggleStatus, 
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8.0, vertical: 4.0),
@@ -82,11 +88,14 @@ class VacanciesCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Text(
+                        Text(
                       categoryName,
                       style: TextStyle(
                         fontSize: categoryFontSize * textScaleFactor,
+                        color: Colors.grey[700],
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     if (applicantsCount != null) ...[
                       const SizedBox(height: 8),

@@ -29,15 +29,19 @@ import 'package:cv_frontend/features/job_seeker_home/data/data_source/category_r
 import 'package:cv_frontend/features/job_seeker_home/data/data_source/home_remote_data_source.dart';
 import 'package:cv_frontend/features/job_seeker_home/data/data_source/profil_perentage_data_remote_data_source.dart';
 import 'package:cv_frontend/features/job_seeker_home/data/data_source/save_job_remote_data_source.dart';
+import 'package:cv_frontend/features/job_seeker_home/data/data_source/searsh_page_remote_data_source.dart';
 import 'package:cv_frontend/features/job_seeker_home/data/repository/category_repository_impl.dart';
 import 'package:cv_frontend/features/job_seeker_home/data/repository/home_repository_impl.dart';
 import 'package:cv_frontend/features/job_seeker_home/data/repository/profil_percentage_repository_impl.dart';
 import 'package:cv_frontend/features/job_seeker_home/data/repository/save_job_repository.dart';
+import 'package:cv_frontend/features/job_seeker_home/data/repository/searsh_page_repository_impl.dart';
 import 'package:cv_frontend/features/job_seeker_home/domain/repository/category_repository.dart';
 import 'package:cv_frontend/features/job_seeker_home/domain/repository/home_repository.dart';
 import 'package:cv_frontend/features/job_seeker_home/domain/repository/profil_percentage_repository.dart';
 import 'package:cv_frontend/features/job_seeker_home/domain/repository/save_job_repository.dart';
+import 'package:cv_frontend/features/job_seeker_home/domain/repository/searsh_page_repository.dart';
 import 'package:cv_frontend/features/job_seeker_home/domain/usecases/check_saved_job_use_case.dart';
+import 'package:cv_frontend/features/job_seeker_home/domain/usecases/filter_job_offer_use_case.dart';
 import 'package:cv_frontend/features/job_seeker_home/domain/usecases/get_categorys_use_case.dart';
 import 'package:cv_frontend/features/job_seeker_home/domain/usecases/get_profil_percentage.dart';
 import 'package:cv_frontend/features/job_seeker_home/domain/usecases/get_recent_jobs_use_case.dart';
@@ -47,6 +51,7 @@ import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/category_
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/home_bloc/home_bloc.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/profil_percentage_bloc/profil_percentage_bloc.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/save_job_bloc/save_job_bloc.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/searsh_page_bloc/search_page_bloc.dart';
 import 'package:cv_frontend/features/messaging/data/data_source/messaging_remote_data_source.dart';
 import 'package:cv_frontend/features/messaging/data/repository/messaging_repository_impl.dart';
 import 'package:cv_frontend/features/messaging/domain/repository/messaging_repository.dart';
@@ -128,6 +133,11 @@ import 'package:cv_frontend/features/recruiter_applicants/domain/usecases/update
 import 'package:cv_frontend/features/recruiter_applicants/presentation/bloc/applicant_bloc/applicant_bloc.dart';
 import 'package:cv_frontend/features/recruiter_applicants/presentation/pages/utils/pdf_service.dart';
 import 'package:cv_frontend/features/recruiter_applications/domain/usecases/job_offer_use_cases/toggle_status_use_case.dart';
+import 'package:cv_frontend/features/recruiter_home/data/data_source/recruiter_home_data_source.dart';
+import 'package:cv_frontend/features/recruiter_home/data/repository/recruiter_home_repository_impl.dart';
+import 'package:cv_frontend/features/recruiter_home/domain/repository/recruiter_home_repository.dart';
+import 'package:cv_frontend/features/recruiter_home/domain/usecases/get_recent_applicant_use_case.dart';
+import 'package:cv_frontend/features/recruiter_home/presentation/bloc/recruiter_home_bloc.dart';
 import 'package:cv_frontend/features/recruiter_profil/data/data_source/company_remote_data_source.dart';
 import 'package:cv_frontend/features/recruiter_applications/data/data_source/job_category_remote_data_source.dart';
 import 'package:cv_frontend/features/recruiter_applications/data/data_source/job_offer_remote_data_source.dart';
@@ -855,5 +865,53 @@ Future<void> initializeDependencies() async {
     () => ProfilPercentageRemoteDataSourceImpl(
       client: sl(),
     ),
+  );
+
+  /* ----------------------------------------------------- */
+/*
+ * filter
+ */
+/* ----------------------------------------------------- */
+  // Bloc
+  sl.registerFactory(() => SearchPageBloc(filterJobOfferUseCase: sl()));
+// Use Cases
+  sl.registerLazySingleton(
+      () => FilterJobOfferUseCase(searchPageRepository: sl()));
+
+// Repositories
+  sl.registerLazySingleton<SearchPageRepository>(
+    () => SearchPageRepositoryImpl(
+      networkInfo: sl(),
+      searshPageRemoteDataSource: sl(),
+    ),
+  );
+
+// Data Sources
+  sl.registerLazySingleton<SearshPageRemoteDataSource>(
+    () => SearshPageRemoteDataSourceImpl(client: sl()),
+  );
+
+/* ----------------------------------------------------- */
+/*
+ * recruiter home
+ */
+/* ----------------------------------------------------- */
+  // Bloc
+  sl.registerFactory(() => RecruiterHomeBloc(getRecentApplicantUseCase: sl(), pdfService: sl()));
+// Use Cases
+  sl.registerLazySingleton(
+      () => GetRecentApplicantUseCase(recruiterHomeRepository: sl()));
+
+// Repositories
+  sl.registerLazySingleton<RecruiterHomeRepository>(
+    () => RecruiterHomeRepositoryImpl(
+      networkInfo: sl(), recruiterHomeDataSource: sl(),
+     
+    ),
+  );
+
+// Data Sources
+  sl.registerLazySingleton<RecruiterHomeDataSource>(
+    () => RecruiterHomeDataSourceImpl(client: sl()),
   );
 }
