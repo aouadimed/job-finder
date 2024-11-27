@@ -16,8 +16,7 @@ class SummaryRemoteDataSourceImpl implements SummaryRemoteDataSource {
   SummaryRemoteDataSourceImpl({required this.client});
 
   @override
-  Future<bool> createOrUpdateSummary(
-      {required String description}) async {
+  Future<bool> createOrUpdateSummary({required String description}) async {
     try {
       Map<String, dynamic> requestBody = {"description": description};
       final response = await https.post(
@@ -28,7 +27,7 @@ class SummaryRemoteDataSourceImpl implements SummaryRemoteDataSource {
             "Authorization": "Bearer ${TokenManager.token}"
           }).catchError(
         (e) => throw ServerException(),
-      ); 
+      );
       if (response.statusCode == 200 || response.statusCode == 201) {
         return true;
       } else {
@@ -39,7 +38,7 @@ class SummaryRemoteDataSourceImpl implements SummaryRemoteDataSource {
     }
   }
 
-    @override
+  @override
   Future<SummaryModel> getSummary() async {
     try {
       final response = await https.get(
@@ -54,7 +53,6 @@ class SummaryRemoteDataSourceImpl implements SummaryRemoteDataSource {
 
       if (response.statusCode == 200) {
         return summaryModelFromJson(response.body);
-
       } else {
         throw ServerFailure();
       }

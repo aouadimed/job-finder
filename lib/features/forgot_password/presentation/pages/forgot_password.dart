@@ -1,4 +1,5 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
+import 'package:cv_frontend/core/services/app_routes.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/bloc/forgot_password_bloc.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/pages/widget/change_password_page.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/pages/widget/email_check_page.dart';
@@ -8,8 +9,6 @@ import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
 import 'package:cv_frontend/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/widgets/header_login.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -63,28 +62,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           if (state is ForgotPasswordFailure) {
             showSnackBar(context: context, message: state.message);
           } else if (state is ForgotPasswordSuccess) {
-            QuickAlert.show(
-              text: "Check inbox",
-              context: context,
-              headerBackgroundColor: primaryColor,
-              type: QuickAlertType.success,
-            );
             _goToNextPage();
           } else if (state is CodeVerificationSuccess) {
-            QuickAlert.show(
-              text: "Verification success",
-              context: context,
-              headerBackgroundColor: primaryColor,
-              type: QuickAlertType.success,
-            );
             _goToNextPage();
           } else if (state is ChangePasswordSuccess) {
-            QuickAlert.show(
-              text: "Password has been updated",
-              context: context,
-              headerBackgroundColor: primaryColor,
-              type: QuickAlertType.success,
-            );
+            showSnackBar(
+                context: context,
+                message: "Password has been updated",
+                backgroundColor: greenColor);
+
+            Navigator.pushReplacementNamed(context, loginScreen);
           }
         },
         child: BlocBuilder<ForgotPasswordBloc, ForgotPasswordState>(

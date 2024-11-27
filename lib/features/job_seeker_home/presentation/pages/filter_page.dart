@@ -165,28 +165,7 @@ class _FilterScreenState extends State<FilterScreen> {
       MaterialPageRoute(
         builder: (context) => BlocProvider(
           create: (context) => sl<SearchPageBloc>()
-            ..add(FilterJobOfferEvent(
-              params: FilterJobOfferParams(
-                page: 1,
-                location: _countryController.text,
-                workTypeIndexes: selectedWorkTypeIndexes,
-                jobLevel: jobLevel.entries
-                    .where((entry) => entry.value)
-                    .map((entry) => entry.key)
-                    .toList(),
-                employmentTypeIndexes: selectedEmploymentTypeIndexes,
-                experience: experience.entries
-                    .where((entry) => entry.value)
-                    .map((entry) => entry.key)
-                    .toList(),
-                education: education.entries
-                    .where((entry) => entry.value)
-                    .map((entry) => entry.key)
-                    .toList(),
-                jobFunctionIds: selectedJobFunctionIds,
-                searchQuery: '',
-              ),
-            )),
+       ,
           child: SearchScreen(
             autofocus: false,
             iconColor: primaryColor,
@@ -210,10 +189,10 @@ class _FilterScreenState extends State<FilterScreen> {
               jobFunctionIds: selectedJobFunctionIds,
               searchQuery: '',
             ),
-            fromFilterScreen: true,
           ),
         ),
-      ),
+      )
+      ,  
     );
   }
 
@@ -440,7 +419,7 @@ class _FilterScreenState extends State<FilterScreen> {
                     );
                   }
                   return const SizedBox
-                      .shrink(); // Return empty widget if no state matches
+                      .shrink();
                 },
               ),
             ],

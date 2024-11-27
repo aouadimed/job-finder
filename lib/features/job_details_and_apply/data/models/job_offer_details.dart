@@ -20,7 +20,12 @@ class JobOfferDetailsModel {
   final String companyAbout;
   final String logoName;
   final String applicationStatus;
-  JobOfferDetailsModel({
+  final String subcategoryId;
+  final String categoryId;
+
+  JobOfferDetailsModel(
+   {required this.subcategoryId,
+    required this.categoryId,
     required this.id,
     required this.user,
     required this.employmentTypeIndex,
@@ -57,6 +62,8 @@ class JobOfferDetailsModel {
       companyAbout: json['companyAbout'],
       logoName: json['logoName'],
       applicationStatus: json['applicationStatus'],
+      subcategoryId: json['subcategoryId'],
+      categoryId: json['categoryId'],
     );
   }
 }

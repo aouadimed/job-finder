@@ -115,7 +115,7 @@ class _ProfilScreenState extends State<ProfilScreen> {
                 rightIconOnPressed: () => {
                   QuickAlert.show(
                     context: context,
-                    headerBackgroundColor: primaryColor,
+                    confirmBtnColor: primaryColor,
                     type: QuickAlertType.confirm,
                     title: 'Logout',
                     text: 'Are you sure you want to logout?',

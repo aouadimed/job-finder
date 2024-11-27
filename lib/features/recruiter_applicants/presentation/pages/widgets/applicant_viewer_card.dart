@@ -262,8 +262,8 @@ class _ApplicantViewerCardState extends State<ApplicantViewerCard>
           ] else
             Expanded(
                 child: ApplicantProfil(
-                  profileDetails: widget.profileDetails!,
-                )),
+              profileDetails: widget.profileDetails!,
+            )),
         ],
       ),
     );

@@ -1,7 +1,9 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
+import 'package:cv_frontend/core/constants/constants.dart';
 import 'package:cv_frontend/core/services/app_routes.dart';
 import 'package:cv_frontend/features/onboarding/presentation/utils/on_boarding_utils.dart';
 import 'package:cv_frontend/features/onboarding/presentation/widgets/on_boarding_item.dart';
+import 'package:cv_frontend/global/common_widget/app_bar.dart';
 import 'package:cv_frontend/global/common_widget/big_button.dart';
 import 'package:flutter/material.dart';
 
@@ -38,6 +40,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar:const GeneralAppBar(haveReturn: false,),
         body: Stack(
           children: [
             PageView.builder(
@@ -58,7 +61,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(
@@ -88,11 +91,19 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       onPressed: () {
                         if (currentPage < onBoardingLength - 1) {
                           pageController.nextPage(
-                            duration: const Duration(milliseconds: 500),
+                            duration: const Duration(milliseconds: 10),
                             curve: Curves.linear,
                           );
                         } else {
-                          Navigator.pushReplacementNamed(context, loginScreen);
+                          TokenManager.token != null &&
+                                  !TokenManager.isTokenExpired()
+                              ? (TokenManager.role == 'recruiter'
+                                  ? Navigator.pushReplacementNamed(
+                                      context, recruiterNavBar)
+                                  : Navigator.pushReplacementNamed(
+                                      context, navBar))
+                              : Navigator.pushReplacementNamed(
+                                  context, loginScreen);
                         }
                       },
                     ),

@@ -101,10 +101,10 @@ class _ProjectFormState extends State<ProjectForm> {
         widget.associatedWithTextFieldController.text =
             "${selectedExperience.jobTitle} at ${selectedExperience.companyName}";
       } else {
-        print('No matching work experience found for ID: $selectedWorkExperienceId');
+     //   print('No matching work experience found for ID: $selectedWorkExperienceId');
       }
     } else {
-      print('No experiences available or selectedWorkExperienceId is empty');
+//print('No experiences available or selectedWorkExperienceId is empty');
     }
   }
 
@@ -260,7 +260,7 @@ class _ProjectFormState extends State<ProjectForm> {
                       textInputAction: TextInputAction.next,
                       onTap: () async {
                         if (experiences.isEmpty) {
-                          print('Experiences list is empty');
+                        //  print('Experiences list is empty');
                           return;
                         }
 

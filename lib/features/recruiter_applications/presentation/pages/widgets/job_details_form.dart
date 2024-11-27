@@ -19,6 +19,10 @@ class JobDetailsPage extends StatefulWidget {
       onCategorySelected;
   final void Function(int index) onEmploymentTypeSelected;
   final void Function(int index) onLocationTypeSelected;
+  final int? selectedEmploymentTypeIndex;
+  final int? selectedLocationTypeIndex;
+  final String? selectedCategoryId;
+  final String? selectedSubcategoryId;
 
   const JobDetailsPage({
     Key? key,
@@ -30,6 +34,10 @@ class JobDetailsPage extends StatefulWidget {
     required this.onCategorySelected,
     required this.onEmploymentTypeSelected,
     required this.onLocationTypeSelected,
+    this.selectedEmploymentTypeIndex,
+    this.selectedLocationTypeIndex,
+    this.selectedCategoryId,
+    this.selectedSubcategoryId,
   }) : super(key: key);
 
   @override
@@ -37,10 +45,21 @@ class JobDetailsPage extends StatefulWidget {
 }
 
 class _JobDetailsPageState extends State<JobDetailsPage> {
-  int selectedEmploymentTypeIndex = 0;
-  int selectedLocationTypeIndex = 0;
-  String selectedCategoryId = "";
-  String selectedSubcategoryId = "";
+  late int selectedEmploymentTypeIndex;
+  late int selectedLocationTypeIndex;
+  late String selectedCategoryId;
+  late String selectedSubcategoryId;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedEmploymentTypeIndex = widget.selectedEmploymentTypeIndex ?? 0;
+    selectedLocationTypeIndex = widget.selectedLocationTypeIndex ?? 0;
+    selectedCategoryId = widget.selectedCategoryId ?? "";
+    selectedSubcategoryId = widget.selectedSubcategoryId ?? "";
+
+  }
+
   final FocusNode empTypeFocusNode = FocusNode();
   final FocusNode companyNameFocusNode = FocusNode();
   final FocusNode locationTypeFocusNode = FocusNode();
@@ -49,6 +68,9 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    print(selectedCategoryId);
+        print(selectedSubcategoryId);
+
     return SingleChildScrollView(
       child: Form(
         key: widget.formKey,
@@ -69,9 +91,11 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                     elevation: 0,
                     builder: (BuildContext context) {
                       return BlocProvider(
-                        create: (context) =>  sl<JobCategoryBloc>()..add(const GetJobCategoryEvent(searshQuery: '')),
+                        create: (context) => sl<JobCategoryBloc>()
+                          ..add(const GetJobCategoryEvent(searshQuery: '')),
                         child: JobCategorySelectionSheet(
-                          onSelect: (String categoryId, String subcategoryId,String name) {
+                          onSelect: (String categoryId, String subcategoryId,
+                              String name) {
                             setState(() {
                               widget.jobTitleController.text = name;
                               selectedCategoryId = categoryId;

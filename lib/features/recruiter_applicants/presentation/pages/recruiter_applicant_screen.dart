@@ -113,10 +113,29 @@ class _RecruiterApplicantScreenState extends State<RecruiterApplicantScreen> {
                               ? SwipedApplicantsView(
                                   pendingApplicants: _pendingApplicants,
                                   onSelectApplicant: (String value) {},
-                                  onSelectApplicants: (Set<String> value) {
-                                    for (String id in value) {
+                                  onSelectApplicants:
+                                      (Set<String> selectedApplicants) {
+                                    for (String id in selectedApplicants) {
                                       context.read<ApplicantBloc>().add(
-                                          SendMessageToApplicantEvent(id: id));
+                                            SendMessageToApplicantEvent(id: id),
+                                          );
+                                    }
+
+                                    final unselectedApplicants =
+                                        _pendingApplicants
+                                            .where((applicant) =>
+                                                !selectedApplicants
+                                                    .contains(applicant.id))
+                                            .toList();
+
+                                    for (final unselectedApplicant
+                                        in unselectedApplicants) {
+                                      context.read<ApplicantBloc>().add(
+                                            UpdateApplicantStatusEvent(
+                                              id: unselectedApplicant.id!,
+                                              status: 'rejected',
+                                            ),
+                                          );
                                     }
                                     _pendingApplicants.clear();
                                     Navigator.pop(context);

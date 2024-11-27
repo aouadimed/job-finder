@@ -79,29 +79,10 @@ class ChatCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  numberOfNotReadMessages != null
-                      ? Container(
-                          width: 30,
-                          height: 25,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: primaryColor,
-                          ),
-                          child: Center(
-                            child: Text(
-                              numberOfNotReadMessages!,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        )
-                      : const SizedBox(
-                          width: 30,
-                          height: 30,
-                        ),
+                  const SizedBox(
+                    width: 30,
+                    height: 30,
+                  ),
                   const SizedBox(height: 5),
                   Text(
                     lastConversationDate,

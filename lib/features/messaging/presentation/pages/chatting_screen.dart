@@ -122,6 +122,9 @@ class _ChattingScreenState extends State<ChattingScreen> {
         });
       });
     }
+FocusScope.of(context).unfocus();
+
+
   }
 
   void _onMessageChanged(String text) {

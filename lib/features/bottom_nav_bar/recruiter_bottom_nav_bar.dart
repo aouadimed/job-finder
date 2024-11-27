@@ -1,6 +1,4 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
-import 'package:cv_frontend/core/services/home_screen_route.dart';
-import 'package:cv_frontend/core/services/profil_screen_route.dart';
 import 'package:cv_frontend/features/recruiter_applicants/presentation/bloc/applicant_bloc/applicant_bloc.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/bloc/job_offer_bloc/job_offer_bloc.dart';
 import 'package:cv_frontend/features/recruiter_applications/presentation/pages/applications_screen.dart';

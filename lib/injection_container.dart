@@ -16,6 +16,8 @@ import 'package:cv_frontend/features/job_details_and_apply/data/repository/job_a
 import 'package:cv_frontend/features/job_details_and_apply/data/repository/job_offer_detail_repository_impl.dart';
 import 'package:cv_frontend/features/job_details_and_apply/domain/repository/job_apply_repository.dart';
 import 'package:cv_frontend/features/job_details_and_apply/domain/repository/job_details_repository.dart';
+import 'package:cv_frontend/features/job_details_and_apply/domain/usecases/delete_job_offer_use_case.dart';
+import 'package:cv_frontend/features/job_details_and_apply/domain/usecases/edit_job_offer_use_case.dart';
 import 'package:cv_frontend/features/job_details_and_apply/domain/usecases/get_job_offer_detail_use_case.dart';
 import 'package:cv_frontend/features/job_details_and_apply/domain/usecases/job_apply_use_case.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/bloc/job_apply_bloc/job_apply_bloc.dart';
@@ -100,6 +102,7 @@ import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/u
 import 'package:cv_frontend/features/profil/domain/usecases/language_use_cases/create_language_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/organization_use_cases/organization_use_cases.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/profil_header_use_cases/get_profil_header_use_case.dart';
+import 'package:cv_frontend/features/profil/domain/usecases/profil_header_use_cases/update_profil_header_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/project_use_cases/create_project_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/project_use_cases/delete_project_use_case.dart';
 import 'package:cv_frontend/features/profil/domain/usecases/project_use_cases/get_all_project_use_case.dart';
@@ -475,11 +478,15 @@ Future<void> initializeDependencies() async {
  */
 /* ----------------------------------------------------- */
 //bloc
-  sl.registerFactory(() => ProfilHeaderBloc(getProfilHeaderUseCase: sl()));
+  sl.registerFactory(() => ProfilHeaderBloc(
+      getProfilHeaderUseCase: sl(), updateProfilHeaderUsecase: sl()));
 //use cases
 
   sl.registerLazySingleton(
       () => GetProfilHeaderUseCase(profilHeaderRepository: sl()));
+
+  sl.registerLazySingleton(
+      () => UpdateProfilHeaderUsecase(profilHeaderRepository: sl()));
 //repositories
   sl.registerLazySingleton<ProfilHeaderRepository>(
     () => ProfilHeaderRepositoryImpl(
@@ -622,10 +629,19 @@ Future<void> initializeDependencies() async {
  */
 /* ----------------------------------------------------- */
 //bloc
-  sl.registerFactory(() => JobDetailBloc(getJobOfferDetailUseCase: sl()));
+  sl.registerFactory(() => JobDetailBloc(
+      getJobOfferDetailUseCase: sl(),
+      editJobOfferUseCase: sl(),
+      deleteJobOfferUseCase: sl()));
 //use cases
   sl.registerLazySingleton(
       () => GetJobOfferDetailUseCase(jobDetailsRepository: sl()));
+
+  sl.registerLazySingleton(
+      () => EditJobOfferUseCase(jobDetailsRepository: sl()));
+
+  sl.registerLazySingleton(
+      () => DeleteJobOfferUseCase(jobDetailsRepository: sl()));
 //repositories
   sl.registerLazySingleton<JobDetailsRepository>(
     () => JobDetailsRepositoryImpl(
@@ -897,7 +913,8 @@ Future<void> initializeDependencies() async {
  */
 /* ----------------------------------------------------- */
   // Bloc
-  sl.registerFactory(() => RecruiterHomeBloc(getRecentApplicantUseCase: sl(), pdfService: sl()));
+  sl.registerFactory(() =>
+      RecruiterHomeBloc(getRecentApplicantUseCase: sl(), pdfService: sl()));
 // Use Cases
   sl.registerLazySingleton(
       () => GetRecentApplicantUseCase(recruiterHomeRepository: sl()));
@@ -905,8 +922,8 @@ Future<void> initializeDependencies() async {
 // Repositories
   sl.registerLazySingleton<RecruiterHomeRepository>(
     () => RecruiterHomeRepositoryImpl(
-      networkInfo: sl(), recruiterHomeDataSource: sl(),
-     
+      networkInfo: sl(),
+      recruiterHomeDataSource: sl(),
     ),
   );
 

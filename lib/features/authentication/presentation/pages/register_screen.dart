@@ -3,7 +3,6 @@ import 'package:cv_frontend/global/common_widget/app_bar.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/widgets/create_or_have_account_section.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/widgets/header_login.dart';
 import 'package:cv_frontend/features/authentication/presentation/pages/widgets/register_form.dart';
-import 'package:cv_frontend/features/authentication/presentation/pages/widgets/third_party_login.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {

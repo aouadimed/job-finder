@@ -18,6 +18,7 @@ class RecruiterHomeDataSourceImpl implements RecruiterHomeDataSource {
     try {
       final queryParameters = {
         'page': params.page.toString(),
+        if (params.searshQuery.isNotEmpty) 'search': params.searshQuery,
       };
       final response = await https.get(
         Uri.http(url, getRecentApplicantUri, queryParameters),

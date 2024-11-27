@@ -117,6 +117,7 @@ class _WorkExperienceScreenState extends State<WorkExperienceScreen> {
                   ? () {
                       QuickAlert.show(
                         context: context,
+                        confirmBtnColor: primaryColor,
                         headerBackgroundColor: primaryColor,
                         type: QuickAlertType.confirm,
                         onConfirmBtnTap: () => {

@@ -93,93 +93,89 @@ class _EducationScreenState extends State<EducationScreen> {
       },
       child: BlocBuilder<EducationBloc, EducationState>(
         builder: (context, state) {
-          return  CommonFormsScreen(
-                  isUpdate: widget.isUpdate,
-                  isLoading: state is GetSingleEducationLoading,
-                  title: 'Education',
-                  form: EducationForm(
-                    formKey: _formKey,
-                    schoolTextFieldController: _schoolTextFieldController,
-                    degreeTextFieldController: _degreeTextFieldController,
-                    fieldOfStudyTextFieldController:
-                        _fieldOfStudyTextFieldController,
-                    startDateTextFieldController: _startDateTextFieldController,
-                    endDateTextFieldController: _endDateTextFieldController,
-                    gradeTextFieldController: _gradeTextFieldController,
-                    activitiesTextFieldController:
-                        _activitiesTextFieldController,
-                    descriptionTextFieldController:
-                        _descriptionTextFieldController,
-                    selectedStartDateChanged: (String value) {
-                      _startDateTextFieldController.text = value;
-                    },
-                    selectedEndDateChanged: (String value) {
-                      _endDateTextFieldController.text = value;
-                    },
-                  ),
-                  onSave: () {
-                    if (_formKey.currentState!.validate()) {
-                      if (_schoolTextFieldController.text.isEmpty ||
-                          _fieldOfStudyTextFieldController.text.isEmpty ||
-                          _startDateTextFieldController.text.isEmpty ||
-                          _endDateTextFieldController.text.isEmpty) {
-                        showSnackBar(
-                          context: context,
-                          message: "Please fill out all required fields",
-                          backgroundColor: redColor,
-                        );
-                      } else {
-                        if (widget.isUpdate) {
-                          BlocProvider.of<EducationBloc>(context).add(
-                            UpdateEducationEvent(
-                              id: widget.id!,
-                              school: _schoolTextFieldController.text,
-                              degree: _degreeTextFieldController.text,
-                              fieldOfStudy:
-                                  _fieldOfStudyTextFieldController.text,
-                              startDate: _startDateTextFieldController.text,
-                              endDate: _endDateTextFieldController.text,
-                              grade: _gradeTextFieldController.text,
-                              activitiesAndSocieties:
-                                  _activitiesTextFieldController.text,
-                              description: _descriptionTextFieldController.text,
-                            ),
-                          );
-                        } else {
-                          BlocProvider.of<EducationBloc>(context).add(
-                            CreateEducationEvent(
-                              school: _schoolTextFieldController.text,
-                              degree: _degreeTextFieldController.text,
-                              fieldOfStudy:
-                                  _fieldOfStudyTextFieldController.text,
-                              startDate: _startDateTextFieldController.text,
-                              endDate: _endDateTextFieldController.text,
-                              grade: _gradeTextFieldController.text,
-                              activitiesAndSocieties:
-                                  _activitiesTextFieldController.text,
-                              description: _descriptionTextFieldController.text,
-                            ),
-                          );
-                        }
-                      }
-                    }
-                  },
-                  onDelete: widget.isUpdate
-                      ? () {
-                          QuickAlert.show(
-                            context: context,
-                            headerBackgroundColor: primaryColor,
-                            type: QuickAlertType.confirm,
-                            onConfirmBtnTap: () {
-                              BlocProvider.of<EducationBloc>(context)
-                                  .add(DeleteEducationEvent(id: widget.id!));
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            },
-                          );
-                        }
-                      : null,
-                );
+          return CommonFormsScreen(
+            isUpdate: widget.isUpdate,
+            isLoading: state is GetSingleEducationLoading,
+            title: 'Education',
+            form: EducationForm(
+              formKey: _formKey,
+              schoolTextFieldController: _schoolTextFieldController,
+              degreeTextFieldController: _degreeTextFieldController,
+              fieldOfStudyTextFieldController: _fieldOfStudyTextFieldController,
+              startDateTextFieldController: _startDateTextFieldController,
+              endDateTextFieldController: _endDateTextFieldController,
+              gradeTextFieldController: _gradeTextFieldController,
+              activitiesTextFieldController: _activitiesTextFieldController,
+              descriptionTextFieldController: _descriptionTextFieldController,
+              selectedStartDateChanged: (String value) {
+                _startDateTextFieldController.text = value;
+              },
+              selectedEndDateChanged: (String value) {
+                _endDateTextFieldController.text = value;
+              },
+            ),
+            onSave: () {
+              if (_formKey.currentState!.validate()) {
+                if (_schoolTextFieldController.text.isEmpty ||
+                    _fieldOfStudyTextFieldController.text.isEmpty ||
+                    _startDateTextFieldController.text.isEmpty ||
+                    _endDateTextFieldController.text.isEmpty) {
+                  showSnackBar(
+                    context: context,
+                    message: "Please fill out all required fields",
+                    backgroundColor: redColor,
+                  );
+                } else {
+                  if (widget.isUpdate) {
+                    BlocProvider.of<EducationBloc>(context).add(
+                      UpdateEducationEvent(
+                        id: widget.id!,
+                        school: _schoolTextFieldController.text,
+                        degree: _degreeTextFieldController.text,
+                        fieldOfStudy: _fieldOfStudyTextFieldController.text,
+                        startDate: _startDateTextFieldController.text,
+                        endDate: _endDateTextFieldController.text,
+                        grade: _gradeTextFieldController.text,
+                        activitiesAndSocieties:
+                            _activitiesTextFieldController.text,
+                        description: _descriptionTextFieldController.text,
+                      ),
+                    );
+                  } else {
+                    BlocProvider.of<EducationBloc>(context).add(
+                      CreateEducationEvent(
+                        school: _schoolTextFieldController.text,
+                        degree: _degreeTextFieldController.text,
+                        fieldOfStudy: _fieldOfStudyTextFieldController.text,
+                        startDate: _startDateTextFieldController.text,
+                        endDate: _endDateTextFieldController.text,
+                        grade: _gradeTextFieldController.text,
+                        activitiesAndSocieties:
+                            _activitiesTextFieldController.text,
+                        description: _descriptionTextFieldController.text,
+                      ),
+                    );
+                  }
+                }
+              }
+            },
+            onDelete: widget.isUpdate
+                ? () {
+                    QuickAlert.show(
+                      context: context,
+                      headerBackgroundColor: primaryColor,
+                      confirmBtnColor: primaryColor,
+                      type: QuickAlertType.confirm,
+                      onConfirmBtnTap: () {
+                        BlocProvider.of<EducationBloc>(context)
+                            .add(DeleteEducationEvent(id: widget.id!));
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      },
+                    );
+                  }
+                : null,
+          );
         },
       ),
     );

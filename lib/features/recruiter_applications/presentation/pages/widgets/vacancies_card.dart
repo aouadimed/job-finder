@@ -8,8 +8,9 @@ class VacanciesCard extends StatelessWidget {
   final bool isActive;
   final int? applicantsCount;
   final VoidCallback? onTap;
-  final VoidCallback? onToggleStatus; 
+  final VoidCallback? onToggleStatus;
   final Function() godetails;
+  final String postDate;
 
   const VacanciesCard({
     Key? key,
@@ -19,7 +20,9 @@ class VacanciesCard extends StatelessWidget {
     required this.isActive,
     this.applicantsCount,
     this.onTap,
-    this.onToggleStatus, required this.godetails,
+    this.onToggleStatus,
+    required this.godetails,
+    required this.postDate,
   }) : super(key: key);
 
   @override
@@ -65,7 +68,7 @@ class VacanciesCard extends StatelessWidget {
                           onPressed: godetails,
                         ),
                         GestureDetector(
-                          onTap: onToggleStatus, 
+                          onTap: onToggleStatus,
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8.0, vertical: 4.0),
@@ -88,7 +91,7 @@ class VacanciesCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 8),
-                        Text(
+                    Text(
                       categoryName,
                       style: TextStyle(
                         fontSize: categoryFontSize * textScaleFactor,
@@ -105,14 +108,28 @@ class VacanciesCard extends StatelessWidget {
                           const Icon(Icons.people, size: 16),
                           const SizedBox(width: 4),
                           Text(
-                            '$applicantsCount applicants waiting to be reviewed',
+                            '$applicantsCount applicants awaiting review',
                             style: const TextStyle(fontSize: 14),
                           ),
                         ],
                       ),
                     ],
                     const SizedBox(height: 8),
-                    ChipWidget(items: jobDetails),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ChipWidget(items: jobDetails),
+                        const Spacer(),
+                        Flexible(
+                          child: Text(
+                            overflow: TextOverflow.ellipsis,
+                            postDate,
+                            style:
+                                const TextStyle(color: Colors.grey, fontSize: 12),
+                          ),
+                        )
+                      ],
+                    ),
                   ],
                 ),
               ),

@@ -108,20 +108,6 @@ class _SimpleProfileFormState extends State<SimpleProfileForm> {
                   },
                 ),
                 const SizedBox(height: 10),
-                if (_imageFile != null || _imageUrl != null)
-                  GestureDetector(
-                    child: const Text('Remove Photo'),
-                    onTap: () {
-                      Navigator.pop(context);
-                      setState(() {
-                        _imageFile = null;
-                        _imageUrl = null;
-                      });
-                      if (widget.onImageDeleted != null) {
-                        widget.onImageDeleted!();
-                      }
-                    },
-                  ),
               ],
             ),
           ),
@@ -158,7 +144,7 @@ class _SimpleProfileFormState extends State<SimpleProfileForm> {
                               height: 150.0,
                             ),
                           )
-                        : (_imageUrl != null && _imageUrl !="undefined"
+                        : (_imageUrl != null && _imageUrl != "undefined"
                             ? ClipOval(
                                 child: Image.network(
                                   _imageUrl!,
@@ -167,10 +153,19 @@ class _SimpleProfileFormState extends State<SimpleProfileForm> {
                                   height: 150.0,
                                 ),
                               )
-                            : Icon(
-                                Icons.person,
-                                color: Colors.grey.shade500,
-                                size: 100,
+                            : CircleAvatar(
+                                backgroundColor: primaryColor.withOpacity(0.6),
+                                child: Center(
+                                  child: Text(
+                                    "${widget.firstnameTextFieldController.text.isNotEmpty ? widget.firstnameTextFieldController.text[0].toUpperCase() : '?'}"
+                                    " ${widget.lastnameTextFieldController.text.isNotEmpty ? widget.lastnameTextFieldController.text[0].toUpperCase() : '?'}",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 50,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
                               )),
                   ),
                   if (_imageFile != null || _imageUrl != null)
@@ -187,20 +182,23 @@ class _SimpleProfileFormState extends State<SimpleProfileForm> {
                             widget.onImageDeleted!();
                           }
                         },
-                        icon: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15.0),
-                            color: Colors.red,
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
+                        icon: (_imageFile != null ||
+                                _imageUrl != null && _imageUrl != "undefined")
+                            ? Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  color: Colors.red,
+                                ),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            : const SizedBox(),
                       ),
                     ),
                   Positioned(

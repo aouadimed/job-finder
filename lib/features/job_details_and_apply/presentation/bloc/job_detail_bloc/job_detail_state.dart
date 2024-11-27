@@ -33,3 +33,24 @@ class JobDetailSuccess extends JobDetailState {
   @override
   List<Object?> get props => [jobOfferDetailsModel];
 }
+
+class EditJobSuccess extends JobDetailState {}
+
+class JobEditLoading extends JobDetailState {}
+
+class JobEditFailure extends JobDetailState {
+  final String message;
+  final bool isIntentFailure;
+
+  const JobEditFailure({
+    required this.message,
+    required this.isIntentFailure,
+  });
+
+  @override
+  List<Object?> get props => [message, isIntentFailure];
+}
+
+
+
+class DeleteJobSuccess extends JobDetailState {}

@@ -94,14 +94,14 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
       QuickAlert.show(
         context: context,
         type: QuickAlertType.confirm,
+        confirmBtnColor: primaryColor,
         title: 'Confirm Save',
         text: 'Are you sure you want to save changes?',
         confirmBtnText: 'Yes',
         cancelBtnText: 'No',
         onConfirmBtnTap: () {
-          Navigator.pop(context);
           onSave();
-          _refresh();
+          Navigator.pop(context);
         },
         onCancelBtnTap: () {
           Navigator.pop(context);
@@ -140,6 +140,7 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
               context: context,
               message: "Saved Successfully",
               backgroundColor: greenColor);
+          _refresh();
         } else if (state is CompaniesLoaded) {
           final company = state.companies;
           _initialCompanyName = company.companyName;
@@ -201,7 +202,7 @@ class _CompanyProfilScreenState extends State<CompanyProfilScreen> {
             rightIconOnPressed: () => {
               QuickAlert.show(
                 context: context,
-                headerBackgroundColor: primaryColor,
+                confirmBtnColor: primaryColor,
                 type: QuickAlertType.confirm,
                 title: 'Logout',
                 text: 'Are you sure you want to logout?',

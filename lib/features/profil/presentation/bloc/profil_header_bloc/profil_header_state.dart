@@ -33,3 +33,5 @@ class GetProfilHeaderSuccess extends ProfilHeaderState {
   @override
   List<Object?> get props => [profileHeader];
 }
+
+class EditProfilHeaderSuccess extends ProfilHeaderState {}

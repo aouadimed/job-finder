@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _categoryScrollController = ScrollController();
     _selectedCategoryId = '';
 
-    _fetchJobOffers();
+   // _fetchJobOffers();
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
@@ -79,26 +79,13 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  Future<void> _navigateToSearchScreen(String? categoryId) async {
+  Future<void> _navigateToSearchScreen(String categoryId) async {
     _savedScrollPosition = _scrollController.position.pixels;
     await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => BlocProvider(
-          create: (context) => sl<SearchPageBloc>()
-            ..add(FilterJobOfferEvent(
-              params: FilterJobOfferParams(
-                page: 1,
-                location: '',
-                workTypeIndexes: const [],
-                jobLevel: const [],
-                employmentTypeIndexes: const [],
-                experience: const [],
-                education: const [],
-                jobFunctionIds: [categoryId],
-                searchQuery: '',
-              ),
-            )),
+          create: (context) => sl<SearchPageBloc>(),
           child: SearchScreen(
             autofocus: false,
             iconColor: primaryColor,
@@ -110,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
               employmentTypeIndexes: const [],
               experience: const [],
               education: const [],
-              jobFunctionIds: [categoryId!],
+              jobFunctionIds: [categoryId],
               searchQuery: '',
             ),
           ),
@@ -272,9 +259,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     builder: (context) => BlocProvider(
                                       create: (context) => sl<SearchPageBloc>(),
                                       child: const SearchScreen(
+                                        seeAll: true,
                                         autofocus: false,
                                         iconColor: Colors.grey,
-                                        forSearch: true,
                                         params: FilterJobOfferParams(
                                           page: 1,
                                           location: '',
@@ -335,7 +322,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         setState(() {
                                           _selectedCategoryId = categoryId;
                                         });
-                                        _navigateToSearchScreen(categoryId);
+                                        _navigateToSearchScreen(categoryId!);
                                       },
                                       selectedCategoryId: _selectedCategoryId,
                                     ),
@@ -377,86 +364,98 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 } else if (jobCardModel.isNotEmpty) {
                   return SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        if (index == jobCardModel.length - 1 &&
-                            _isLoadingMore) {
-                          return const Center(child: JobCardSkeleton());
-                        }
-                        final jobOffer = jobCardModel[index];
-                        List<String> items = [
-                          jobOffer.employmentTypeIndex != null
-                              ? employmentTypes[jobOffer.employmentTypeIndex!]
-                              : 'Unknown Employment Type',
-                          jobOffer.locationTypeIndex != null
-                              ? locationTypes[jobOffer.locationTypeIndex!]
-                              : 'Unknown Location Type',
-                        ];
+  delegate: SliverChildBuilderDelegate(
+    (context, index) {
+      // Display Skeleton Loader as the last item
+      if (_isLoadingMore && index == jobCardModel.length) {
+        return const Padding(
+          padding: EdgeInsets.symmetric(vertical: 16.0),
+          child: Center(child: JobCardSkeleton()),
+        );
+      }
 
-                        return BlocProvider(
-                          create: (context) => sl<SavedJobBloc>()
-                            ..add(CheckSavedJobEvent(id: jobOffer.id!)),
-                          child: BlocConsumer<SavedJobBloc, SavedJobState>(
-                            listener: (context, state) {
-                              if (state is SavedJobFailure) {
-                                showSnackBar(
-                                    context: context, message: state.message);
-                              }
-                            },
-                            builder: (context, state) {
-                              bool isSaved = false;
-                              if (state is SavedJobCheckSuccess) {
-                                isSaved = state.isSaved;
-                              } else if (state is SavedJobSaveSuccess) {
-                                isSaved = state.isSaved;
-                              }
+      // Render job offer cards
+      final jobOffer = jobCardModel[index];
+      List<String> items = [
+        jobOffer.employmentTypeIndex != null
+            ? employmentTypes[jobOffer.employmentTypeIndex!]
+            : 'Unknown Employment Type',
+        jobOffer.locationTypeIndex != null
+            ? locationTypes[jobOffer.locationTypeIndex!]
+            : 'Unknown Location Type',
+      ];
 
-                              return JobCard(
-                                companyName: jobOffer.companyName!,
-                                jobTitle: jobOffer.subcategoryName!,
-                                location: jobOffer.companyCountry!,
-                                items: items,
-                                companyLogoUrl: jobOffer.logoName!,
-                                onSave: () {
-                                  if (isSaved) {
-                                    context.read<SavedJobBloc>().add(
-                                        RemoveSavedJobEvent(id: jobOffer.id!));
-                                  } else {
-                                    context.read<SavedJobBloc>().add(
-                                        SaveJobOfferEvent(id: jobOffer.id!));
-                                  }
-                                },
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => BlocProvider(
-                                        create: (context) => sl<JobDetailBloc>()
-                                          ..add(GetJobDetailEvent(
-                                              id: jobOffer.id!)),
-                                        child: const JobDetailsScreen(),
-                                      ),
-                                    ),
-                                  ).then(
-                                    (_) {
-                                      if (context.mounted) {
-                                        BlocProvider.of<SavedJobBloc>(context)
-                                            .add(CheckSavedJobEvent(
-                                                id: jobOffer.id!));
-                                      }
-                                    },
-                                  );
-                                },
-                                isSaved: isSaved,
-                                isLoading: state is SavedJobLoading,
-                              );
-                            },
-                          ),
-                        );
-                      },
-                      childCount: jobCardModel.length,
+      return BlocProvider(
+        create: (context) => sl<SavedJobBloc>()
+          ..add(CheckSavedJobEvent(id: jobOffer.id!)),
+        child: BlocConsumer<SavedJobBloc, SavedJobState>(
+          listener: (context, state) {
+            if (state is SavedJobFailure) {
+              showSnackBar(context: context, message: state.message);
+            }
+          },
+          builder: (context, state) {
+            bool isSaved = false;
+            if (state is SavedJobCheckSuccess) {
+              isSaved = state.isSaved;
+            } else if (state is SavedJobSaveSuccess) {
+              isSaved = state.isSaved;
+            }
+
+            return JobCard(
+              companyName: jobOffer.companyName!,
+              jobTitle: jobOffer.subcategoryName!,
+              location: jobOffer.companyCountry!,
+              items: items,
+              companyLogoUrl: jobOffer.logoName!,
+              onSave: () {
+                if (isSaved) {
+                  context.read<SavedJobBloc>().add(
+                      RemoveSavedJobEvent(id: jobOffer.id!));
+                } else {
+                  context.read<SavedJobBloc>().add(
+                      SaveJobOfferEvent(id: jobOffer.id!));
+                }
+              },
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider(
+                          create: (context) => sl<JobDetailBloc>()
+                            ..add(GetJobDetailEvent(id: jobOffer.id!)),
+                        ),
+                        BlocProvider(
+                          create: (context) =>
+                              sl<ProfilPercentageBloc>()
+                                ..add(GetProfilPercentageEvent()),
+                        ),
+                      ],
+                      child: const JobDetailsScreen(),
                     ),
-                  );
+                  ),
+                ).then(
+                  (_) {
+                    if (context.mounted) {
+                      BlocProvider.of<SavedJobBloc>(context)
+                          .add(CheckSavedJobEvent(id: jobOffer.id!));
+                    }
+                  },
+                );
+              },
+              isSaved: isSaved,
+              isLoading: state is SavedJobLoading,
+            );
+          },
+        ),
+      );
+    },
+    childCount: jobCardModel.length + (_isLoadingMore ? 1 : 0),
+  ),
+);
+
                 } else {
                   return const SliverToBoxAdapter(
                     child: Center(child: Text('No job offers available.')),

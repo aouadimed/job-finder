@@ -71,6 +71,7 @@ dependencies:
   dart_jsonwebtoken: ^2.14.0
   percent_indicator: ^4.2.3
   url_launcher: ^6.2.4
+  flutter_launcher_icons: ^0.13.1
 
 
 
@@ -85,7 +86,11 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-
+flutter_icons:
+  android: true
+  ios: true
+  web: true
+  image_path: "assets/images/logo.webp"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -103,7 +108,7 @@ flutter:
     - assets/animations/
     - assets/icons/
 
-
+  
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

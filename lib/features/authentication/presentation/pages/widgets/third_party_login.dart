@@ -11,25 +11,25 @@ class ThirdPartyLogin extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: Column(
         children: [
-          DividerAuth(),
+          const DividerAuth(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Btn(
                   path: "assets/images/fb_logo.png",
                   onTap: () {
-                    print("facebook");
+               //     print("facebook");
                   }),
               Btn(
                 path: "assets/images/google_logo.webp",
                 onTap: () {
-                  print("google");
+             //     print("google");
                 },
               ),
               Btn(
                 path: "assets/images/linkedin_logo.png",
                 onTap: () {
-                  print("linkedin");
+             //     print("linkedin");
                 },
               )
             ],

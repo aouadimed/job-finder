@@ -264,7 +264,7 @@ class _ApplicantProfilState extends State<ApplicantProfil> {
                               throw 'Could not launch $url';
                             }
                           } catch (e) {
-                            print('Error: $e');
+                          //  print('Error: $e');
                           }
                         },
                           child: Text(

@@ -151,7 +151,6 @@ class ProjectDataSourceImpl extends ProjectDataSource {
       ).catchError((e) {
         throw ServerException();
       });
-print(response.body);
       if (response.statusCode == 200) {
         return true;
       } else {

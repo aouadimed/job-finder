@@ -2,6 +2,7 @@ import 'package:cv_frontend/core/services/app_routes.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/contact_info_bloc/contact_info_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/education_bloc/education_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/languages_bloc/language_bloc.dart';
+import 'package:cv_frontend/features/profil/presentation/bloc/profil_header_bloc/profil_header_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/project_bloc/project_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/summary_bloc/summary_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/work_experience_bloc/work_experience_bloc.dart';
@@ -99,8 +100,8 @@ void goToSimpleProfilScreen(BuildContext context) async {
   ).then(
     (_) {
       if (context.mounted) {
-        BlocProvider.of<ContactInfoBloc>(context).add(GetContactInfoEvent());
-      }
+        BlocProvider.of<ProfilHeaderBloc>(context).add(GetProfilHeaderEvent());
+      } 
     },
   );
 }

@@ -43,3 +43,16 @@ class GetSummarySuccess extends SummaryState {
 }
 
 
+class SummaryGetFailure extends SummaryState {
+  final bool isIntentFailure;
+  final String message;
+
+  const SummaryGetFailure({
+    required this.isIntentFailure,
+    required this.message,
+  });
+
+  @override
+  List<Object?> get props => [isIntentFailure, message];
+}
+

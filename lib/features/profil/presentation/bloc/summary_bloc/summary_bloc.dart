@@ -53,7 +53,7 @@ class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
     final result = await _getSummaryUseCase.call(const NoParams());
     result.fold(
       (failure) => emit(
-        SummaryFailure(
+        SummaryGetFailure(
           isIntentFailure: failure.runtimeType == ConnexionFailure,
           message: mapFailureToMessage(failure),
         ),

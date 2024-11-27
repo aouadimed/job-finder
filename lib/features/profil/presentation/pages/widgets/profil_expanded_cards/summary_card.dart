@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/common_widget/comman_expandable.dart';
-import 'package:cv_frontend/core/constants/appcolors.dart';
 
 class SummaryCard extends StatelessWidget {
   final VoidCallback? iconOnPressed;

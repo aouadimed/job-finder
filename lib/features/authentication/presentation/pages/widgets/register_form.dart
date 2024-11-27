@@ -51,7 +51,7 @@ class _RegisterFormState extends State<RegisterForm> {
         children: [
           InputField(
             controller: widget.usernameController,
-            hint: "Full Name",
+            hint: "User Name",
             prefixIcon: const Icon(Icons.face, color: Colors.grey),
             textInputType: TextInputType.name,
             textInputAction: TextInputAction.next,

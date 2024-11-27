@@ -46,7 +46,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
   void _updateFormFields(LanguageModel language) {
     _languageController.text = languages[language.language!];
     _proficiencyController.text = language.proficiencyIndex != null
-        ? proficiencies[language.proficiencyIndex!] 
+        ? proficiencies[language.proficiencyIndex!]
         : '';
     _selectedLanguageIndex = language.language!;
     _selectedProficiencyIndex = language.proficiencyIndex ?? -1;
@@ -137,6 +137,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
                     QuickAlert.show(
                       context: context,
                       headerBackgroundColor: primaryColor,
+                      confirmBtnColor: primaryColor,
                       type: QuickAlertType.confirm,
                       onConfirmBtnTap: () {
                         context.read<LanguageBloc>().add(

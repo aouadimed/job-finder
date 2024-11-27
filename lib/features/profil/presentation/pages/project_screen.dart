@@ -172,7 +172,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                 ? () {
                     QuickAlert.show(
                       context: context,
-                      headerBackgroundColor: primaryColor,
+                      confirmBtnColor: primaryColor,
                       type: QuickAlertType.confirm,
                       onConfirmBtnTap: () {
                         BlocProvider.of<ProjectBloc>(context)

@@ -31,6 +31,8 @@ class _RecruiterHomeScreenState extends State<RecruiterHomeScreen> {
   bool _isLoadingMore = false;
   String _searchQuery = '';
 
+  final Map<int, bool> _isFading = {};
+
   @override
   void initState() {
     super.initState();
@@ -81,6 +83,19 @@ class _RecruiterHomeScreenState extends State<RecruiterHomeScreen> {
       _currentPage = 1;
       _isLoadingMore = false;
       _fetchApplicants();
+    });
+  }
+
+  void _removeApplicantWithFade(int index) {
+    setState(() {
+      _isFading[index] = true;
+    });
+
+    Future.delayed(const Duration(milliseconds: 600), () {
+      setState(() {
+        _applicants.removeAt(index);
+        _isFading.remove(index);
+      });
     });
   }
 
@@ -184,7 +199,7 @@ class _RecruiterHomeScreenState extends State<RecruiterHomeScreen> {
                                     ),
                                     const SizedBox(height: 20),
                                     Text(
-                                      "No applications found.",
+                                      "No applicants found.",
                                       style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w600,
@@ -223,72 +238,84 @@ class _RecruiterHomeScreenState extends State<RecruiterHomeScreen> {
                                 return const ShimmerApplicantsCard();
                               }
                               final applicant = _applicants[index];
-                              return ApplicantsCard(
-                                name:
-                                    "${applicant.user?.firstName} ${applicant.user?.lastName}",
-                                profileImageUrl:
-                                    applicant.user?.profileImg ?? '',
-                                jobTitle: applicant.job ?? 'N/A',
-                                sentMessage: () {
-                                  showSnackBar(
-                                    context: context,
-                                    message:
-                                        "Message sent to ${applicant.user?.firstName}",
-                                  );
-                                },
-                                onSeeDetailsPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => BlocProvider(
-                                      create: (context) => sl<ApplicantBloc>(),
-                                      child: BlocConsumer<ApplicantBloc,
-                                          ApplicantState>(
-                                        listener: (context, state) {
-                                          // TODO: implement listener
-                                        },
-                                        builder: (context, state) {
-                                          return ApplicantInfoDialog(
-                                            recruiterHome: true,
-                                            name:
-                                                "${applicant.user!.firstName} ${applicant.user!.lastName}",
-                                            profileImageUrl:
-                                                applicant.user!.profileImg ??
-                                                    "",
-                                            resumeUrl: applicant.pdfPath ?? "",
-                                            motivationLetter:
-                                                applicant.motivationLetter ??
-                                                    "",
-                                            hasProfile:
-                                                applicant.useProfile ?? false,
-                                            profileDetails:
-                                                applicant.profileDetails,
-                                            swipeRight: () => {
-                                              context.read<ApplicantBloc>().add(
-                                                    UpdateApplicantStatusEvent(
-                                                      id: applicant.id!,
-                                                      status: 'pending',
-                                                    ),
-                                                  ),
-                                              context.read<ApplicantBloc>().add(
-                                                  SendMessageToApplicantEvent(
-                                                      id: applicant.id!)),
-                                              Navigator.pop(context)
-                                            },
-                                            swipeLeft: () => {
-                                              context.read<ApplicantBloc>().add(
-                                                    UpdateApplicantStatusEvent(
-                                                      id: applicant.id!,
-                                                      status: 'rejected',
-                                                    ),
-                                                  ),
-                                              Navigator.pop(context)
-                                            },
-                                          );
-                                        },
+                              return AnimatedOpacity(
+                                opacity: _isFading[index] == true ? 0.0 : 1.0,
+                                duration: const Duration(milliseconds: 300),
+                                child: ApplicantsCard(
+                                  name:
+                                      "${applicant.user?.firstName} ${applicant.user?.lastName}",
+                                  profileImageUrl:
+                                      applicant.user?.profileImg ?? '',
+                                  jobTitle: applicant.job ?? 'N/A',
+                                  sentMessage: () {
+                                    showSnackBar(
+                                      context: context,
+                                      message:
+                                          "Message sent to ${applicant.user?.firstName}",
+                                    );
+                                  },
+                                  onSeeDetailsPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => BlocProvider(
+                                        create: (context) =>
+                                            sl<ApplicantBloc>(),
+                                        child: BlocConsumer<ApplicantBloc,
+                                            ApplicantState>(
+                                          listener: (context, state) {
+                                            // Listener logic here
+                                          },
+                                          builder: (context, state) {
+                                            return ApplicantInfoDialog(
+                                              recruiterHome: true,
+                                              name:
+                                                  "${applicant.user!.firstName} ${applicant.user!.lastName}",
+                                              profileImageUrl:
+                                                  applicant.user!.profileImg ??
+                                                      "",
+                                              resumeUrl:
+                                                  applicant.pdfPath ?? "",
+                                              motivationLetter:
+                                                  applicant.motivationLetter ??
+                                                      "",
+                                              hasProfile:
+                                                  applicant.useProfile ?? false,
+                                              profileDetails:
+                                                  applicant.profileDetails,
+                                              swipeRight: () {
+                                                context
+                                                    .read<ApplicantBloc>()
+                                                    .add(
+                                                      UpdateApplicantStatusEvent(
+                                                        id: applicant.id!,
+                                                        status: 'pending',
+                                                      ),
+                                                    );
+                                                context.read<ApplicantBloc>().add(
+                                                    SendMessageToApplicantEvent(
+                                                        id: applicant.id!));
+                                                Navigator.pop(context);
+                                                _removeApplicantWithFade(index);
+                                              },
+                                              swipeLeft: () {
+                                                context
+                                                    .read<ApplicantBloc>()
+                                                    .add(
+                                                      UpdateApplicantStatusEvent(
+                                                        id: applicant.id!,
+                                                        status: 'rejected',
+                                                      ),
+                                                    );
+                                                Navigator.pop(context);
+                                                _removeApplicantWithFade(index);
+                                              },
+                                            );
+                                          },
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
+                                    );
+                                  },
+                                ),
                               );
                             },
                           ),

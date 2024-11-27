@@ -1,5 +1,6 @@
 import 'package:cv_frontend/features/job_details_and_apply/presentation/bloc/job_detail_bloc/job_detail_bloc.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/job_details_screen.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/profil_percentage_bloc/profil_percentage_bloc.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/pages/widgets/job_card.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/pages/widgets/job_card_skeleton.dart';
 import 'package:cv_frontend/features/saved_jobs/data/models/saved_jobs_model.dart';
@@ -98,8 +99,9 @@ class _SavedJobScreenState extends State<SavedJobScreen> {
   }
 
   void _removeJob(int index) {
-    if (index < 0 || index >= _savedJobs.length)
+    if (index < 0 || index >= _savedJobs.length) {
       return; // Ensure index is valid
+    }
     final removedJob = _savedJobs[index];
     _savedJobs.removeAt(index);
     _listKey.currentState?.removeItem(
@@ -249,86 +251,106 @@ class _SavedJobScreenState extends State<SavedJobScreen> {
                                   ),
                                 ),
                               )
-                            : AnimatedList(
-                                key: _listKey,
-                                controller: _scrollController,
-                                initialItemCount: _savedJobs.length,
-                                itemBuilder: (context, index, animation) {
-                                  if (index >= _savedJobs.length) {
-                                    return const SizedBox
-                                        .shrink(); // Prevent invalid index
-                                  }
-                                  final jobOffer = _savedJobs[index];
-                                  List<String> items = [
-                                    jobOffer.employmentTypeIndex != null
-                                        ? employmentTypes[
-                                            jobOffer.employmentTypeIndex!]
-                                        : 'Unknown Employment Type',
-                                    jobOffer.locationTypeIndex != null
-                                        ? locationTypes[
-                                            jobOffer.locationTypeIndex!]
-                                        : 'Unknown Location Type',
-                                  ];
-                                  return FadeTransition(
-                                    opacity: animation,
-                                    child: JobCard(
-                                      companyName: jobOffer.companyName!,
-                                      jobTitle: jobOffer.subcategoryName!,
-                                      location: jobOffer.companyCountry!,
-                                      items: items,
-                                      companyLogoUrl: jobOffer.logoName!,
-                                      onSave: () async {
-                                        final savedJobsBloc =
-                                            BlocProvider.of<SavedJobsBloc>(
-                                                context);
+                            : Column(
+                                children: [
+                                  Expanded(
+                                    child: AnimatedList(
+                                      key: _listKey,
+                                      controller: _scrollController,
+                                      initialItemCount: _savedJobs.length,
+                                      itemBuilder: (context, index, animation) {
+                                        if (index >= _savedJobs.length) {
+                                          return const SizedBox
+                                              .shrink(); // Prevent invalid index
+                                        }
+                                        final jobOffer = _savedJobs[index];
+                                        List<String> items = [
+                                          jobOffer.employmentTypeIndex != null
+                                              ? employmentTypes[
+                                                  jobOffer.employmentTypeIndex!]
+                                              : 'Unknown Employment Type',
+                                          jobOffer.locationTypeIndex != null
+                                              ? locationTypes[
+                                                  jobOffer.locationTypeIndex!]
+                                              : 'Unknown Location Type',
+                                        ];
+                                        return FadeTransition(
+                                          opacity: animation,
+                                          child: JobCard(
+                                            companyName: jobOffer.companyName!,
+                                            jobTitle: jobOffer.subcategoryName!,
+                                            location: jobOffer.companyCountry!,
+                                            items: items,
+                                            companyLogoUrl: jobOffer.logoName!,
+                                            onSave: () async {
+                                              final savedJobsBloc = BlocProvider
+                                                  .of<SavedJobsBloc>(context);
 
-                                        showModalBottomSheet(
-                                          context: context,
-                                          builder: (context) {
-                                            return BlocProvider.value(
-                                              value: savedJobsBloc,
-                                              child: RemoveSavedJobBottomSheet(
-                                                jobOffer: jobOffer,
-                                                onConfirm: () {
-                                                  savedJobsBloc.add(
-                                                    RemoveSavedJobsEvent(
-                                                        id: jobOffer
-                                                            .jobOfferId!),
+                                              showModalBottomSheet(
+                                                context: context,
+                                                builder: (context) {
+                                                  return BlocProvider.value(
+                                                    value: savedJobsBloc,
+                                                    child:
+                                                        RemoveSavedJobBottomSheet(
+                                                      jobOffer: jobOffer,
+                                                      onConfirm: () {
+                                                        savedJobsBloc.add(
+                                                          RemoveSavedJobsEvent(
+                                                              id: jobOffer
+                                                                  .jobOfferId!),
+                                                        );
+                                                        _removeJob(index);
+                                                        Navigator.pop(context);
+                                                      },
+                                                      item: items,
+                                                    ),
                                                   );
-                                                  _removeJob(index);
-                                                  Navigator.pop(context);
                                                 },
-                                                item: items,
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      },
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => BlocProvider(
-                                              create: (context) =>
-                                                  sl<JobDetailBloc>()
-                                                    ..add(GetJobDetailEvent(
-                                                        id: jobOffer
-                                                            .jobOfferId!)),
-                                              child: const JobDetailsScreen(),
-                                            ),
+                                              );
+                                            },
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MultiBlocProvider(
+                                                    providers: [
+                                                      BlocProvider(
+                                                        create: (context) => sl<
+                                                            JobDetailBloc>()
+                                                          ..add(GetJobDetailEvent(
+                                                              id: jobOffer
+                                                                  .jobOfferId!)),
+                                                      ),
+                                                      BlocProvider(
+                                                        create: (context) => sl<
+                                                            ProfilPercentageBloc>()
+                                                          ..add(
+                                                              GetProfilPercentageEvent()),
+                                                      ),
+                                                    ],
+                                                    child:
+                                                        const JobDetailsScreen(),
+                                                  ),
+                                                ),
+                                              ).then(
+                                                (_) {
+                                                  if (context.mounted) {
+                                                    _fetchSavedJobs();
+                                                  }
+                                                },
+                                              );
+                                            },
+                                            isSaved: true,
                                           ),
-                                        ).then(
-                                          (_) {
-                                            if (context.mounted) {
-                                              _fetchSavedJobs();
-                                            }
-                                          },
                                         );
                                       },
-                                      isSaved: true,
                                     ),
-                                  );
-                                },
+                                  ),
+                                  if (_isLoadingMore)
+                                  const  JobCardSkeleton(showIcon: true)
+                                ],
                               ),
                   ),
                 ],

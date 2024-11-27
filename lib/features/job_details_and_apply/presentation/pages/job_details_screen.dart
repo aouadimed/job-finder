@@ -8,7 +8,9 @@ import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/wi
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/widget/chip_widget.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/widget/job_detail_header.dart';
 import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/widget/job_details_skeleton.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/profil_percentage_bloc/profil_percentage_bloc.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/save_job_bloc/save_job_bloc.dart';
+import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/job_offer_edit_screen.dart';
 import 'package:cv_frontend/global/common_widget/app_bar.dart';
 import 'package:cv_frontend/global/common_widget/big_button.dart';
 import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
@@ -18,6 +20,8 @@ import 'package:cv_frontend/global/utils/location_type_data.dart';
 import 'package:cv_frontend/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class JobDetailsScreen extends StatefulWidget {
   final bool? isRecruiter;
@@ -30,6 +34,7 @@ class JobDetailsScreen extends StatefulWidget {
 class _JobDetailsScreenState extends State<JobDetailsScreen> {
   JobOfferDetailsModel? jobOfferDetailsModel;
   List<String> jobDetails = [];
+  late int completionPercentage;
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +59,8 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                     CheckSavedJobEvent(id: jobOfferDetailsModel!.id),
                   );
             });
+          } else if (state is DeleteJobSuccess) {
+            Navigator.pop(context);
           }
         },
         child: BlocBuilder<JobDetailBloc, JobDetailState>(
@@ -65,7 +72,6 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                   builder: (context, savedState) {
                     bool isSaved = false;
                     bool isLoading = true;
-
                     if (savedState is SavedJobCheckSuccess) {
                       isLoading = false;
                       isSaved = savedState.isSaved;
@@ -79,6 +85,93 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                     }
                     return GeneralAppBar(
                       rightIconColor: primaryColor,
+                      actions: widget.isRecruiter == true
+                          ? state is! JobDetailLoading
+                              ? state is! JobEditLoading
+                                  ? [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        BlocProvider(
+                                                      create: (context) => sl<
+                                                          JobDetailBloc>()
+                                                        ..add(GetJobDetailEvent(
+                                                            id: jobOfferDetailsModel!
+                                                                .id)),
+                                                      child: JobOfferEditScreen(
+                                                        jobId:
+                                                            jobOfferDetailsModel!
+                                                                .id,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ).then((value) => {
+                                                      BlocProvider.of<
+                                                                  JobDetailBloc>(
+                                                              context)
+                                                          .add(GetJobDetailEvent(
+                                                              id: jobOfferDetailsModel!
+                                                                  .id))
+                                                    });
+                                              },
+                                              child: Icon(
+                                                Icons.edit,
+                                                color: primaryColor,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 20,
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                QuickAlert.show(
+                                                  context: context,
+                                                  type: QuickAlertType.confirm,
+                                                  confirmBtnColor: primaryColor,
+                                                  title: 'Confirm Delete',
+                                                  text:
+                                                      'Are you sure you want to delete this job offer?',
+                                                  confirmBtnText: 'Yes',
+                                                  cancelBtnText: 'No',
+                                                  onConfirmBtnTap: () {
+                                                    BlocProvider.of<
+                                                                JobDetailBloc>(
+                                                            context)
+                                                        .add(
+                                                      DeleteJobOfferEvent(
+                                                        id: jobOfferDetailsModel!
+                                                            .id,
+                                                      ),
+                                                    );
+                                                    Navigator.pop(context);
+                                                  },
+                                                  onCancelBtnTap: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                );
+                                              },
+                                              child: Icon(
+                                                Icons.delete,
+                                                color: redColor,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ]
+                                  : null
+                              : null
+                          : null,
                       rightIconWidget: widget.isRecruiter == false
                           ? isLoading
                               ? const GeneralAppBarIconSkeleton()
@@ -102,7 +195,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                   },
                 ),
               ),
-              body: state is JobDetailLoading
+              body: state is JobDetailLoading || state is JobEditLoading
                   ? const Center(child: JobDetailsScreenSkeleton())
                   : jobOfferDetailsModel == null
                       ? const Center(child: Text('No job details available.'))
@@ -176,34 +269,59 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                       ? null
                       : Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: BigButton(
-                            color: jobOfferDetailsModel?.applicationStatus !=
-                                    "Not Applied"
-                                ? greyColor
-                                : primaryColor,
-                            onPressed:
-                                jobOfferDetailsModel?.applicationStatus !=
-                                        "Not Applied"
-                                    ? null
-                                    : () async {
-                                        await showModalBottomSheet<
-                                            Map<String, int>>(
-                                          elevation: 0,
-                                          context: context,
-                                          builder: (context) => JobApplySheet(
-                                            onSelectWithCv: () {
-                                              goToApplyWithCvScreen(context);
-                                            },
-                                            onSelectWithProfil: () {
-                                              goToProfilScreen(context);
-                                            },
-                                          ),
-                                        );
-                                      },
-                            text: jobOfferDetailsModel?.applicationStatus !=
-                                    "Not Applied"
-                                ? jobOfferDetailsModel?.applicationStatus
-                                : 'Apply',
+                          child: BlocConsumer<ProfilPercentageBloc,
+                              ProfilPercentageState>(
+                            listener: (context, state) {
+                              if (state is ProfilPercentageFailure) {
+                                showSnackBar(
+                                    context: context, message: state.message);
+                              }
+                            },
+                            builder: (context, state) {
+                              if (state is ProfilPercentageLoading) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              } else if (state is ProfilPercentageSuccess) {
+                                completionPercentage = state
+                                    .completionPercentage.completionPercentage;
+
+                                return BigButton(
+                                  color:
+                                      jobOfferDetailsModel?.applicationStatus !=
+                                              "Not Applied"
+                                          ? greyColor
+                                          : primaryColor,
+                                  onPressed: jobOfferDetailsModel
+                                              ?.applicationStatus !=
+                                          "Not Applied"
+                                      ? null
+                                      : () async {
+                                          await showModalBottomSheet<
+                                              Map<String, int>>(
+                                            elevation: 0,
+                                            context: context,
+                                            builder: (context) => JobApplySheet(
+                                              onSelectWithCv: () {
+                                                goToApplyWithCvScreen(context);
+                                              },
+                                              onSelectWithProfil: () {
+                                                goToProfilScreen(context);
+                                              },
+                                              completionPercentage: state
+                                                  .completionPercentage
+                                                  .completionPercentage,
+                                            ),
+                                          );
+                                        },
+                                  text: jobOfferDetailsModel
+                                              ?.applicationStatus !=
+                                          "Not Applied"
+                                      ? jobOfferDetailsModel?.applicationStatus
+                                      : 'Apply',
+                                );
+                              }
+                              return const SizedBox();
+                            },
                           ),
                         )
                   : null,

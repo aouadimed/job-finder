@@ -195,15 +195,6 @@ class _JobSeekerApplicationsState extends State<JobSeekerApplications> {
                                         ),
                                         textAlign: TextAlign.center,
                                       ),
-                                      const SizedBox(height: 10),
-                                      Text(
-                                        "Try searching for different applications.",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey[500],
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
                                     ],
                                   ),
                                 ),

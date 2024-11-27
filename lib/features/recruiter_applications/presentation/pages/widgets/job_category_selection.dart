@@ -35,11 +35,15 @@ class _JobCategorySelectionSheetState extends State<JobCategorySelectionSheet> {
   }
 
   void _fetchJobCategories() {
-    context.read<JobCategoryBloc>().add(const GetJobCategoryEvent(searshQuery: ''));
+    context
+        .read<JobCategoryBloc>()
+        .add(const GetJobCategoryEvent(searshQuery: ''));
   }
 
   void _onSearchChanged() {
-    context.read<JobCategoryBloc>().add(GetJobCategoryEvent(searshQuery: _searchController.text));
+    context
+        .read<JobCategoryBloc>()
+        .add(GetJobCategoryEvent(searshQuery: _searchController.text));
   }
 
   @override
@@ -92,7 +96,8 @@ class _JobCategorySelectionSheetState extends State<JobCategorySelectionSheet> {
                               (subcategory) =>
                                   subcategory.id ==
                                   widget.selectedSubcategoryId),
-                          orElse: () => JobCategoryModel(name: '', subcategories: []),
+                          orElse: () =>
+                              JobCategoryModel(name: '', subcategories: []),
                         );
 
                         selectedSubcategory = selectedCategory.subcategories!
@@ -129,7 +134,8 @@ class _JobCategorySelectionSheetState extends State<JobCategorySelectionSheet> {
                                 if (categoryId.isNotEmpty &&
                                     subcategoryId.isNotEmpty &&
                                     subcategoryName.isNotEmpty) {
-                                  widget.onSelect(categoryId, subcategoryId, subcategoryName);
+                                  widget.onSelect(categoryId, subcategoryId,
+                                      subcategoryName);
                                   Navigator.pop(context);
                                 }
                               },
@@ -138,7 +144,8 @@ class _JobCategorySelectionSheetState extends State<JobCategorySelectionSheet> {
 
                           final categoryIndex =
                               selectedSubcategory == null ? index : index - 1;
-                          if (categoryIndex < 0 || categoryIndex >= filteredCategories.length) {
+                          if (categoryIndex < 0 ||
+                              categoryIndex >= filteredCategories.length) {
                             return Container(); // Avoiding out-of-bound access
                           }
 
@@ -148,7 +155,8 @@ class _JobCategorySelectionSheetState extends State<JobCategorySelectionSheet> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
                                 child: Text(
                                   category.name ?? '',
                                   style: const TextStyle(
@@ -174,7 +182,8 @@ class _JobCategorySelectionSheetState extends State<JobCategorySelectionSheet> {
                                     ),
                                   ),
                                   leading: isSelected
-                                      ? Icon(Icons.check, color: Theme.of(context).primaryColor)
+                                      ? Icon(Icons.check,
+                                          color: Theme.of(context).primaryColor)
                                       : null,
                                   onTap: () {
                                     widget.onSelect(
@@ -211,9 +220,11 @@ class _JobCategorySelectionSheetState extends State<JobCategorySelectionSheet> {
     }
     return categories
         .where((category) =>
-            (category.name?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+            (category.name?.toLowerCase().contains(query.toLowerCase()) ??
+                false) ||
             category.subcategories!.any((subcategory) =>
-                subcategory.name?.toLowerCase().contains(query.toLowerCase()) ?? false))
+                subcategory.name?.toLowerCase().contains(query.toLowerCase()) ??
+                false))
         .toList();
   }
 }

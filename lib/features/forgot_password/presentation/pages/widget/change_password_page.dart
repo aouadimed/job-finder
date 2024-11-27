@@ -27,6 +27,7 @@ class ChangePasswordPage extends StatefulWidget {
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
   bool _hidePassword = true;
+  bool _hidePasswordtwo = true;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-               Text(
+              Text(
                 "Change password",
                 style: TextStyle(
                   fontSize: 16.0,
@@ -68,13 +69,13 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               InputField(
                 controller: widget.confirmPasswordTextFieldController,
                 hint: "Confirm new password",
-                obscureText: _hidePassword,
-                prefixIcon:  Icon(Icons.lock, color: greyColor),
+                obscureText: _hidePasswordtwo,
+                prefixIcon: Icon(Icons.lock, color: greyColor),
                 suffixIcon: InkWell(
                   onTap: () => setState(() {
-                    _hidePassword = !_hidePassword;
+                    _hidePasswordtwo = !_hidePasswordtwo;
                   }),
-                  child: _hidePassword
+                  child: _hidePasswordtwo
                       ? const Icon(Icons.visibility_off)
                       : const Icon(Icons.visibility),
                 ),

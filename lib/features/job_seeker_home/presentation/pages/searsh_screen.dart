@@ -6,6 +6,7 @@ import 'package:cv_frontend/features/job_details_and_apply/presentation/pages/jo
 import 'package:cv_frontend/features/job_seeker_home/data/models/job_card_model.dart';
 import 'package:cv_frontend/features/job_seeker_home/domain/usecases/filter_job_offer_use_case.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/category_bloc/category_bloc.dart';
+import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/profil_percentage_bloc/profil_percentage_bloc.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/save_job_bloc/save_job_bloc.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/bloc/searsh_page_bloc/search_page_bloc.dart';
 import 'package:cv_frontend/features/job_seeker_home/presentation/pages/filter_page.dart';
@@ -26,8 +27,8 @@ class SearchScreen extends StatefulWidget {
   final Color iconColor;
   final String? selectedCategoryId;
   final FilterJobOfferParams? params;
-  final bool? fromFilterScreen;
   final bool? forSearch;
+  final bool? seeAll;
 
   const SearchScreen({
     Key? key,
@@ -35,8 +36,8 @@ class SearchScreen extends StatefulWidget {
     required this.iconColor,
     this.selectedCategoryId,
     this.params,
-    this.fromFilterScreen = false,
     this.forSearch = false,
+    this.seeAll = false,
   }) : super(key: key);
 
   @override
@@ -189,7 +190,7 @@ class _SearchScreenState extends State<SearchScreen>
     context.read<SearchPageBloc>().add(
           FilterJobOfferEvent(
             params: FilterJobOfferParams(
-              page: _currentPage,
+              page:  _currentPage,
               location: widget.params!.location,
               workTypeIndexes: widget.params!.workTypeIndexes,
               jobLevel: widget.params!.jobLevel,
@@ -243,7 +244,7 @@ class _SearchScreenState extends State<SearchScreen>
                               autofocus: widget.autofocus,
                               suffixIcon: GestureDetector(
                                 onTap: () {
-                                  if (widget.fromFilterScreen == false) {
+                                  if (widget.seeAll == false) {
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
@@ -251,7 +252,9 @@ class _SearchScreenState extends State<SearchScreen>
                                           create: (context) =>
                                               sl<CategoryBloc>()
                                                 ..add(GetCategoryEvent()),
-                                          child: const FilterScreen(),
+                                          child: FilterScreen(
+                                            params: widget.params,
+                                          ),
                                         ),
                                       ),
                                     );
@@ -393,6 +396,8 @@ class _SearchScreenState extends State<SearchScreen>
                                           isSaved = state.isSaved;
                                         } else if (state
                                             is SavedJobSaveSuccess) {
+                                                  jobOffers.clear();
+
                                           isSaved = state.isSaved;
                                         }
 
@@ -427,11 +432,21 @@ class _SearchScreenState extends State<SearchScreen>
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
+                                                    MultiBlocProvider(
+                                                  providers: [
                                                     BlocProvider(
-                                                  create: (context) =>
-                                                      sl<JobDetailBloc>()
+                                                      create: (context) => sl<
+                                                          JobDetailBloc>()
                                                         ..add(GetJobDetailEvent(
                                                             id: job.id!)),
+                                                    ),
+                                                    BlocProvider(
+                                                      create: (context) => sl<
+                                                          ProfilPercentageBloc>()
+                                                        ..add(
+                                                            GetProfilPercentageEvent()),
+                                                    ),
+                                                  ],
                                                   child:
                                                       const JobDetailsScreen(),
                                                 ),

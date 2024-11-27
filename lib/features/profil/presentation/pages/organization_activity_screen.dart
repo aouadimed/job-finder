@@ -21,16 +21,23 @@ class OrganizationActivityScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<OrganizationActivityScreen> createState() => _OrganizationActivityScreenState();
+  State<OrganizationActivityScreen> createState() =>
+      _OrganizationActivityScreenState();
 }
 
-class _OrganizationActivityScreenState extends State<OrganizationActivityScreen> {
+class _OrganizationActivityScreenState
+    extends State<OrganizationActivityScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _organizationTextFieldController = TextEditingController();
-  final TextEditingController _roleTextFieldController = TextEditingController();
-  final TextEditingController _startDateTextFieldController = TextEditingController();
-  final TextEditingController _endDateTextFieldController = TextEditingController();
-  final TextEditingController _descriptionTextFieldController = TextEditingController();
+  final TextEditingController _organizationTextFieldController =
+      TextEditingController();
+  final TextEditingController _roleTextFieldController =
+      TextEditingController();
+  final TextEditingController _startDateTextFieldController =
+      TextEditingController();
+  final TextEditingController _endDateTextFieldController =
+      TextEditingController();
+  final TextEditingController _descriptionTextFieldController =
+      TextEditingController();
   late String _selectedStartDate;
   late String _selectedEndDate;
   bool _stillMember = false;
@@ -150,10 +157,11 @@ class _OrganizationActivityScreenState extends State<OrganizationActivityScreen>
                     QuickAlert.show(
                       context: context,
                       headerBackgroundColor: primaryColor,
+                      confirmBtnColor: primaryColor,
                       type: QuickAlertType.confirm,
                       onConfirmBtnTap: () {
-                        BlocProvider.of<OrganizationActivityBloc>(context)
-                            .add(DeleteOrganizationActivityEvent(id: widget.id!));
+                        BlocProvider.of<OrganizationActivityBloc>(context).add(
+                            DeleteOrganizationActivityEvent(id: widget.id!));
                         Navigator.pop(context);
                         Navigator.pop(context);
                       },

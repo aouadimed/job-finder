@@ -14,6 +14,7 @@ import 'package:cv_frontend/global/common_widget/big_button.dart';
 import 'package:cv_frontend/global/common_widget/pop_up_msg.dart';
 import 'package:cv_frontend/global/common_widget/text_form_field.dart';
 import 'package:cv_frontend/global/utils/emploments_type_data.dart';
+import 'package:cv_frontend/global/utils/functions.dart';
 import 'package:cv_frontend/global/utils/location_type_data.dart';
 import 'package:cv_frontend/injection_container.dart';
 import 'package:flutter/material.dart';
@@ -302,8 +303,9 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
                                               context: context,
                                               message: "No applicants found");
                                         }
-                                      }, godetails: () {  
-                                              Navigator.push(
+                                      },
+                                      godetails: () {
+                                        Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => BlocProvider(
@@ -311,11 +313,16 @@ class _ApplicationScreenState extends State<ApplicationScreen> {
                                                   sl<JobDetailBloc>()
                                                     ..add(GetJobDetailEvent(
                                                         id: jobOffer.id!)),
-                                              child: const JobDetailsScreen(isRecruiter: true,),
+                                              child: const JobDetailsScreen(
+                                                isRecruiter: true,
+                                              ),
                                             ),
                                           ),
-                                        );
+                                        ).then((_) {
+                                          _refreshJobOffers();
+                                        });
                                       },
+                                      postDate: timeAgo(jobOffer.createdAt!),
                                     );
                                   },
                                 ),

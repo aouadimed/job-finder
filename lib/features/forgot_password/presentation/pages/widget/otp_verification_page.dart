@@ -59,26 +59,18 @@ class OtpVerificationPage extends StatelessWidget {
                 enableActiveFill: true,
                 controller: otpTextFieldController,
                 onCompleted: (v) {
-                  print("Completed");
-                },
-                onChanged: (value) {
-                  print(value);
-                },
-                beforeTextPaste: (text) {
-                  return true;
-                },
-              ),
-              const SizedBox(height: 20),
-              BigButton(
-                text: 'Verify',
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
                     BlocProvider.of<ForgotPasswordBloc>(context).add(
                       CodeVerificationEvent(
                           email: email,
                           resetCode: otpTextFieldController.text),
                     );
-                  }
+                  
+                },
+                onChanged: (value) {
+              //    print(value);
+                },
+                beforeTextPaste: (text) {
+                  return true;
                 },
               ),
             ],

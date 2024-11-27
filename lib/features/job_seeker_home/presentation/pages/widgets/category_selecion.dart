@@ -25,15 +25,15 @@ class ChipWidgetCategorySelection extends StatelessWidget {
 
   List<Widget> _buildChips() {
     List<Widget> chips = [
-      _buildChip('All', ""),
+      _buildChip('All', "", true),
     ];
     chips.addAll(items.map((item) {
-      return _buildChip(item.categoryName ?? 'Unknown', item.categoryId);
+      return _buildChip(item.categoryName ?? 'Unknown', item.categoryId, false);
     }).toList());
     return chips;
   }
 
-  Widget _buildChip(String label, String? id) {
+  Widget _buildChip(String label, String? id, bool all) {
     final bool isSelected = id == selectedCategoryId;
     return GestureDetector(
       onTap: () {
@@ -45,12 +45,20 @@ class ChipWidgetCategorySelection extends StatelessWidget {
         label: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.white : primaryColor,
+            color: all
+                ? Colors.white
+                : isSelected
+                    ? Colors.white
+                    : primaryColor,
             fontSize: 14,
             fontWeight: FontWeight.w500,
           ),
         ),
-        backgroundColor: isSelected ? primaryColor : whiteColor,
+        backgroundColor: all
+            ? primaryColor
+            : isSelected
+                ? primaryColor
+                : whiteColor,
         side: BorderSide(color: primaryColor, width: 2),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20)),

@@ -45,7 +45,7 @@ class JobOfferBloc extends Bloc<JobOfferEvent, JobOfferState> {
         isIntentFailure: failure is ConnexionFailure,
         message: mapFailureToMessage(failure),
       )),
-      (_) => emit(JobOfferSuccess()),
+      (_) => emit( JobOfferSuccess()),
     );
   }
 
@@ -53,7 +53,6 @@ class JobOfferBloc extends Bloc<JobOfferEvent, JobOfferState> {
       GetJobOffersEvent event, Emitter<JobOfferState> emit) async {
     emit(JobOfferLoading());
 
-    // Call the use case with the appropriate parameters
     final result = await getJobOffersUseCase(
       PageParams(
         page: event.page,

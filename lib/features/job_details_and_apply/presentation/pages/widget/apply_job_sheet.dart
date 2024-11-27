@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 class JobApplySheet extends StatelessWidget {
   final void Function() onSelectWithCv;
   final void Function() onSelectWithProfil;
+  final int completionPercentage;
 
   const JobApplySheet({
     Key? key,
     required this.onSelectWithCv,
     required this.onSelectWithProfil,
+    required this.completionPercentage,
   }) : super(key: key);
 
   @override
@@ -57,10 +59,17 @@ class JobApplySheet extends StatelessWidget {
                             onPressed: onSelectWithCv,
                           ),
                           const SizedBox(height: 10),
-                          BigButton(
-                            text: "Apply with Profil",
-                            onPressed: onSelectWithProfil,
-                          ),
+                          completionPercentage >= 90
+                                ? BigButton(
+                                    text: "Apply with Profil",
+                                    color: primaryColor,
+                                    onPressed: onSelectWithProfil,
+                                  )
+                                : BigButton(
+                                    text: "Profil Incomplete",
+                                    color: greyColor,
+                                    onPressed: null, // Disabled
+                                  ),
                         ],
                       )
                     : Row(
@@ -75,10 +84,17 @@ class JobApplySheet extends StatelessWidget {
                           ),
                           const SizedBox(width: 10),
                           Expanded(
-                            child: BigButton(
-                              text: "Apply with Profil",
-                              onPressed: onSelectWithProfil,
-                            ),
+                            child: completionPercentage >= 90
+                                ? BigButton(
+                                    text: "Apply with Profil",
+                                    color: primaryColor,
+                                    onPressed: onSelectWithProfil,
+                                  )
+                                : BigButton(
+                                    text: "Profil Incomplete",
+                                    color: greyColor,
+                                    onPressed: null, // Disabled
+                                  ),
                           ),
                         ],
                       ),

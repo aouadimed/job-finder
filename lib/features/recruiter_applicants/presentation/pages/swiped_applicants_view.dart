@@ -86,8 +86,25 @@ class _SwipedApplicantsViewState extends State<SwipedApplicantsView> {
                           ),
                           subtitle: const Text("Status: Pending"),
                           leading: CircleAvatar(
-                            backgroundImage:
-                                NetworkImage(applicant.user!.profileImg ?? ''),
+                            radius: 35,
+                            backgroundImage: applicant.user!.profileImg != "null"
+                                ? NetworkImage(applicant.user!.profileImg ?? "")
+                                : null,
+                            backgroundColor: applicant.user!.profileImg == "null"
+                                ? primaryColor.withOpacity(0.8)
+                                : Colors.transparent,
+                            child: applicant.user!.profileImg == "null"
+                                ? Center(
+                                    child: Text(
+                                      "${applicant.user!.firstName![0].toUpperCase()} ${applicant.user!.lastName![0].toUpperCase()}",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  )
+                                : null,
                           ),
                           onTap: () => {
                             showDialog(

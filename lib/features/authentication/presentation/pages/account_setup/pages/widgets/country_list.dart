@@ -8,7 +8,7 @@ class CountryList extends StatefulWidget {
   const CountryList({Key? key, this.searchController}) : super(key: key);
 
   @override
-  _CountryListState createState() => _CountryListState();
+  State<CountryList> createState() => _CountryListState();
 
   String getSelectedCountry() {
     return _CountryListState.selectedCountry;

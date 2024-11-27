@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/features/profil/presentation/bloc/profil_header_bloc/profil_header_bloc.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/common_widget/common_forms_screen.dart';
 import 'package:cv_frontend/features/profil/presentation/pages/widgets/forms/simple_profil_form.dart';
@@ -54,9 +55,11 @@ class _SimpleProfilScreenState extends State<SimpleProfilScreen> {
     });
   }
 
-  Future<void> _showSaveConfirmationDialog(BuildContext context, VoidCallback onSave) async {
+  Future<void> _showSaveConfirmationDialog(
+      BuildContext context, VoidCallback onSave) async {
     QuickAlert.show(
       context: context,
+      confirmBtnColor: primaryColor,
       type: QuickAlertType.confirm,
       title: 'Confirm Save',
       text: 'Are you sure you want to save changes?',
@@ -85,8 +88,12 @@ class _SimpleProfilScreenState extends State<SimpleProfilScreen> {
           setState(() {
             _firstnameTextFieldController.text = state.profileHeader.firstName;
             _lastnameTextFieldController.text = state.profileHeader.lastName;
-            _selectedImageUrl = state.profileHeader.profilImg.isNotEmpty ? state.profileHeader.profilImg : null;
-            _initialImageUrl = state.profileHeader.profilImg.isNotEmpty ? state.profileHeader.profilImg : null;
+            _selectedImageUrl = state.profileHeader.profilImg.isNotEmpty
+                ? state.profileHeader.profilImg
+                : null;
+            _initialImageUrl = state.profileHeader.profilImg.isNotEmpty
+                ? state.profileHeader.profilImg
+                : null;
             _selectedImageFile = null; // Reset the file if a URL is available
             // Update initial values
             _initialFirstname = state.profileHeader.firstName;
@@ -100,29 +107,41 @@ class _SimpleProfilScreenState extends State<SimpleProfilScreen> {
             isLoading: state is ProfilHeaderLoading,
             onSave: () {
               if (_formKey.currentState!.validate()) {
-                bool isFirstnameChanged = _firstnameTextFieldController.text != _initialFirstname;
-                bool isLastnameChanged = _lastnameTextFieldController.text != _initialLastname;
+                bool isFirstnameChanged =
+                    _firstnameTextFieldController.text != _initialFirstname;
+                bool isLastnameChanged =
+                    _lastnameTextFieldController.text != _initialLastname;
                 bool isImageChanged = _selectedImageFile != null;
-                bool isImageDeleted = _selectedImageFile == null && _selectedImageUrl == null && _initialImageUrl != null;
+                bool isImageDeleted = _selectedImageFile == null &&
+                    _selectedImageUrl == null &&
+                    _initialImageUrl != null;
 
-                if (isFirstnameChanged || isLastnameChanged || isImageChanged || isImageDeleted) {
+                if (isFirstnameChanged ||
+                    isLastnameChanged ||
+                    isImageChanged ||
+                    isImageDeleted) {
                   _showSaveConfirmationDialog(context, () {
                     if (isFirstnameChanged || isLastnameChanged) {
-                      print('Updating text fields: Firstname or Lastname changed');
-                      // Call your backend update function for text fields
+                      BlocProvider.of<ProfilHeaderBloc>(context).add(
+                        UpdateProfilHeaderEvent(
+                            firstName: _firstnameTextFieldController.text,
+                            lastName: _lastnameTextFieldController.text),
+                      );
+                    } else if (isImageChanged) {
+                      BlocProvider.of<ProfilHeaderBloc>(context).add(
+                        UpdateProfilHeaderEvent(
+                            profileImg: _selectedImageFile!.path),
+                      );
+                    } else if (isImageDeleted) {
+                      BlocProvider.of<ProfilHeaderBloc>(context).add(
+                        const UpdateProfilHeaderEvent(deletePhoto: true),
+                      );
+                    } else {
+                      _reloadProfileData();
                     }
-                    if (isImageChanged) {
-                      print('Updating photo');
-                      // Call your backend update function for photo
-                    }
-                    if (isImageDeleted) {
-                      print('Deleting photo');
-                      // Call your backend delete function for photo
-                    }
-                    _reloadProfileData();
                   });
                 } else {
-                  print('No changes detected');
+                //  print('No changes detected');
                 }
               }
             },
