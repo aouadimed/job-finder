@@ -1,0 +1,30 @@
+[33m1afe12d[m[33m ([m[1;36mHEAD -> [m[1;32mprofil[m[33m)[m HEAD@{0}: commit: read me
+[33m5cd819b[m[33m ([m[1;31morigin/profil[m[33m)[m HEAD@{1}: checkout: moving from profil to profil
+[33m5cd819b[m[33m ([m[1;31morigin/profil[m[33m)[m HEAD@{2}: checkout: moving from profil to profil
+[33m5cd819b[m[33m ([m[1;31morigin/profil[m[33m)[m HEAD@{3}: commit: read me
+[33mdfc6a7a[m HEAD@{4}: commit: read me
+[33mbcd35d4[m HEAD@{5}: commit: exp
+[33m3b198ed[m HEAD@{6}: commit: adjustments
+[33m5dfb935[m HEAD@{7}: commit: filter
+[33mb7d9dd9[m HEAD@{8}: commit: 1/3
+[33m92d7c93[m HEAD@{9}: commit: chatting
+[33m55ae339[m HEAD@{10}: commit: applicant in progress
+[33m597095e[m HEAD@{11}: commit: savedJobsScreen
+[33m5bb13cb[m HEAD@{12}: commit: home
+[33m20244ed[m HEAD@{13}: commit: Vacancies
+[33m7fc9d39[m HEAD@{14}: commit: company profil
+[33m1f1affa[m HEAD@{15}: commit: cv upload ui
+[33m86b0b4e[m HEAD@{16}: commit: offer ui
+[33m60a8edd[m HEAD@{17}: commit: profil fixes
+[33mb3a20d5[m HEAD@{18}: commit: forgot password
+[33ma52f2e3[m HEAD@{19}: commit (amend): Focus Management
+[33m5dceb72[m HEAD@{20}: commit: also this add Focus Management:
+[33m92955a3[m HEAD@{21}: commit: fixes
+[33m0b769e4[m HEAD@{22}: commit: skills
+[33m6a06146[m HEAD@{23}: commit: profil/lang
+[33ma8dc6ae[m HEAD@{24}: commit: profil/education
+[33m1b8bd72[m HEAD@{25}: commit: profil/work-experience
+[33md77aff7[m HEAD@{26}: commit: 10%
+[33m47d6f6b[m[33m ([m[1;31morigin/onboarding[m[33m, [m[1;32monboarding[m[33m)[m HEAD@{27}: checkout: moving from onboarding to profil
+[33m47d6f6b[m[33m ([m[1;31morigin/onboarding[m[33m, [m[1;32monboarding[m[33m)[m HEAD@{28}: checkout: moving from main to onboarding
+[33ma356f1b[m[33m ([m[1;31morigin/old-main[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{29}: clone: from https://github.com/aouadimed/job-finder.git
