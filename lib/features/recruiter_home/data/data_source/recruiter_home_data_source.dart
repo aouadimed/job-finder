@@ -21,7 +21,7 @@ class RecruiterHomeDataSourceImpl implements RecruiterHomeDataSource {
         if (params.searshQuery.isNotEmpty) 'search': params.searshQuery,
       };
       final response = await https.get(
-        Uri.http(url, getRecentApplicantUri, queryParameters),
+        Uri.https(url, getRecentApplicantUri, queryParameters),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}",

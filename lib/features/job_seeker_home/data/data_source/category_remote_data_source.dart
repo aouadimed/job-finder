@@ -16,7 +16,7 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
   Future<List<CategorySelectionModel>> getJobCategorys() async {
     try {
       final response = await https.get(
-        Uri.http(url, jobcategoryData),
+        Uri.https(url, jobcategoryData),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}",

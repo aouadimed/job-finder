@@ -19,7 +19,7 @@ class SavedJobRemoteDataSourceImpl implements SavedJobRemoteDataSource {
   Future<bool> checkSavedJob({required String id}) async {
     try {
       final response = await https.get(
-        Uri.http(url, "$savedJob/$id"),
+        Uri.https(url, "$savedJob/$id"),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}",
@@ -45,7 +45,7 @@ class SavedJobRemoteDataSourceImpl implements SavedJobRemoteDataSource {
         "jobOfferId": id,
       };
       final response = await https.post(
-        Uri.http(url, savedJob),
+        Uri.https(url, savedJob),
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
@@ -69,7 +69,7 @@ class SavedJobRemoteDataSourceImpl implements SavedJobRemoteDataSource {
   Future<bool> deleteJob({required String id}) async {
     try {
       final response = await https.delete(
-        Uri.http(url, "$savedJob/$id"),
+        Uri.https(url, "$savedJob/$id"),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}",

@@ -52,7 +52,7 @@ class SearshPageRemoteDataSourceImpl implements SearshPageRemoteDataSource {
 
       final response = await https
           .post(
-        Uri.http(url, filterUri, queryParameters),
+        Uri.https(url, filterUri, queryParameters),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}",

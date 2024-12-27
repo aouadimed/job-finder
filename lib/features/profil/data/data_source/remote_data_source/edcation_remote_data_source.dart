@@ -65,7 +65,7 @@ class EducationDataSourceImpl implements EducationDataSource {
         "description": description,
       };
       final response = await https.post(
-        Uri.http(url, createEducationUrl),
+        Uri.https(url, createEducationUrl),
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
@@ -89,7 +89,7 @@ class EducationDataSourceImpl implements EducationDataSource {
   Future<List<EducationsModel>> getUserEducations() async {
     try {
       final response = await https.get(
-        Uri.http(url, getAllEducationUrl),
+        Uri.https(url, getAllEducationUrl),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}",
@@ -112,7 +112,7 @@ class EducationDataSourceImpl implements EducationDataSource {
   Future<EducationModel> getSingleEducation({required String? id}) async {
     try {
       final response = await https.get(
-        Uri.http(url, '$getSingleEducationUrl/$id'),
+        Uri.https(url, '$getSingleEducationUrl/$id'),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}",
@@ -155,7 +155,7 @@ class EducationDataSourceImpl implements EducationDataSource {
         "description": description,
       };
       final response = await https.put(
-        Uri.http(url, '$updateEducationUrl/$id'),
+        Uri.https(url, '$updateEducationUrl/$id'),
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
@@ -179,7 +179,7 @@ class EducationDataSourceImpl implements EducationDataSource {
   Future<bool> deleteEducation({required String id}) async {
     try {
       final response = await https.delete(
-        Uri.http(url, '$deleteEducationUrl/$id'),
+        Uri.https(url, '$deleteEducationUrl/$id'),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}",

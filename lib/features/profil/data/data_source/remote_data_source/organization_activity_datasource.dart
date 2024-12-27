@@ -58,7 +58,7 @@ class OrganizationActivityDataSourceImpl
       };
 
       final response = await client.post(
-        Uri.http(url, createOrganizationActivityUrl),
+        Uri.https(url, createOrganizationActivityUrl),
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
@@ -81,7 +81,7 @@ class OrganizationActivityDataSourceImpl
       getUserOrganizationActivities() async {
     try {
       final response = await client.get(
-        Uri.http(url, getAllOrganizationActivitiesUrl),
+        Uri.https(url, getAllOrganizationActivitiesUrl),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}"
@@ -105,7 +105,7 @@ class OrganizationActivityDataSourceImpl
       {required String id}) async {
     try {
       final response = await client.get(
-        Uri.http(url, '$getSingleOrganizationActivityUrl/$id'),
+        Uri.https(url, '$getSingleOrganizationActivityUrl/$id'),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}"
@@ -145,7 +145,7 @@ class OrganizationActivityDataSourceImpl
       };
 
       final response = await client.put(
-        Uri.http(url, '$updateOrganizationActivityUrl/$id'),
+        Uri.https(url, '$updateOrganizationActivityUrl/$id'),
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
@@ -169,7 +169,7 @@ class OrganizationActivityDataSourceImpl
   Future<bool> deleteOrganizationActivity({required String id}) async {
     try {
       final response = await client.delete(
-        Uri.http(url, '$deleteOrganizationActivityUrl/$id'),
+        Uri.https(url, '$deleteOrganizationActivityUrl/$id'),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}"

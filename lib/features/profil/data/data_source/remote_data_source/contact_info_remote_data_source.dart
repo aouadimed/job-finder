@@ -21,7 +21,7 @@ class ContactInfoRemoteDataSourceImpl implements ContactInfoRemoteDataSource {
   Future<ContactInfoModel> getContactInfo() async {
     try {
       final response = await https.get(
-        Uri.http(url, contactInfoUrl),
+        Uri.https(url, contactInfoUrl),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}"
@@ -49,7 +49,7 @@ class ContactInfoRemoteDataSourceImpl implements ContactInfoRemoteDataSource {
         "address": params.address,
       };
       await https.put(
-        Uri.http(url, contactInfoUrl),
+        Uri.https(url, contactInfoUrl),
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",

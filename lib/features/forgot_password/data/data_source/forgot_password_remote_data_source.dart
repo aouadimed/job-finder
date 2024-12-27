@@ -23,7 +23,7 @@ class ForgotPasswordRemoteDataSourceImpl
     try {
       Map<String, dynamic> requestBody = {"email": email};
       final response = await https.post(
-        Uri.http(url, forgotPasswordBaseUrl),
+        Uri.https(url, forgotPasswordBaseUrl),
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
@@ -55,7 +55,7 @@ class ForgotPasswordRemoteDataSourceImpl
         "resetCode": resetCode
       };
       final response = await https.post(
-        Uri.http(url, verifyResetCodeBaseUrl),
+        Uri.https(url, verifyResetCodeBaseUrl),
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
@@ -93,7 +93,7 @@ class ForgotPasswordRemoteDataSourceImpl
         "newPassword": newPassword
       };
       final response = await https.put(
-        Uri.http(url, resetPasswordBaseUrl),
+        Uri.https(url, resetPasswordBaseUrl),
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",

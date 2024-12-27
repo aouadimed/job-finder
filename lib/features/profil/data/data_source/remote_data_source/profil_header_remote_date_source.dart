@@ -21,7 +21,7 @@ class ProfilHeaderRemoteDataSourceImpl implements ProfilHeaderRemoteDataSource {
   Future<ProfilHeaderModel> getProfilHeader() async {
     try {
       final response = await https.get(
-        Uri.http(url, profilHeaderUrl),
+        Uri.https(url, profilHeaderUrl),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}"
@@ -43,7 +43,7 @@ class ProfilHeaderRemoteDataSourceImpl implements ProfilHeaderRemoteDataSource {
   @override
   Future<void> editProfilHeader(UpdateProfilHeaderParams params) async {
     try {
-      final uri = Uri.http(url, profilHeaderUrl);
+      final uri = Uri.https(url, profilHeaderUrl);
 
       final request = https.MultipartRequest("PUT", uri)
         ..headers.addAll({

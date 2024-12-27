@@ -22,7 +22,7 @@ class SeekerApplicationRemoteDataSourceImpl
         'page': params.page.toString(),
         if (params.searchQuery != null) 'search': params.searchQuery,
       };
-      final uri = Uri.http(url, jobApplyurl, queryParameters);
+      final uri = Uri.https(url, jobApplyurl, queryParameters);
       final response = await client.get(
         uri,
         headers: {

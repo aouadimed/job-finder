@@ -17,7 +17,7 @@ class ProfilPercentageRemoteDataSourceImpl
   Future<CompletionPercentage> getPercentage() async {
     try {
       final response = await https.get(
-        Uri.http(url, profilPercentage),
+        Uri.https(url, profilPercentage),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}",

@@ -14,7 +14,7 @@ class JobApplyRemoteDataSourceImpl implements JobApplyRemoteDataSource {
 
   @override
   Future<void> jobApply(JobApplyParams params) async {
-    final baseurl = Uri.http(url, jobApplyurl);
+    final baseurl = Uri.https(url, jobApplyurl);
     final headers = {
       'Content-Type': params.userProfile == false
           ? 'multipart/form-data'

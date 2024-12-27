@@ -21,7 +21,7 @@ class SavedJobsRemoteDataSourceImpl implements SavedJobsRemoteDataSource {
         'page': params.page.toString(),
         if (params.searchQuery != null) 'search': params.searchQuery,
       };
-      final uri = Uri.http(url, savedJob, queryParameters);
+      final uri = Uri.https(url, savedJob, queryParameters);
       final response = await client.get(
         uri,
         headers: {

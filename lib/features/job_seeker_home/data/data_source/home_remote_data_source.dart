@@ -20,7 +20,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
         'page': params.page.toString(),
       };
       final response = await https.get(
-        Uri.http(url, recentJobOffer, queryParameters),
+        Uri.https(url, recentJobOffer, queryParameters),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}",

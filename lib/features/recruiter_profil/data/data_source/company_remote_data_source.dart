@@ -22,7 +22,7 @@ class CompanyRemoteDataSourceImpl implements CompanyRemoteDataSource {
     try {
       var request = http.MultipartRequest(
         'POST',
-        Uri.http(url, companyData),
+        Uri.https(url, companyData),
       );
 
       request.fields['companyName'] = profile.companyName ?? '';
@@ -52,7 +52,7 @@ class CompanyRemoteDataSourceImpl implements CompanyRemoteDataSource {
   Future<CompanyProfileModel> getCompany() async {
     try {
       final response = await http.get(
-        Uri.http(url, companyData),
+        Uri.https(url, companyData),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}",

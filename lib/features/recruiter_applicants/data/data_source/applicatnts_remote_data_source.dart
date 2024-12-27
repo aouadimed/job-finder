@@ -25,7 +25,7 @@ class ApplicantRemoteDataSourceImpl implements ApplicantRemoteDataSource {
         'page': params.page.toString(),
       };
       final response = await https.get(
-        Uri.http(url, "$jobApplyurl/${params.id}", queryParameters),
+        Uri.https(url, "$jobApplyurl/${params.id}", queryParameters),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}",
@@ -51,7 +51,7 @@ class ApplicantRemoteDataSourceImpl implements ApplicantRemoteDataSource {
         "status": params.status,
       };
       final response = await https.patch(
-        Uri.http(url, "$jobApplyurl/${params.id}"),
+        Uri.https(url, "$jobApplyurl/${params.id}"),
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
@@ -74,7 +74,7 @@ class ApplicantRemoteDataSourceImpl implements ApplicantRemoteDataSource {
       SendMessageToApplicantParams params) async {
     try {
       final response = await https.post(
-        Uri.http(url, "$jobApplyurl/${params.id}"),
+        Uri.https(url, "$jobApplyurl/${params.id}"),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}",

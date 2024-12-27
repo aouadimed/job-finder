@@ -22,7 +22,7 @@ class JobCategoryRemoteDataSourceImpl implements JobCategoryRemoteDataSource {
         if (params.searchQuery != null) 'query': params.searchQuery,
       };
 
-      final uri = Uri.http(url, jobcategoryData);
+      final uri = Uri.https(url, jobcategoryData);
 
       final response = await client
           .post(

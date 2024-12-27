@@ -142,7 +142,7 @@ class ProjectDataSourceImpl extends ProjectDataSource {
         "ifStillWorkingOnIt": ifStillWorkingOnIt
       };
       final response = await https.put(
-        Uri.http(url, '$updateProjectUrl/$id'),
+        Uri.https(url, '$updateProjectUrl/$id'),
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
@@ -165,7 +165,7 @@ class ProjectDataSourceImpl extends ProjectDataSource {
   Future<bool> deleteProject({required String id}) async {
     try {
       final response = await https.delete(
-        Uri.http(url, '$deleteProjectUrl/$id'),
+        Uri.https(url, '$deleteProjectUrl/$id'),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}"

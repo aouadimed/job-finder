@@ -28,7 +28,7 @@ class SendMessageRemoteDataSourceImpl implements SendMessageRemoteDataSource {
         "content": params.content,
         "receiver": params.receiver
       };
-      final response = await https.post(Uri.http(url, messaging),
+      final response = await https.post(Uri.https(url, messaging),
           body: jsonEncode(requestBody),
           headers: {
             "Content-type": "application/json",
@@ -50,7 +50,7 @@ class SendMessageRemoteDataSourceImpl implements SendMessageRemoteDataSource {
       final queryParameters = {
         'page': params.page.toString(),
       };
-      final uri = Uri.http(url, messaging, queryParameters);
+      final uri = Uri.https(url, messaging, queryParameters);
       final response = await client.get(
         uri,
         headers: {
@@ -76,7 +76,7 @@ class SendMessageRemoteDataSourceImpl implements SendMessageRemoteDataSource {
       final queryParameters = {
         'page': params.page.toString(),
       };
-      final uri = Uri.http(url, "$messaging/${params.id}", queryParameters);
+      final uri = Uri.https(url, "$messaging/${params.id}", queryParameters);
       final response = await client.get(
         uri,
         headers: {

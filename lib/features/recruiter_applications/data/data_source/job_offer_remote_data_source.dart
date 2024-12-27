@@ -31,7 +31,7 @@ class JobOfferRemoteDataSourceImpl implements JobOfferRemoteDataSource {
         'categoryId': params.categoryIndex,
       });
       final response = await client.post(
-        Uri.http(url, jobOfferData),
+        Uri.https(url, jobOfferData),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${TokenManager.token}',
@@ -57,7 +57,7 @@ class JobOfferRemoteDataSourceImpl implements JobOfferRemoteDataSource {
         if (pageParams.filterIndex != null)
           'filter': pageParams.filterIndex.toString(),
       };
-      final uri = Uri.http(url, jobOfferData, queryParameters);
+      final uri = Uri.https(url, jobOfferData, queryParameters);
       final response = await client.get(
         uri,
         headers: {
@@ -80,7 +80,7 @@ class JobOfferRemoteDataSourceImpl implements JobOfferRemoteDataSource {
   @override
   Future<void> toggleStatusUseCase(ToggleStatusPararms pararms) async {
     try {
-      final uri = Uri.http(url, "$jobOfferData/${pararms.id}/active");
+      final uri = Uri.https(url, "$jobOfferData/${pararms.id}/active");
       final response = await client.put(
         uri,
         headers: {

@@ -28,7 +28,7 @@ class LanguageDataSourceImpl implements LanguageDataSource {
         "proficiencyIndex": params.proficiencyIndex,
       };
       final response = await https.post(
-        Uri.http(url, createLanguageUrl),
+        Uri.https(url, createLanguageUrl),
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
@@ -56,7 +56,7 @@ class LanguageDataSourceImpl implements LanguageDataSource {
         "proficiencyIndex": params.proficiencyIndex,
       };
       final response = await https.put(
-        Uri.http(url, '$updateLanguageUrl/${params.id}'),
+        Uri.https(url, '$updateLanguageUrl/${params.id}'),
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
@@ -80,7 +80,7 @@ class LanguageDataSourceImpl implements LanguageDataSource {
   Future<bool> deleteLanguage(String id) async {
     try {
       final response = await https.delete(
-        Uri.http(url, '$deleteLanguageUrl/$id'),
+        Uri.https(url, '$deleteLanguageUrl/$id'),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}",
@@ -104,7 +104,7 @@ class LanguageDataSourceImpl implements LanguageDataSource {
      String id) async {
     try {
       final response = await https.get(
-        Uri.http(url, '$getSingleLanguageUrl/$id'),
+        Uri.https(url, '$getSingleLanguageUrl/$id'),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}",
@@ -127,7 +127,7 @@ class LanguageDataSourceImpl implements LanguageDataSource {
   Future<List<LanguageModel>> getAllLanguages() async {
     try {
       final response = await https.get(
-        Uri.http(url, getAllLanguageUrl),
+        Uri.https(url, getAllLanguageUrl),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}",

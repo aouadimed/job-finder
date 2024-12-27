@@ -20,7 +20,7 @@ class SummaryRemoteDataSourceImpl implements SummaryRemoteDataSource {
     try {
       Map<String, dynamic> requestBody = {"description": description};
       final response = await https.post(
-          Uri.http(url, addOrUpadateSummaryBaseUrl),
+          Uri.https(url, addOrUpadateSummaryBaseUrl),
           body: jsonEncode(requestBody),
           headers: {
             "Content-type": "application/json",
@@ -42,7 +42,7 @@ class SummaryRemoteDataSourceImpl implements SummaryRemoteDataSource {
   Future<SummaryModel> getSummary() async {
     try {
       final response = await https.get(
-        Uri.http(url, getSummaryBaseUrl),
+        Uri.https(url, getSummaryBaseUrl),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}"

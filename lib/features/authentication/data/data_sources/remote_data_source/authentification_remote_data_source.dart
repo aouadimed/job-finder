@@ -45,14 +45,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         "email": email,
         "password": password,
       };
+     
       final response = await https.post(
-        Uri.http(url, loginBaseUrl),
+        Uri.https(url, loginBaseUrl),
         body: jsonEncode(requestBody),
         headers: {"Content-Type": "application/json"},
       ).catchError(
         (e) => throw ServerException(),
       );
-
       if (response.statusCode == 200) {
         return userModelFromJson(response.body);
       } else if (response.statusCode == 401) {
@@ -85,7 +85,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String address,
   }) async {
     try {
-      var uri = Uri.http(url, registerBaseUrl);
+      var uri = Uri.https(url, registerBaseUrl);
 
         Map<String, dynamic> requestBody = {
           "username": username,

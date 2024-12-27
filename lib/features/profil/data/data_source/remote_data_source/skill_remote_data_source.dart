@@ -22,7 +22,7 @@ class SkillRemoteDataSourceImpl implements SkillRemoteDataSource {
   Future<void> createSkill(CreateSkillParams params) async {
     try {
       final response = await client.post(
-        Uri.http(url, skillsUrl),
+        Uri.https(url, skillsUrl),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${TokenManager.token}',
@@ -42,7 +42,7 @@ class SkillRemoteDataSourceImpl implements SkillRemoteDataSource {
   Future<void> deleteSkill(DeleteSkillParams params) async {
     try {
       final response = await client.delete(
-        Uri.http(url,'$skillsUrl/${params.id}'),
+        Uri.https(url,'$skillsUrl/${params.id}'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${TokenManager.token}',
@@ -61,7 +61,7 @@ class SkillRemoteDataSourceImpl implements SkillRemoteDataSource {
   Future<List<SkillsModel>> getSkills() async {
     try {
       final response = await client.get(
-        Uri.http(url, skillsUrl),
+        Uri.https(url, skillsUrl),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${TokenManager.token}',

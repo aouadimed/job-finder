@@ -22,7 +22,7 @@ class JobDetailsRemoteDataSourceImpl implements JobDetailsRemoteDataSource {
   Future<JobOfferDetailsModel> getJobOffer({required String id}) async {
     try {
       final response = await https.get(
-        Uri.http(url, "$jobOfferData/$id"),
+        Uri.https(url, "$jobOfferData/$id"),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}",
@@ -54,7 +54,7 @@ class JobDetailsRemoteDataSourceImpl implements JobDetailsRemoteDataSource {
         'categoryId': params.subcategoryIndex,
       });
       final response = await client.put(
-        Uri.http(url, '$jobOfferData/${params.id}'),
+        Uri.https(url, '$jobOfferData/${params.id}'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${TokenManager.token}',
@@ -73,7 +73,7 @@ class JobDetailsRemoteDataSourceImpl implements JobDetailsRemoteDataSource {
   Future<void> deleteJobOffer(DeleteJobOfferParams params) async {
     try {
       final response = await client.delete(
-        Uri.http(url, '$jobOfferData/${params.id}'),
+        Uri.https(url, '$jobOfferData/${params.id}'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${TokenManager.token}',

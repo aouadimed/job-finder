@@ -67,7 +67,7 @@ class WorkExperienceDataSourceImpl extends WorkExperienceDataSource {
         "endDate": endDate,
         "ifStillWorking": ifStillWorking,
       };
-      final response = await https.post(Uri.http(url, createWorkExperienceUrl),
+      final response = await https.post(Uri.https(url, createWorkExperienceUrl),
           body: jsonEncode(requestBody),
           headers: {
             "Content-type": "application/json",
@@ -89,7 +89,7 @@ class WorkExperienceDataSourceImpl extends WorkExperienceDataSource {
   Future<List<WorkExperiencesModel>> getUserWorkExperiences() async {
     try {
       final response = await https.get(
-        Uri.http(url, getAllWorkExperienceUrl),
+        Uri.https(url, getAllWorkExperienceUrl),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}"
@@ -112,7 +112,7 @@ class WorkExperienceDataSourceImpl extends WorkExperienceDataSource {
       {required String? id}) async {
     try {
       final response = await https.get(
-        Uri.http(url, '$getSingleWorkExperienceUrl/$id'),
+        Uri.https(url, '$getSingleWorkExperienceUrl/$id'),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}"
@@ -156,7 +156,7 @@ class WorkExperienceDataSourceImpl extends WorkExperienceDataSource {
         "ifStillWorking": ifStillWorking,
       };
       final response = await https.put(
-        Uri.http(url, '$updateWorkExperienceUrl/$id'),
+        Uri.https(url, '$updateWorkExperienceUrl/$id'),
         body: jsonEncode(requestBody),
         headers: {
           "Content-type": "application/json",
@@ -180,7 +180,7 @@ class WorkExperienceDataSourceImpl extends WorkExperienceDataSource {
   Future<bool> deleteWorkExperiences({required String id}) async {
     try {
       final response = await https.delete(
-        Uri.http(url, '$deleteWorkExperienceUrl/$id'),
+        Uri.https(url, '$deleteWorkExperienceUrl/$id'),
         headers: {
           "Content-type": "application/json",
           "Authorization": "Bearer ${TokenManager.token}"
