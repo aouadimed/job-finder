@@ -157,10 +157,7 @@ Users can list their skills, which are key to matching them with relevant job po
 ---
 
 ## Video Demo
-[![Watch the Demo](https://img.youtube.com/vi/<VIDEO_ID>/0.jpg)](https://www.youtube.com/watch?v=<VIDEO_ID>)
-
-Replace `<VIDEO_ID>` with your video ID.
-
+[![Watch the Demo](https://img.youtube.com/vi/vNICfmul7vI/0.jpg)](https://youtu.be/vNICfmul7vI)
 ---
 
 ## License
