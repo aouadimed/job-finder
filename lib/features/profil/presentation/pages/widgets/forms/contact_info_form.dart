@@ -61,7 +61,7 @@ class _ContactInfoFormState extends State<ContactInfoForm> {
                     child: CountryCodePicker(
                       onChanged: (c) => c.code,
                       enabled: false,
-                      initialSelection: countryCodeFromCountryName(widget.userCountry),
+                      initialSelection: 'TN',
                       showCountryOnly: true,
                       flagWidth: 20,
                       textStyle:

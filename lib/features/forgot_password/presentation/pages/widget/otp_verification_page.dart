@@ -1,6 +1,5 @@
 import 'package:cv_frontend/core/constants/appcolors.dart';
 import 'package:cv_frontend/features/forgot_password/presentation/bloc/forgot_password_bloc.dart';
-import 'package:cv_frontend/global/common_widget/big_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
